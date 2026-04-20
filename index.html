@@ -297,6 +297,8 @@ html, body {
     animation: gradientFlow 5s linear infinite;
     letter-spacing: clamp(2px, 1vw, 8px);
     margin-bottom: 10px;
+   display: inline-block; /* Keeps the container stable */
+    min-width: 100%;
 }
 
 @keyframes gradientFlow {
@@ -1213,8 +1215,18 @@ class MainMenuState {
 class ApplicationCore {
     constructor() {
         this.fsm = new StateMachine();
-         setInterval(() => { const h = document.querySelector('.header-title'); if(!h) return; const original = h.innerText; const r = Math.floor(Math.random() * original.length); h.innerText = original.substring(0, r) + "҂" + original.substring(r + 1); setTimeout(() => h.innerText = original, 80); }, 4000);        
-        // Initialize Graphics Pipelines
+               setInterval(() => { 
+                   const h = document.querySelector('.header-title'); 
+                   if(!h) return; 
+                   const orig = "JAAPS PortFOLIO"; // Use hardcoded string to prevent "chopping"
+                   let chars = orig.split('');
+                   for(let i=0; i<3; i++) {
+                       const r = Math.floor(Math.random() * chars.length);
+                       chars[r] = ["҂", "█", "▚", "0", "1"][Math.floor(Math.random() * 5)];
+                   }
+                   h.innerText = chars.join('');
+                   setTimeout(() => h.innerText = orig, 150); 
+               }, 2000);        // Initialize Graphics Pipelines
         this.liquidRenderer = new LiquidGlassRenderer('canvas-liquid-glass');
         this.matrixRenderer = new MatrixStreamRenderer('canvas-matrix');
         
