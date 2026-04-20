@@ -37,6 +37,63 @@
     --sys-z-flash: 1000;
     --sys-z-strobe: 2000;
 }
+   /* LIQUID LOGO EFFECT */
+/* LIQUID RAINBOW LOGO EFFECT */
+.term-ascii {
+    white-space: pre;
+    font-size: 10px;
+    line-height: 10px;
+    margin-bottom: 20px;
+    
+    /* The Rainbow Core */
+    background: linear-gradient(90deg, #ff00ff, #00ffff, #ff0055, #ffd700, #ff00ff);
+    background-size: 400% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent !important; /* Makes text see-through to the gradient */
+    
+    /* Melting & Color Shift Animation */
+    filter: blur(0.4px) contrast(1.2);
+    animation: 
+        liquidMelt 3s ease-in-out infinite alternate, 
+        metallicFlow 3s linear infinite;
+    
+    position: relative;
+    display: inline-block;
+}
+
+/* Moves the rainbow background */
+@keyframes metallicFlow {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+}
+
+@keyframes liquidMelt {
+    0% { transform: scaleY(1) skewX(0deg); filter: blur(0.4px) hue-rotate(0deg); }
+    50% { transform: scaleY(1.02) skewX(1deg); filter: blur(0.8px) hue-rotate(90deg); }
+    100% { transform: scaleY(0.98) skewX(-1deg); filter: blur(0.4px) hue-rotate(-180deg); }
+}
+
+/* THE SHIMMER REFLECTION OVERLAY */
+.term-ascii::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    
+    /* The 'Shine' Color */
+    color: rgba(255, 255, 255, 0.6); 
+    -webkit-text-fill-color: rgba(255, 255, 255, 0.6);
+    
+    /* Sliding Mask */
+    mask-image: linear-gradient(to right, transparent, white, transparent);
+    -webkit-mask-image: linear-gradient(60deg, transparent 20%, white 50%, transparent 80%);
+    mask-size: 200% 100%;
+    -webkit-mask-size: 200% 100%;
+    
+    animation: shimmerFlow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    pointer-events: none;
+}
 
 *, *::before, *::after {
     box-sizing: border-box;
@@ -358,14 +415,14 @@ html, body {
     <div id="title-1" class="flash-title">MILES MARS</div>
     <div id="title-2" class="flash-title">JAPA JUMP</div>
     <div id="title-3" class="flash-title">FELIX FART</div>
-    <div id="title-4" class="flash-title">FRUIT</div>
+    <div id="title-4" class="flash-title">FRUIT SMASHER</div>
     <div id="title-5" class="flash-title">JAAPER DROPPER</div>
 </div>
 <div id="terminal-hud"></div>
 
 <div id="main-ui-wrapper">
     <header class="ui-header">
-        <h1 class="header-title">JAAPS PROTIFLIO</h1>
+        <h1 class="header-title">JAAPS PortFOLIO</h1>
         <div class="header-subtitle">ENTERPRISE CORE ENGINE v9.9.4 // INITIALIZED</div>
     </header>
     <main class="game-grid" id="grid-container"></main>
@@ -407,7 +464,7 @@ const SYS_CONFIG = {
     },
     RENDER: {
         MATRIX_FONT_SIZE: 14,
-        LIQUID_PARTICLE_COUNT: 45
+        LIQUID_PARTICLE_COUNT: 60
     },
     PHYSICS: {
         GRAVITY: 9.81,
@@ -477,27 +534,37 @@ const CURRENT_LOCALE = "EN";
  * Hard-coded diagnostics and system representations.
  * @type {Object}
  */
+/** * [ KERNEL_ASSET_REPOSITORY_v2 ]
+ * HIGH-DENSITY ASCII DATA :: JAAP_OS STABLE_PRODUCTION
+ */
 const ASCII_ART = {
     JAAP_LOGO: `
-      :::::::::::   :::     :::     :::::::::      ::::::::   ::::::::
-         :+:      :+: :+:   :+: :+:   :+:    :+:    :+:    :+: :+:    :+:
-         +:+     +:+   +:+  +:+   +:+ +:+    +:+    +:+    +:+ +:+
-         +#+    +#++:++#++: +#++:++#++: +#++:++#+     +#+    +:+ +#++:++#++
-         +#+    +#+     +#+ +#+     +#+ +#+           +#+    +#+        +#+
-     #+# #+#    #+#     #+# #+#     #+# #+#           #+#    #+# #+#    #+#
-      #####     ###     ### ###     ### ###            ########   ########
+    ███████╗ █████╗  █████╗ ██████╗      ██████╗ ███████╗
+    ╚══███╔╝██╔══██╗██╔══██╗██╔══██╗    ██╔═══██╗██╔════╝
+       ███║ ███████║███████║██████╔╝    ██║   ██║███████╗
+    ██╗███║ ██╔══██║██╔══██║██╔═══╝     ██║   ██║╚════██║
+    ╚█████╔╝██║  ██║██║  ██║██║         ╚██████╔╝███████║
+     ╚════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝          ╚═════╝ ╚══════╝
+    [ STABLE_KERNEL_ARCHITECTURE_v2.0 ]
     `,
     SYSTEM_DIAG: `
-    [ SYSTEM ARCHITECTURE TOPOLOGY ]
-    +---------------------------------------------------+
-    |  CPU: QUANTUM THREAD PROCESSOR v9                 |
-    |  MEM: 256TB ECC OPTICAL                           |
-    |  GPU: DUAL TENSOR CORE MATRIX ACCELERATOR         |
-    |  NET: GIGABIT FIBER OPTIC UPLINK                  |
-    +---------------------------------------------------+
-    |  OS: JAAP_OS KERNEL                               |
-    |  BUILD: 9.9.4-PROD                                |
-    +---------------------------------------------------+
+  ┌────────────────────────────────────────────────────────────────────────────────┐
+  │  [ JAAP_OS_VIRTUAL_MACHINE ] ⚡ CORE_TOPOLOGY_ESTABLISHED                      │
+  ├────────────────────────────────────────────────────────────────────────────────┤
+  │  > HOST_ID      :: JAAP_THIND [BERKELEY_NODE_01]                               │
+  │  > KERNEL_STRAT  :: QUANTUM_THREAD_X64_v67 [STABLE_BUILD]                      │
+  │  > SESSION_LIFT  :: ${new Date().toISOString()}                                │
+  ├──────────────────────────────┬─────────────────────────────────────────────────┤
+  │ [ COMPUTATIONAL_SILICON ]    │ [ NEURAL_GRAPHICS_MATRIX ]                      │
+  │ CPU: LIQUID_GLASS_v67_PRO    │ GPU: DUAL_TENSOR_ACCEL_v4                       │
+  │ CORE: ${navigator.hardwareConcurrency || 8} LOGICAL_UNITS       Q               │
+  │ LOAD: 14.88 GFLOP/s (SYNC)   │ VRAM: VIRTUAL_DYNAMIC_ALLOC [UNKOWN]            │
+  ├──────────────────────────────┴─────────────────────────────────────────────────┤
+  │ [ MEMORY_&_TELEMETRY ]                                                         │
+  │ STATUS: ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒ [ENCRYPTION_LAYER_ACTIVE]   │
+  │ NETWORK: GIGABIT_FIBER_OPTIC_UPLINK [UPLINK_SECURE]                            │
+  │ LATENCY: ${Math.floor(Math.random() * 12)}ms                                   │
+  └────────────────────────────────────────────────────────────────────────────────┘
     `
 };
 
@@ -1007,10 +1074,15 @@ class KernelBootState {
         this.matrix.start();
         this.hud.style.opacity = '1';
 
-        // Render ASCII Art
+        // Render LIQUID ASCII Art
         const asciiNode = document.createElement('div');
         asciiNode.className = 'term-ascii';
-        asciiNode.innerText = ASCII_ART.JAAP_LOGO + "\n" + ASCII_ART.SYSTEM_DIAG;
+        
+        // We set the text and a data-attribute for the CSS shimmer effect
+        const fullLogo = ASCII_ART.JAAP_LOGO + "\n" + ASCII_ART.SYSTEM_DIAG;
+        asciiNode.innerText = fullLogo;
+        asciiNode.setAttribute('data-text', fullLogo); // For the shimmer
+        
         this.hud.appendChild(asciiNode);
 
         const logs = [
