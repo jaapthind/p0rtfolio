@@ -125,7 +125,7 @@ html, body {
     pointer-events: none;
 }
 
-#canvas-liquid-glass { z-index: var(--sys-z-bg); filter: blur(8px) contrast(1.5); }
+#canvas-liquid-glass { z-index: var(--sys-z-bg); filter: blur(4px) contrast(1.2); }
 #canvas-matrix { z-index: var(--sys-z-canvas); mix-blend-mode: screen; opacity: 0; }
 
 /* --------------------------------------------------------------------------
@@ -875,11 +875,11 @@ class LiquidGlassRenderer {
             const grad = this.ctx.createRadialGradient(p.position.x, p.position.y, 0, p.position.x, p.position.y, p.radius);
             
             if (p.colorIndex < 0.33) {
-                grad.addColorStop(0, 'rgba(0, 255, 204, 0.08)');
+                grad.addColorStop(0, 'rgba(0, 255, 204, 0.5)'); // Ice Blue
             } else if (p.colorIndex < 0.66) {
-                grad.addColorStop(0, 'rgba(0, 100, 255, 0.08)');
+                grad.addColorStop(0, 'rgba(0, 100, 255, 0.5)'); // Deep Blue
             } else {
-                grad.addColorStop(0, 'rgba(255, 0, 255, 0.05)');
+                grad.addColorStop(0, 'rgba(255, 0, 255, 0.4)'); // Fruit Pink
             }
             grad.addColorStop(1, 'rgba(0,0,0,0)');
 
