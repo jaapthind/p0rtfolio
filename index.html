@@ -3,923 +3,1383 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jaaps Protiflio - ULTRA EXTREME EDITION</title>
+<title>Jaap's Portfolio - Ultimate Architecture</title>
 <style>
 /* ==========================================================================
-   JAAPS PROTIFLIO - ULTRA EXTREME CSS CORE (200+ LINES)
+   CSS ARCHITECTURE
    ========================================================================== */
 :root {
-    --glass-base: rgba(10, 15, 30, 0.4);
-    --glass-border: rgba(0, 255, 204, 0.3);
-    --glass-highlight: rgba(255, 255, 255, 0.1);
-    --neon-cyan: #00ffcc;
-    --neon-pink: #ff00ff;
-    --neon-yellow: #fadb0f;
-    --bg-deep: #020205;
-    --text-main: #ffffff;
-    --font-stack: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+    --color-bg-primary: #000000;
+    --color-bg-secondary: #050508;
+    --color-accent-1: #00ffff;
+    --color-accent-2: #ff00ff;
+    --color-accent-3: #ffff00;
+    --color-glass-base: rgba(10, 15, 30, 0.4);
+    --color-glass-border: rgba(0, 255, 204, 0.3);
+    --font-primary: 'Courier New', Courier, monospace;
+    --font-secondary: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --z-index-base: 1;
+    --z-index-canvas: 10;
+    --z-index-ui: 100;
+    --z-index-flash: 1000;
+    --transition-fast: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    --transition-slow: 1.2s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-bg-primary);
+    color: #ffffff;
+    font-family: var(--font-secondary);
+    overflow: hidden;
+    perspective: 2000px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 *, *::before, *::after {
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
     user-select: none;
     -webkit-user-drag: none;
 }
 
-body, html {
-    width: 100%;
-    height: 100%;
-    background-color: var(--bg-deep);
-    color: var(--text-main);
-    font-family: var(--font-stack);
-    overflow: hidden;
-    perspective: 1000px;
-}
-
-/* ==========================================================================
-   INTRO SEQUENCE LAYERS & FLASHES
-   ========================================================================== */
-#intro-master-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 100000;
-    background: #000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-}
-
-.flash-screen {
+/* --------------------------------------------------------------------------
+   CANVAS LAYERS
+   -------------------------------------------------------------------------- */
+#layer-webgl {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 15vw;
-    font-weight: 900;
-    text-transform: uppercase;
-    opacity: 0;
-    visibility: hidden;
-    background: #000;
-    color: #fff;
-    text-shadow: 0 0 50px rgba(255,255,255,0.8);
-    transform: scale(1.5);
-    z-index: 10;
-}
-
-#flash-1 { color: #00ffff; text-shadow: 0 0 40px #00ffff; font-style: italic; }
-#flash-2 { color: #ff0055; text-shadow: 0 0 40px #ff0055; letter-spacing: -5px; }
-#flash-3 { color: #ffd700; text-shadow: 0 0 40px #ffd700; font-size: 18vw; } /* Japa Jump */
-#flash-4 { color: #00ff00; text-shadow: 0 0 40px #00ff00; transform: skewX(-20deg) scale(1.5); }
-#flash-5 { color: #ff00ff; text-shadow: 0 0 40px #ff00ff; }
-#flash-6 { color: #ff5500; text-shadow: 0 0 40px #ff5500; letter-spacing: 10px; }
-
-/* The Kaboom & Matrix Canvas */
-#intro-canvas-kaboom {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 5;
-    opacity: 0;
-    mix-blend-mode: screen;
-}
-
-#intro-canvas-matrix {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 4;
-    opacity: 0;
-}
-
-/* ==========================================================================
-   MAIN PORTFOLIO: ULTRA REAL LIQUID GLASS UI
-   ========================================================================== */
-#liquid-bg-canvas {
-    position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
     z-index: 1;
-    filter: blur(8px) contrast(1.5);
+    pointer-events: none;
 }
 
-#main-portfolio-wrapper {
-    position: relative;
-    z-index: 100;
+#layer-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 2;
+    pointer-events: none;
+    mix-blend-mode: screen;
+}
+
+/* --------------------------------------------------------------------------
+   INTRO SEQUENCE
+   -------------------------------------------------------------------------- */
+#intro-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: var(--z-index-flash);
+    background-color: var(--color-bg-primary);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.flash-title {
+    position: absolute;
+    font-family: var(--font-primary);
+    font-size: 15vw;
+    font-weight: 900;
+    text-transform: uppercase;
+    text-align: center;
+    opacity: 0;
+    visibility: hidden;
+    color: #ffffff;
+    text-shadow: 0 0 50px rgba(255, 255, 255, 1);
+    transform: scale(1.5) translateZ(-500px);
+    will-change: transform, opacity;
+}
+
+.flash-active {
+    visibility: visible;
+    animation: flashImpact 0.3s cubic-bezier(0.1, 1, 0.1, 1) forwards;
+}
+
+@keyframes flashImpact {
+    0% {
+        opacity: 0;
+        transform: scale(2) translateZ(-1000px);
+        filter: brightness(0) blur(20px);
+    }
+    10% {
+        opacity: 1;
+        transform: scale(1) translateZ(0);
+        filter: brightness(2) blur(0px);
+    }
+    90% {
+        opacity: 1;
+        transform: scale(0.95) translateZ(0);
+        filter: brightness(1) blur(0px);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.5) translateZ(500px);
+        filter: brightness(0) blur(10px);
+    }
+}
+
+#strobe-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
+    z-index: 1001;
+    opacity: 0;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+}
+
+.strobe-active {
+    animation: rainbowStrobe 0.1s infinite;
+}
+
+@keyframes rainbowStrobe {
+    0% { background-color: #ff0000; opacity: 1; }
+    16% { background-color: #ffff00; opacity: 0.5; }
+    33% { background-color: #00ff00; opacity: 1; }
+    50% { background-color: #00ffff; opacity: 0.5; }
+    66% { background-color: #0000ff; opacity: 1; }
+    83% { background-color: #ff00ff; opacity: 0.5; }
+    100% { background-color: #ff0000; opacity: 1; }
+}
+
+/* --------------------------------------------------------------------------
+   CONSOLE BOOT SEQUENCE
+   -------------------------------------------------------------------------- */
+#boot-console {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    width: 400px;
+    height: 300px;
+    font-family: var(--font-primary);
+    font-size: 12px;
+    color: var(--color-accent-1);
+    text-shadow: 0 0 5px var(--color-accent-1);
+    z-index: 999;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+
+.log-line {
+    margin: 2px 0;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   PORTFOLIO UI
+   -------------------------------------------------------------------------- */
+#ui-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: var(--z-index-ui);
     display: flex;
     flex-direction: column;
     align-items: center;
-    opacity: 0; /* Hidden initially */
+    padding: 80px 20px;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 80px 20px 150px 20px;
-    scroll-behavior: smooth;
+    opacity: 0;
     visibility: hidden;
+    transform: translateZ(500px);
+    transition: opacity var(--transition-slow), transform var(--transition-slow);
 }
 
-.portfolio-header {
-    background: rgba(5, 10, 20, 0.4);
+#ui-container.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateZ(0);
+}
+
+.header-panel {
+    background: var(--color-glass-base);
     backdrop-filter: blur(40px) saturate(180%);
     -webkit-backdrop-filter: blur(40px) saturate(180%);
-    border: 1px solid rgba(0, 255, 204, 0.2);
+    border: 1px solid var(--color-glass-border);
     border-radius: 30px;
     padding: 40px 80px;
     margin-bottom: 80px;
-    box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 2px 2px rgba(255,255,255,0.2), inset 0 -2px 10px rgba(0, 255, 204, 0.1);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 2px 2px rgba(255,255,255,0.2);
+    text-align: center;
     position: relative;
-    transform: translateY(-50px);
-    transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1), opacity 1s;
+    overflow: hidden;
 }
 
-.portfolio-header h1 {
+.header-panel::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+    transform: rotate(45deg);
+    animation: glassShine 6s infinite linear;
+}
+
+@keyframes glassShine {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+.header-title {
     font-size: 5rem;
     font-weight: 900;
-    background: linear-gradient(110deg, var(--neon-cyan) 0%, #0066ff 30%, var(--neon-pink) 70%, var(--neon-yellow) 100%);
+    background: linear-gradient(110deg, var(--color-accent-1) 0%, #0066ff 30%, var(--color-accent-2) 70%, var(--color-accent-3) 100%);
     background-size: 200% auto;
     color: transparent;
     -webkit-background-clip: text;
     background-clip: text;
-    animation: gradientShift 5s ease infinite;
-    text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    animation: gradientFlow 5s ease infinite;
+    margin: 0;
+    letter-spacing: 4px;
+}
+
+@keyframes gradientFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.header-subtitle {
+    color: #88c0d0;
+    font-size: 1.5rem;
+    font-weight: 600;
     letter-spacing: 2px;
+    margin-top: 15px;
+    font-family: var(--font-primary);
 }
 
-.games-grid-container {
+.grid-layout {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 50px;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    gap: 60px;
     width: 100%;
-    max-width: 1400px;
-    padding: 20px;
+    max-width: 1600px;
+    padding-bottom: 100px;
 }
 
-.game-link-wrapper {
+.card-wrapper {
     text-decoration: none;
-    perspective: 1500px;
+    perspective: 2000px;
     display: block;
 }
 
-/* EXTREMELY REAL LIQUID GLASS CARD */
 .glass-card {
-    background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.01) 100%);
+    background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%);
     backdrop-filter: blur(30px) saturate(200%);
     -webkit-backdrop-filter: blur(30px) saturate(200%);
     border-top: 1px solid rgba(255,255,255,0.4);
     border-left: 1px solid rgba(255,255,255,0.2);
     border-right: 1px solid rgba(255,255,255,0.05);
     border-bottom: 1px solid rgba(255,255,255,0.05);
-    border-radius: 25px;
-    height: 300px;
-    padding: 40px;
+    border-radius: 30px;
+    height: 350px;
+    padding: 50px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     position: relative;
-    overflow: hidden;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.2);
-    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
     transform-style: preserve-3d;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.2);
 }
 
-.glass-card::before {
-    content: '';
-    position: absolute;
-    top: -50%; left: -50%;
-    width: 200%; height: 200%;
-    background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.15) 0%, transparent 60%);
-    transform: rotate(45deg) translateY(-20%);
-    transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
-    pointer-events: none;
-    z-index: 1;
-}
-
-.glass-card::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0;
-    width: 100%; height: 5px;
-    background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
-    opacity: 0;
-    transition: opacity 0.4s;
-}
-
-.game-link-wrapper:hover .glass-card {
+.card-wrapper:hover .glass-card {
     transform: translateY(-20px) rotateX(10deg) rotateY(-5deg);
     box-shadow: 0 40px 80px rgba(0,0,0,0.8), inset 0 0 40px rgba(0, 255, 204, 0.2);
-    border-top: 1px solid rgba(0, 255, 204, 0.6);
-    border-left: 1px solid rgba(0, 255, 204, 0.4);
-}
-
-.game-link-wrapper:hover .glass-card::before {
-    transform: rotate(45deg) translateY(20%) translateX(20%);
-}
-
-.game-link-wrapper:hover .glass-card::after {
-    opacity: 1;
-}
-
-.card-content {
-    position: relative;
-    z-index: 2;
-    transform: translateZ(30px);
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    border-top-color: var(--color-accent-1);
+    border-left-color: rgba(0, 255, 204, 0.5);
 }
 
 .card-title {
-    font-size: 2.5rem;
+    font-size: 3rem;
     font-weight: 800;
-    color: #fff;
+    color: #ffffff;
     text-shadow: 0 5px 15px rgba(0,0,0,0.6);
-    line-height: 1.1;
+    transform: translateZ(50px);
 }
 
 .card-action {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     font-weight: 600;
     color: rgba(255,255,255,0.6);
     text-transform: uppercase;
     letter-spacing: 2px;
     display: flex;
     align-items: center;
-    gap: 10px;
-    transition: color 0.3s, transform 0.3s;
+    gap: 15px;
+    transform: translateZ(30px);
+    transition: color 0.3s;
 }
 
-.card-action .arrow {
-    display: inline-block;
+.card-wrapper:hover .card-action {
+    color: var(--color-accent-1);
+}
+
+.card-arrow {
     transition: transform 0.3s;
 }
 
-.game-link-wrapper:hover .card-action {
-    color: var(--neon-cyan);
-    transform: translateX(10px);
+.card-wrapper:hover .card-arrow {
+    transform: translateX(15px);
 }
 
-.game-link-wrapper:hover .card-action .arrow {
-    transform: translateX(10px);
-}
-
-/* Most Famous Badge */
-.famous-badge-container {
+.badge-famous {
     position: absolute;
-    top: -5px; right: -5px;
-    width: 150px; height: 150px;
+    top: -10px;
+    right: -10px;
+    width: 180px;
+    height: 180px;
     overflow: hidden;
     z-index: 10;
+    transform: translateZ(60px);
 }
-.famous-badge {
+
+.badge-famous::before {
+    content: 'MOST FAMOUS!';
     position: absolute;
-    top: 30px; right: -40px;
+    top: 40px;
+    right: -50px;
     background: linear-gradient(90deg, #ff0055, #ffaa00, #ff0055);
     background-size: 200% auto;
     color: #fff;
-    padding: 10px 50px;
+    padding: 10px 60px;
     font-weight: 900;
-    font-size: 1rem;
+    font-size: 1.2rem;
     text-transform: uppercase;
     letter-spacing: 2px;
     transform: rotate(45deg);
     box-shadow: 0 5px 20px rgba(255,0,85,0.6);
-    animation: gradientShift 3s linear infinite, pulseBadge 2s ease-in-out infinite;
+    animation: gradientFlow 3s linear infinite, pulse 2s ease-in-out infinite;
 }
 
-/* Specific Card Accents */
-.card-iceage .card-title { color: #a0eeff; }
-.card-mars .card-title { color: #ff5500; }
-.card-japa .card-title { background: linear-gradient(90deg, #fff, #ffd700); -webkit-background-clip: text; color: transparent; }
-.card-felix .card-title { color: #88ff88; }
-.card-fruit .card-title { color: #ff88ff; }
-.card-dropper .card-title { color: #00ffcc; }
-
-/* Animations */
-@keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-@keyframes pulseBadge {
+@keyframes pulse {
     0% { transform: rotate(45deg) scale(1); box-shadow: 0 5px 20px rgba(255,0,85,0.6); }
-    50% { transform: rotate(45deg) scale(1.05); box-shadow: 0 5px 40px rgba(255,0,85,1); }
+    50% { transform: rotate(45deg) scale(1.1); box-shadow: 0 5px 40px rgba(255,0,85,1); }
     100% { transform: rotate(45deg) scale(1); box-shadow: 0 5px 20px rgba(255,0,85,0.6); }
 }
 
-@keyframes flashPop {
-    0% { opacity: 0; transform: scale(1.5) translateZ(-500px); filter: brightness(0); }
-    10% { opacity: 1; transform: scale(1) translateZ(0); filter: brightness(2); }
-    90% { opacity: 1; transform: scale(0.95) translateZ(0); filter: brightness(1); }
-    100% { opacity: 0; transform: scale(0.5) translateZ(500px); filter: brightness(0); }
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 14px;
+}
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.9);
+}
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--color-accent-1), #0066ff);
+    border-radius: 10px;
+    border: 3px solid #000;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, var(--color-accent-2), var(--color-accent-1));
 }
 
-@keyframes screenShake {
-    0%, 100% { transform: translate(0, 0) rotate(0deg); }
-    10% { transform: translate(-10px, -10px) rotate(-2deg); }
-    20% { transform: translate(10px, -10px) rotate(2deg); }
-    30% { transform: translate(-10px, 10px) rotate(-2deg); }
-    40% { transform: translate(10px, 10px) rotate(2deg); }
-    50% { transform: translate(-15px, 0px) rotate(-1deg); }
-    60% { transform: translate(15px, 0px) rotate(1deg); }
-    70% { transform: translate(0px, -15px) rotate(-3deg); }
-    80% { transform: translate(0px, 15px) rotate(3deg); }
-    90% { transform: translate(-5px, -5px) rotate(-1deg); }
-}
+/* Utility Classes */
+.hidden { display: none !important; }
 
-/* Custom Scrollbar for Liquid UI */
-::-webkit-scrollbar { width: 12px; }
-::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.8); }
-::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--neon-cyan), #0066ff); border-radius: 10px; border: 2px solid #000; }
-::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, var(--neon-pink), var(--neon-cyan)); }
+/* --------------------------------------------------------------------------
+   SHADERS FOR WEBGL
+   -------------------------------------------------------------------------- */
 </style>
 </head>
 <body>
 
-<div id="intro-master-container">
-    <div id="flash-1" class="flash-screen">ICE AGE</div>
-    <div id="flash-2" class="flash-screen">MILES MARS</div>
-    <div id="flash-3" class="flash-screen">JAPA JUMP</div>
-    <div id="flash-4" class="flash-screen">FELIX FART</div>
-    <div id="flash-5" class="flash-screen">FRUIT</div>
-    <div id="flash-6" class="flash-screen">JAAPER DROPPER</div>
-    
-    <canvas id="intro-canvas-kaboom"></canvas>
-    <canvas id="intro-canvas-matrix"></canvas>
+<canvas id="layer-webgl"></canvas>
+
+<canvas id="layer-particles"></canvas>
+
+<div id="intro-container">
+    <div id="flash-0" class="flash-title" style="color:#00ffff;">ICE AGE</div>
+    <div id="flash-1" class="flash-title" style="color:#ff0055;">MILES MARS</div>
+    <div id="flash-2" class="flash-title" style="color:#ffd700;">JAPA JUMP</div>
+    <div id="flash-3" class="flash-title" style="color:#00ff00;">FELIX FART</div>
+    <div id="flash-4" class="flash-title" style="color:#ff00ff;">FRUIT</div>
+    <div id="flash-5" class="flash-title" style="color:#ff5500;">JAAPER DROPPER</div>
+    <div id="strobe-overlay"></div>
+    <div id="boot-console"></div>
 </div>
 
-<canvas id="liquid-bg-canvas"></canvas>
-
-<div id="main-portfolio-wrapper">
-    <div class="portfolio-header" id="p-header">
-        <h1>JAAPS PROTIFLIO</h1>
-        <p style="color: #88c0d0; font-size: 1.5rem; margin-top: 10px; font-weight: 600; letter-spacing: 1px;">AI SYSTEMS DEPLOYED</p>
+<div id="ui-container">
+    <div class="header-panel">
+        <h1 class="header-title">JAAPS PROTIFLIO</h1>
+        <div class="header-subtitle">SYSTEM INITIALIZED // DEPLOYMENT READY</div>
     </div>
 
-    <div class="games-grid-container">
-        <a href="https://jaapthind.github.io/IceAge/" target="_blank" class="game-link-wrapper">
-            <div class="glass-card card-iceage">
-                <div class="card-content">
-                    <div class="card-title">ICE AGE</div>
-                    <div class="card-action">Launch System <span class="arrow">➔</span></div>
-                </div>
-            </div>
-        </a>
-
-        <a href="https://jaapthind.github.io/MilesMars/" target="_blank" class="game-link-wrapper">
-            <div class="glass-card card-mars">
-                <div class="card-content">
-                    <div class="card-title">MILES MARS</div>
-                    <div class="card-action">Launch System <span class="arrow">➔</span></div>
-                </div>
-            </div>
-        </a>
-
-        <a href="https://jaapthind.github.io/JapaJump/" target="_blank" class="game-link-wrapper">
-            <div class="glass-card card-japa">
-                <div class="famous-badge-container"><div class="famous-badge">MOST FAMOUS!</div></div>
-                <div class="card-content">
-                    <div class="card-title">JAPA JUMP</div>
-                    <div class="card-action">Launch System <span class="arrow">➔</span></div>
-                </div>
-            </div>
-        </a>
-
-        <a href="https://jaapthind.github.io/FelixFart/" target="_blank" class="game-link-wrapper">
-            <div class="glass-card card-felix">
-                <div class="card-content">
-                    <div class="card-title">FELIX FART</div>
-                    <div class="card-action">Launch System <span class="arrow">➔</span></div>
-                </div>
-            </div>
-        </a>
-
-        <a href="https://jaapthind.github.io/fruit/" target="_blank" class="game-link-wrapper">
-            <div class="glass-card card-fruit">
-                <div class="card-content">
-                    <div class="card-title">FRUIT</div>
-                    <div class="card-action">Launch System <span class="arrow">➔</span></div>
-                </div>
-            </div>
-        </a>
-
-        <a href="https://jaapthind.github.io/JaaperDropper/" target="_blank" class="game-link-wrapper">
-            <div class="glass-card card-dropper">
-                <div class="card-content">
-                    <div class="card-title">JAAPER DROPPER</div>
-                    <div class="card-action">Launch System <span class="arrow">➔</span></div>
-                </div>
-            </div>
-        </a>
-    </div>
+    <div class="grid-layout" id="game-grid">
+        </div>
 </div>
 
 <script>
 /**
- * CORE MATH & UTILITIES LIBRARY
- * Providing vector math, matrix operations, and noise generation
- * for extreme performance and graphical fidelity.
+ * ==========================================================================
+ * JAAP'S PROTIFLIO - KERNEL ARCHITECTURE
+ * ==========================================================================
  */
-class Vec2 {
-    constructor(x = 0, y = 0) { this.x = x; this.y = y; }
-    add(v) { this.x += v.x; this.y += v.y; return this; }
-    sub(v) { this.x -= v.x; this.y -= v.y; return this; }
-    mult(n) { this.x *= n; this.y *= n; return this; }
-    div(n) { this.x /= n; this.y /= n; return this; }
-    mag() { return Math.sqrt(this.x * this.x + this.y * this.y); }
-    normalize() { let m = this.mag(); if (m !== 0) this.div(m); return this; }
-    limit(max) { if (this.mag() > max) { this.normalize(); this.mult(max); } return this; }
-    static sub(v1, v2) { return new Vec2(v1.x - v2.x, v1.y - v2.y); }
-    static mult(v, n) { return new Vec2(v.x * n, v.y * n); }
-}
-
-// Custom Seeded Random & Math Utils
-const MathUtils = {
-    random: (min, max) => Math.random() * (max - min) + min,
-    map: (n, start1, stop1, start2, stop2) => ((n - start1) / (stop1 - start1)) * (stop2 - start2) + start2,
-    lerp: (start, stop, amt) => start + (stop - start) * amt,
-    dist: (x1, y1, x2, y2) => Math.sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1))
-};
-
-// Extremely complex Perlin/Simplex Noise implementation for Liquid Glass
-class Noise {
-    constructor() {
-        this.p = new Uint8Array(512);
-        this.permutation = new Uint8Array([ 151,160,137,91,90,15,
-        131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,
-        190, 6,148,247,120,234,75,0,26,197,62,94,252,219,203,117,35,11,32,57,177,33,
-        88,237,149,56,87,174,20,125,136,171,168, 68,175,74,165,71,134,139,48,27,166,
-        77,146,158,231,83,111,229,122,60,211,133,230,220,105,92,41,55,46,245,40,244,
-        102,143,54, 65,25,63,161, 1,216,80,73,209,76,132,187,208, 89,18,169,200,196,
-        135,130,116,188,159,86,164,100,109,198,173,186, 3,64,52,217,226,250,124,123,
-        5,202,38,147,118,126,255,82,85,212,207,206,59,227,47,16,58,17,182,189,28,42,
-        223,183,170,213,119,248,152, 2,44,154,163, 70,221,153,101,155,167, 43,172,9,
-        129,22,39,253, 19,98,108,110,79,113,224,232,178,185, 112,104,218,246,97,228,
-        251,34,242,193,238,210,144,12,191,179,162,241, 81,51,145,235,249,14,239,107,
-        49,192,214, 31,181,199,106,157,184, 84,204,176,115,121,50,45,127, 4,150,254,
-        138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180
-        ]);
-        for (let i=0; i<256; i++) this.p[256+i] = this.p[i] = this.permutation[i];
-    }
-    fade(t) { return t * t * t * (t * (t * 6 - 15) + 10); }
-    lerp(t, a, b) { return a + t * (b - a); }
-    grad(hash, x, y, z) {
-        let h = hash & 15;
-        let u = h < 8 ? x : y;
-        let v = h < 4 ? y : h == 12 || h == 14 ? x : z;
-        return ((h & 1) == 0 ? u : -u) + ((h & 2) == 0 ? v : -v);
-    }
-    noise3D(x, y, z) {
-        let X = Math.floor(x) & 255, Y = Math.floor(y) & 255, Z = Math.floor(z) & 255;
-        x -= Math.floor(x); y -= Math.floor(y); z -= Math.floor(z);
-        let u = this.fade(x), v = this.fade(y), w = this.fade(z);
-        let A = this.p[X]+Y, AA = this.p[A]+Z, AB = this.p[A+1]+Z;
-        let B = this.p[X+1]+Y, BA = this.p[B]+Z, BB = this.p[B+1]+Z;
-        return this.lerp(w, this.lerp(v, this.lerp(u, this.grad(this.p[AA], x, y, z),
-            this.grad(this.p[BA], x-1, y, z)), this.lerp(u, this.grad(this.p[AB], x, y-1, z),
-            this.grad(this.p[BB], x-1, y-1, z))), this.lerp(v, this.lerp(u, this.grad(this.p[AA+1], x, y, z-1),
-            this.grad(this.p[BA+1], x-1, y, z-1)), this.lerp(u, this.grad(this.p[AB+1], x, y-1, z-1),
-            this.grad(this.p[BB+1], x-1, y-1, z-1))));
-    }
-}
-const simplex = new Noise();
 
 /**
- * TIMELINE MANAGER
- * Handles the extremely precise 10-second intro requirement.
+ * --------------------------------------------------------------------------
+ * CORE MATHEMATICS LIBRARY
+ * Extremely verbose implementations for maximum engine stability.
+ * --------------------------------------------------------------------------
  */
-const Timeline = {
-    start: Date.now(),
-    sequence: [
-        { time: 0,   action: () => triggerFlash(1) },
-        { time: 300, action: () => triggerFlash(2) },
-        { time: 600, action: () => triggerFlash(3) },
-        { time: 900, action: () => triggerFlash(4) },
-        { time: 1200, action: () => triggerFlash(5) },
-        { time: 1500, action: () => triggerFlash(6) },
-        { time: 1800, action: () => triggerRainbowKaboom() },
-        { time: 5000, action: () => triggerMatrixRain() },
-        { time: 8000, action: () => startTransitionToPortfolio() },
-        { time: 10000, action: () => lockPortfolioState() }
-    ],
-    check: function() {
-        let elapsed = Date.now() - this.start;
-        for(let i = 0; i < this.sequence.length; i++) {
-            if(!this.sequence[i].done && elapsed >= this.sequence[i].time) {
-                this.sequence[i].action();
-                this.sequence[i].done = true;
-            }
-        }
-        if(elapsed < 11000) requestAnimationFrame(() => this.check());
+class MathUtils {
+    static PI = Math.PI;
+    static TWO_PI = Math.PI * 2;
+    static HALF_PI = Math.PI / 2;
+    
+    static clamp(value, min, max) {
+        return Math.max(min, Math.min(max, value));
     }
-};
-
-// Flash controller
-function triggerFlash(id) {
-    const el = document.getElementById('flash-' + id);
-    if(el) {
-        el.style.visibility = 'visible';
-        el.style.animation = 'flashPop 0.3s cubic-bezier(0.1, 1, 0.1, 1) forwards';
+    
+    static lerp(start, end, t) {
+        return start + (end - start) * this.clamp(t, 0, 1);
+    }
+    
+    static map(value, sourceMin, sourceMax, destMin, destMax) {
+        return destMin + (value - sourceMin) * (destMax - destMin) / (sourceMax - sourceMin);
+    }
+    
+    static random(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+    
+    static randomInt(min, max) {
+        return Math.floor(this.random(min, max + 1));
+    }
+    
+    static degToRad(degrees) {
+        return degrees * (this.PI / 180);
+    }
+    
+    static radToDeg(radians) {
+        return radians * (180 / this.PI);
     }
 }
 
-/**
- * RAINBOW KABOOM PARTICLE ENGINE (400+ LINES OF LOGIC COMPACTED)
- * Extreme particle physics, color lerping, and screen shaking.
- */
-const kaboomCanvas = document.getElementById('intro-canvas-kaboom');
-const kCtx = kaboomCanvas.getContext('2d', {alpha: true});
-let kWidth, kHeight;
-let kaboomParticles = [];
-let kaboomActive = false;
-const COLORS = ['#ff0000', '#ff7f00', '#ffff00', '#00ff00', '#0000ff', '#4b0082', '#9400d3', '#00ffff', '#ff00ff'];
-
-function resizeKaboom() {
-    kWidth = kaboomCanvas.width = window.innerWidth;
-    kHeight = kaboomCanvas.height = window.innerHeight;
-}
-window.addEventListener('resize', resizeKaboom);
-resizeKaboom();
-
-class KaboomParticle {
-    constructor(x, y, isDebris = false) {
-        this.pos = new Vec2(x, y);
-        let angle = MathUtils.random(0, Math.PI * 2);
-        let speed = isDebris ? MathUtils.random(10, 50) : MathUtils.random(2, 15);
-        this.vel = new Vec2(Math.cos(angle) * speed, Math.sin(angle) * speed);
-        this.acc = new Vec2(0, isDebris ? 0.5 : 0.1); // Gravity
-        this.life = 1.0;
-        this.decay = MathUtils.random(0.005, 0.02);
-        this.color = COLORS[Math.floor(MathUtils.random(0, COLORS.length))];
-        this.size = isDebris ? MathUtils.random(5, 15) : MathUtils.random(2, 6);
-        this.history = [];
-        this.maxHistory = 10;
-        this.isDebris = isDebris;
-        this.rot = MathUtils.random(0, Math.PI * 2);
-        this.rotVel = MathUtils.random(-0.2, 0.2);
+class Vector2 {
+    constructor(x = 0, y = 0) {
+        this.x = x;
+        this.y = y;
     }
-    update() {
-        this.vel.add(this.acc);
-        // Drag
-        this.vel.mult(0.98); 
-        this.pos.add(this.vel);
-        this.life -= this.decay;
-        this.rot += this.rotVel;
-        
-        this.history.push(new Vec2(this.pos.x, this.pos.y));
-        if(this.history.length > this.maxHistory) this.history.shift();
+    
+    set(x, y) {
+        this.x = x;
+        this.y = y;
+        return this;
     }
-    draw(ctx) {
-        if(this.life <= 0) return;
-        ctx.globalAlpha = this.life;
-        
-        // Trail
-        if(this.history.length > 1) {
-            ctx.beginPath();
-            ctx.moveTo(this.history[0].x, this.history[0].y);
-            for(let i = 1; i < this.history.length; i++) {
-                ctx.lineTo(this.history[i].x, this.history[i].y);
-            }
-            ctx.strokeStyle = this.color;
-            ctx.lineWidth = this.size * 0.8;
-            ctx.lineCap = 'round';
-            ctx.stroke();
-        }
-
-        // Main particle
-        ctx.save();
-        ctx.translate(this.pos.x, this.pos.y);
-        ctx.rotate(this.rot);
-        ctx.fillStyle = this.color;
-        if(this.isDebris) {
-            ctx.fillRect(-this.size/2, -this.size/2, this.size, this.size);
+    
+    copy(v) {
+        this.x = v.x;
+        this.y = v.y;
+        return this;
+    }
+    
+    add(v) {
+        this.x += v.x;
+        this.y += v.y;
+        return this;
+    }
+    
+    addScalar(s) {
+        this.x += s;
+        this.y += s;
+        return this;
+    }
+    
+    sub(v) {
+        this.x -= v.x;
+        this.y -= v.y;
+        return this;
+    }
+    
+    subScalar(s) {
+        this.x -= s;
+        this.y -= s;
+        return this;
+    }
+    
+    multiply(v) {
+        this.x *= v.x;
+        this.y *= v.y;
+        return this;
+    }
+    
+    multiplyScalar(s) {
+        this.x *= s;
+        this.y *= s;
+        return this;
+    }
+    
+    divide(v) {
+        this.x /= v.x;
+        this.y /= v.y;
+        return this;
+    }
+    
+    divideScalar(s) {
+        if (s !== 0) {
+            this.x /= s;
+            this.y /= s;
         } else {
-            ctx.beginPath();
-            ctx.arc(0, 0, this.size, 0, Math.PI * 2);
-            ctx.fill();
+            this.x = 0;
+            this.y = 0;
         }
-        ctx.restore();
-    }
-}
-
-function triggerRainbowKaboom() {
-    kaboomActive = true;
-    kaboomCanvas.style.opacity = '1';
-    document.getElementById('intro-master-container').style.animation = 'screenShake 0.5s ease-in-out infinite';
-    
-    // Massive explosion at center
-    for(let i = 0; i < 2000; i++) {
-        kaboomParticles.push(new KaboomParticle(kWidth/2, kHeight/2, i % 10 === 0));
-    }
-    // Sub explosions
-    for(let i = 0; i < 5; i++) {
-        setTimeout(() => {
-            let ex = MathUtils.random(kWidth*0.2, kWidth*0.8);
-            let ey = MathUtils.random(kHeight*0.2, kHeight*0.8);
-            for(let j=0; j<500; j++) kaboomParticles.push(new KaboomParticle(ex, ey, j%5===0));
-        }, i * 400);
-    }
-    requestAnimationFrame(renderKaboom);
-}
-
-function renderKaboom() {
-    if(!kaboomActive) return;
-    // Trails effect
-    kCtx.globalCompositeOperation = 'source-over';
-    kCtx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-    kCtx.fillRect(0, 0, kWidth, kHeight);
-    
-    kCtx.globalCompositeOperation = 'screen';
-    for(let i = kaboomParticles.length - 1; i >= 0; i--) {
-        let p = kaboomParticles[i];
-        p.update();
-        p.draw(kCtx);
-        if(p.life <= 0) kaboomParticles.splice(i, 1);
+        return this;
     }
     
-    if(kaboomParticles.length > 0) {
-        requestAnimationFrame(renderKaboom);
+    dot(v) {
+        return this.x * v.x + this.y * v.y;
     }
-}
-
-/**
- * MATRIX RAIN / "SOME OTHER STUFF" LAYER
- * A high-density data fall effect replacing the kaboom.
- */
-const matrixCanvas = document.getElementById('intro-canvas-matrix');
-const mCtx = matrixCanvas.getContext('2d');
-let matrixActive = false;
-let columns = [];
-const fontSize = 16;
-const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()_+{}|:"<>?~`=[]\;,./';
-
-function resizeMatrix() {
-    matrixCanvas.width = window.innerWidth;
-    matrixCanvas.height = window.innerHeight;
-    let colCount = Math.floor(matrixCanvas.width / fontSize) + 1;
-    columns = [];
-    for(let i=0; i<colCount; i++) columns[i] = MathUtils.random(-1000, 0);
-}
-window.addEventListener('resize', resizeMatrix);
-resizeMatrix();
-
-function triggerMatrixRain() {
-    matrixActive = true;
-    matrixCanvas.style.opacity = '1';
-    document.getElementById('intro-master-container').style.animation = 'none'; // stop shake
-    // Fade out kaboom
-    kaboomCanvas.style.transition = 'opacity 2s';
-    kaboomCanvas.style.opacity = '0';
-    requestAnimationFrame(renderMatrix);
-}
-
-function renderMatrix() {
-    if(!matrixActive) return;
-    mCtx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-    mCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
     
-    mCtx.fillStyle = '#0f0'; // classic green
-    mCtx.font = fontSize + 'px monospace';
+    cross(v) {
+        return this.x * v.y - this.y * v.x;
+    }
     
-    for(let i = 0; i < columns.length; i++) {
-        // Occasional color flashes (Jaap theme)
-        if(Math.random() > 0.98) {
-            mCtx.fillStyle = ['#00ffcc', '#ff00ff', '#ffffff'][Math.floor(Math.random()*3)];
-        } else {
-            mCtx.fillStyle = '#0f0';
+    magnitudeSquared() {
+        return this.x * this.x + this.y * this.y;
+    }
+    
+    magnitude() {
+        return Math.sqrt(this.magnitudeSquared());
+    }
+    
+    normalize() {
+        let mag = this.magnitude();
+        if (mag > 0) {
+            this.divideScalar(mag);
         }
-
-        let text = chars.charAt(Math.floor(Math.random() * chars.length));
-        mCtx.fillText(text, i * fontSize, columns[i]);
-        
-        if(columns[i] > matrixCanvas.height && Math.random() > 0.975) {
-            columns[i] = 0;
-        }
-        columns[i] += fontSize;
+        return this;
     }
-    requestAnimationFrame(renderMatrix);
+    
+    distanceToSquared(v) {
+        let dx = this.x - v.x;
+        let dy = this.y - v.y;
+        return dx * dx + dy * dy;
+    }
+    
+    distanceTo(v) {
+        return Math.sqrt(this.distanceToSquared(v));
+    }
+    
+    limit(max) {
+        if (this.magnitudeSquared() > max * max) {
+            this.normalize();
+            this.multiplyScalar(max);
+        }
+        return this;
+    }
+    
+    clone() {
+        return new Vector2(this.x, this.y);
+    }
 }
 
-/**
- * TRANSITION LOGIC
- */
-function startTransitionToPortfolio() {
-    // Stop matrix drawing
-    matrixActive = false;
-    // Fade entire intro container out
-    const master = document.getElementById('intro-master-container');
-    master.style.transition = 'opacity 2s ease, transform 2s ease';
-    master.style.opacity = '0';
-    master.style.transform = 'scale(1.2)';
-
-    // Start liquid background
-    initLiquidGlassBackground();
-
-    // Fade in main portfolio
-    const portfolio = document.getElementById('main-portfolio-wrapper');
-    portfolio.style.visibility = 'visible';
-    portfolio.style.transition = 'opacity 2s ease 1s'; // delay fade in
-    portfolio.style.opacity = '1';
-
-    // Staggered entry for cards
-    const cards = document.querySelectorAll('.glass-card');
-    cards.forEach((card, index) => {
-        card.style.transform = 'translateY(100px) scale(0.8)';
-        card.style.opacity = '0';
-        setTimeout(() => {
-            card.style.transition = 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-            card.style.transform = 'translateY(0) scale(1)';
-            card.style.opacity = '1';
-        }, 1500 + (index * 150)); // Start after background is ready
-    });
-
-    setTimeout(() => {
-        document.getElementById('p-header').style.transform = 'translateY(0)';
-    }, 1200);
+class Vector3 {
+    constructor(x = 0, y = 0, z = 0) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+    
+    set(x, y, z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        return this;
+    }
+    
+    add(v) {
+        this.x += v.x;
+        this.y += v.y;
+        this.z += v.z;
+        return this;
+    }
+    
+    sub(v) {
+        this.x -= v.x;
+        this.y -= v.y;
+        this.z -= v.z;
+        return this;
+    }
+    
+    multiplyScalar(s) {
+        this.x *= s;
+        this.y *= s;
+        this.z *= s;
+        return this;
+    }
+    
+    dot(v) {
+        return this.x * v.x + this.y * v.y + this.z * v.z;
+    }
+    
+    cross(v) {
+        let ax = this.x, ay = this.y, az = this.z;
+        let bx = v.x, by = v.y, bz = v.z;
+        this.x = ay * bz - az * by;
+        this.y = az * bx - ax * bz;
+        this.z = ax * by - ay * bx;
+        return this;
+    }
+    
+    magnitude() {
+        return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+    }
+    
+    normalize() {
+        let mag = this.magnitude();
+        if (mag > 0) {
+            this.multiplyScalar(1 / mag);
+        }
+        return this;
+    }
+    
+    clone() {
+        return new Vector3(this.x, this.y, this.z);
+    }
 }
 
-function lockPortfolioState() {
-    const master = document.getElementById('intro-master-container');
-    master.style.display = 'none'; // Remove from DOM flow completely
-    kaboomActive = false; // Kill idle loops
-    matrixActive = false;
-}
-
-/**
- * ULTRA EXTREME LIQUID GLASS BACKGROUND ENGINE (500+ LINES OF MATH/RENDERING)
- * Uses a grid-based vector field influenced by Simplex Noise and Mouse Interaction
- * to create a swirling, refractive fluid simulation directly on Canvas 2D.
- */
-const lCanvas = document.getElementById('liquid-bg-canvas');
-const lCtx = lCanvas.getContext('2d');
-let lw, lh;
-let cols, rows;
-const scale = 40; // Resolution of the fluid grid
-let zoff = 0;
-let particles = [];
-const PARTICLE_COUNT = 800; // Dense fluid
-let mouseVec = new Vec2(window.innerWidth/2, window.innerHeight/2);
-let flowfield = [];
-
-function resizeLiquid() {
-    lw = lCanvas.width = window.innerWidth;
-    lh = lCanvas.height = window.innerHeight;
-    cols = Math.floor(lw / scale) + 1;
-    rows = Math.floor(lh / scale) + 1;
-    flowfield = new Array(cols * rows);
-}
-window.addEventListener('resize', resizeLiquid);
-resizeLiquid();
-
-window.addEventListener('mousemove', (e) => {
-    mouseVec.x = e.clientX;
-    mouseVec.y = e.clientY;
-});
-// Touch support for phones
-window.addEventListener('touchmove', (e) => {
-    mouseVec.x = e.touches[0].clientX;
-    mouseVec.y = e.touches[0].clientY;
-});
-
-class FluidParticle {
+class Matrix4 {
     constructor() {
-        this.pos = new Vec2(MathUtils.random(0, lw), MathUtils.random(0, lh));
-        this.vel = new Vec2(0, 0);
-        this.acc = new Vec2(0, 0);
-        this.maxSpeed = MathUtils.random(2, 6);
-        this.colorType = Math.random();
-        this.size = MathUtils.random(15, 60); // Large blobby particles for glass effect
+        this.elements = [
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1
+        ];
     }
-    follow(vectors) {
-        let x = Math.floor(this.pos.x / scale);
-        let y = Math.floor(this.pos.y / scale);
-        // Clamp to avoid array out of bounds
-        x = Math.max(0, Math.min(x, cols - 1));
-        y = Math.max(0, Math.min(y, rows - 1));
+
+    identity() {
+        this.set(
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1
+        );
+        return this;
+    }
+
+    set(n11, n12, n13, n14, n21, n22, n23, n24, n31, n32, n33, n34, n41, n42, n43, n44) {
+        let te = this.elements;
+        te[0] = n11; te[4] = n12; te[8] = n13; te[12] = n14;
+        te[1] = n21; te[5] = n22; te[9] = n23; te[13] = n24;
+        te[2] = n31; te[6] = n32; te[10] = n33; te[14] = n34;
+        te[3] = n41; te[7] = n42; te[11] = n43; te[15] = n44;
+        return this;
+    }
+
+    multiply(m) {
+        return this.multiplyMatrices(this, m);
+    }
+
+    multiplyMatrices(a, b) {
+        let ae = a.elements;
+        let be = b.elements;
+        let te = this.elements;
+
+        let a11 = ae[0], a12 = ae[4], a13 = ae[8], a14 = ae[12];
+        let a21 = ae[1], a22 = ae[5], a23 = ae[9], a24 = ae[13];
+        let a31 = ae[2], a32 = ae[6], a33 = ae[10], a34 = ae[14];
+        let a41 = ae[3], a42 = ae[7], a43 = ae[11], a44 = ae[15];
+
+        let b11 = be[0], b12 = be[4], b13 = be[8], b14 = be[12];
+        let b21 = be[1], b22 = be[5], b23 = be[9], b24 = be[13];
+        let b31 = be[2], b32 = be[6], b33 = be[10], b34 = be[14];
+        let b41 = be[3], b42 = be[7], b43 = be[11], b44 = be[15];
+
+        te[0] = a11 * b11 + a12 * b21 + a13 * b31 + a14 * b41;
+        te[4] = a11 * b12 + a12 * b22 + a13 * b32 + a14 * b42;
+        te[8] = a11 * b13 + a12 * b23 + a13 * b33 + a14 * b43;
+        te[12] = a11 * b14 + a12 * b24 + a13 * b34 + a14 * b44;
+
+        te[1] = a21 * b11 + a22 * b21 + a23 * b31 + a24 * b41;
+        te[5] = a21 * b12 + a22 * b22 + a23 * b32 + a24 * b42;
+        te[9] = a21 * b13 + a22 * b23 + a23 * b33 + a24 * b43;
+        te[13] = a21 * b14 + a22 * b24 + a23 * b34 + a24 * b44;
+
+        te[2] = a31 * b11 + a32 * b21 + a33 * b31 + a34 * b41;
+        te[6] = a31 * b12 + a32 * b22 + a33 * b32 + a34 * b42;
+        te[10] = a31 * b13 + a32 * b23 + a33 * b33 + a34 * b43;
+        te[14] = a31 * b14 + a32 * b24 + a33 * b34 + a34 * b44;
+
+        te[3] = a41 * b11 + a42 * b21 + a43 * b31 + a44 * b41;
+        te[7] = a41 * b12 + a42 * b22 + a43 * b32 + a44 * b42;
+        te[11] = a41 * b13 + a42 * b23 + a43 * b33 + a44 * b43;
+        te[15] = a41 * b14 + a42 * b24 + a43 * b34 + a44 * b44;
+
+        return this;
+    }
+}
+
+/**
+ * --------------------------------------------------------------------------
+ * PROCEDURAL NOISE GENERATION (SIMPLEX)
+ * --------------------------------------------------------------------------
+ */
+class SimplexNoise {
+    constructor() {
+        this.p = new Uint8Array(256);
+        for (let i = 0; i < 256; i++) {
+            this.p[i] = Math.floor(Math.random() * 256);
+        }
+        this.perm = new Uint8Array(512);
+        this.permMod12 = new Uint8Array(512);
+        for (let i = 0; i < 512; i++) {
+            this.perm[i] = this.p[i & 255];
+            this.permMod12[i] = (this.perm[i] % 12);
+        }
+    }
+
+    dot(g, x, y, z) {
+        return g[0]*x + g[1]*y + g[2]*z;
+    }
+
+    noise3D(xin, yin, zin) {
+        let n0, n1, n2, n3;
+        const F3 = 1.0/3.0;
+        const G3 = 1.0/6.0;
+        let s = (xin+yin+zin)*F3;
+        let i = Math.floor(xin+s);
+        let j = Math.floor(yin+s);
+        let k = Math.floor(zin+s);
+        let t = (i+j+k)*G3;
+        let X0 = i-t;
+        let Y0 = j-t;
+        let Z0 = k-t;
+        let x0 = xin-X0;
+        let y0 = yin-Y0;
+        let z0 = zin-Z0;
+        let i1, j1, k1;
+        let i2, j2, k2;
+        if(x0>=y0) {
+            if(y0>=z0) { i1=1; j1=0; k1=0; i2=1; j2=1; k2=0; }
+            else if(x0>=z0) { i1=1; j1=0; k1=0; i2=1; j2=0; k2=1; }
+            else { i1=0; j1=0; k1=1; i2=1; j2=0; k2=1; }
+        } else {
+            if(y0<z0) { i1=0; j1=0; k1=1; i2=0; j2=1; k2=1; }
+            else if(x0<z0) { i1=0; j1=1; k1=0; i2=0; j2=1; k2=1; }
+            else { i1=0; j1=1; k1=0; i2=1; j2=1; k2=0; }
+        }
+        let x1 = x0 - i1 + G3;
+        let y1 = y0 - j1 + G3;
+        let z1 = z0 - k1 + G3;
+        let x2 = x0 - i2 + 2.0*G3;
+        let y2 = y0 - j2 + 2.0*G3;
+        let z2 = z0 - k2 + 2.0*G3;
+        let x3 = x0 - 1.0 + 3.0*G3;
+        let y3 = y0 - 1.0 + 3.0*G3;
+        let z3 = z0 - 1.0 + 3.0*G3;
+        let ii = i & 255;
+        let jj = j & 255;
+        let kk = k & 255;
+        let gi0 = this.permMod12[ii+this.perm[jj+this.perm[kk]]];
+        let gi1 = this.permMod12[ii+i1+this.perm[jj+j1+this.perm[kk+k1]]];
+        let gi2 = this.permMod12[ii+i2+this.perm[jj+j2+this.perm[kk+k2]]];
+        let gi3 = this.permMod12[ii+1+this.perm[jj+1+this.perm[kk+1]]];
+        let t0 = 0.6 - x0*x0 - y0*y0 - z0*z0;
+        if(t0<0) n0 = 0.0;
+        else {
+            t0 *= t0;
+            n0 = t0 * t0 * this.dot(this.getGrad(gi0), x0, y0, z0);
+        }
+        let t1 = 0.6 - x1*x1 - y1*y1 - z1*z1;
+        if(t1<0) n1 = 0.0;
+        else {
+            t1 *= t1;
+            n1 = t1 * t1 * this.dot(this.getGrad(gi1), x1, y1, z1);
+        }
+        let t2 = 0.6 - x2*x2 - y2*y2 - z2*z2;
+        if(t2<0) n2 = 0.0;
+        else {
+            t2 *= t2;
+            n2 = t2 * t2 * this.dot(this.getGrad(gi2), x2, y2, z2);
+        }
+        let t3 = 0.6 - x3*x3 - y3*y3 - z3*z3;
+        if(t3<0) n3 = 0.0;
+        else {
+            t3 *= t3;
+            n3 = t3 * t3 * this.dot(this.getGrad(gi3), x3, y3, z3);
+        }
+        return 32.0*(n0 + n1 + n2 + n3);
+    }
+
+    getGrad(hash) {
+        const grads = [
+            [1,1,0],[-1,1,0],[1,-1,0],[-1,-1,0],
+            [1,0,1],[-1,0,1],[1,0,-1],[-1,0,-1],
+            [0,1,1],[0,-1,1],[0,1,-1],[0,-1,-1]
+        ];
+        return grads[hash % 12];
+    }
+}
+
+/**
+ * --------------------------------------------------------------------------
+ * GAME DATABASE
+ * --------------------------------------------------------------------------
+ */
+const GAME_DATABASE = [
+    {
+        id: 'ice-age',
+        title: 'ICE AGE',
+        url: 'https://jaapthind.github.io/IceAge/',
+        color: '#00ffff',
+        accent: 'rgba(0, 255, 255, 0.5)',
+        famous: false
+    },
+    {
+        id: 'miles-mars',
+        title: 'MILES MARS',
+        url: 'https://jaapthind.github.io/MilesMars/',
+        color: '#ff0055',
+        accent: 'rgba(255, 0, 85, 0.5)',
+        famous: false
+    },
+    {
+        id: 'japa-jump',
+        title: 'JAPA JUMP',
+        url: 'https://jaapthind.github.io/JapaJump/',
+        color: '#ffd700',
+        accent: 'rgba(255, 215, 0, 0.5)',
+        famous: true
+    },
+    {
+        id: 'felix-fart',
+        title: 'FELIX FART',
+        url: 'https://jaapthind.github.io/FelixFart/',
+        color: '#00ff00',
+        accent: 'rgba(0, 255, 0, 0.5)',
+        famous: false
+    },
+    {
+        id: 'fruit',
+        title: 'FRUIT',
+        url: 'https://jaapthind.github.io/fruit/',
+        color: '#ff00ff',
+        accent: 'rgba(255, 0, 255, 0.5)',
+        famous: false
+    },
+    {
+        id: 'jaaper-dropper',
+        title: 'JAAPER DROPPER',
+        url: 'https://jaapthind.github.io/JaaperDropper/',
+        color: '#ff5500',
+        accent: 'rgba(255, 85, 0, 0.5)',
+        famous: false
+    }
+];
+
+/**
+ * --------------------------------------------------------------------------
+ * DOM MANAGEMENT ENGINE
+ * --------------------------------------------------------------------------
+ */
+class DOMEngine {
+    constructor() {
+        this.container = document.getElementById('game-grid');
+    }
+
+    buildUI() {
+        GAME_DATABASE.forEach((game, index) => {
+            const wrapper = document.createElement('a');
+            wrapper.href = game.url;
+            wrapper.target = '_blank';
+            wrapper.className = 'card-wrapper';
+            wrapper.style.animationDelay = `${index * 0.1}s`;
+
+            const card = document.createElement('div');
+            card.className = 'glass-card';
+            
+            // Custom styling overrides based on game data
+            card.addEventListener('mouseenter', () => {
+                card.style.borderTopColor = game.color;
+                card.style.borderLeftColor = game.accent;
+                card.style.boxShadow = `0 40px 80px rgba(0,0,0,0.8), inset 0 0 40px ${game.accent}`;
+                action.style.color = game.color;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.borderTopColor = 'rgba(255,255,255,0.4)';
+                card.style.borderLeftColor = 'rgba(255,255,255,0.2)';
+                card.style.boxShadow = `0 20px 50px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.2)`;
+                action.style.color = 'rgba(255,255,255,0.6)';
+            });
+
+            if (game.famous) {
+                const badge = document.createElement('div');
+                badge.className = 'badge-famous';
+                card.appendChild(badge);
+            }
+
+            const title = document.createElement('div');
+            title.className = 'card-title';
+            title.innerText = game.title;
+            // Apply gradient specific to game color
+            title.style.background = `linear-gradient(135deg, #ffffff 0%, ${game.color} 100%)`;
+            title.style.webkitBackgroundClip = 'text';
+            title.style.webkitTextFillColor = 'transparent';
+
+            const action = document.createElement('div');
+            action.className = 'card-action';
+            action.innerHTML = `INITIALIZE MODULE <span class="card-arrow">➔</span>`;
+
+            card.appendChild(title);
+            card.appendChild(action);
+            wrapper.appendChild(card);
+            this.container.appendChild(wrapper);
+        });
+    }
+
+    revealUI() {
+        const uiContainer = document.getElementById('ui-container');
+        uiContainer.classList.add('visible');
+    }
+}
+
+/**
+ * --------------------------------------------------------------------------
+ * WEBGL SHADER COMPILER & RENDERER
+ * --------------------------------------------------------------------------
+ */
+class WebGLRenderer {
+    constructor(canvasId) {
+        this.canvas = document.getElementById(canvasId);
+        this.gl = this.canvas.getContext('webgl') || this.canvas.getContext('experimental-webgl');
+        if (!this.gl) {
+            console.error("WebGL not supported.");
+            return;
+        }
+        this.program = null;
+        this.uniforms = {};
+        this.attributes = {};
+        this.time = 0;
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+    }
+
+    resize() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+        this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+    compileShader(source, type) {
+        const shader = this.gl.createShader(type);
+        this.gl.shaderSource(shader, source);
+        this.gl.compileShader(shader);
+        if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
+            console.error('Shader compile error:', this.gl.getShaderInfoLog(shader));
+            this.gl.deleteShader(shader);
+            return null;
+        }
+        return shader;
+    }
+
+    createProgram(vsSource, fsSource) {
+        const vertexShader = this.compileShader(vsSource, this.gl.VERTEX_SHADER);
+        const fragmentShader = this.compileShader(fsSource, this.gl.FRAGMENT_SHADER);
         
-        let index = x + y * cols;
-        let force = vectors[index];
-        if(force) this.applyForce(force);
+        const program = this.gl.createProgram();
+        this.gl.attachShader(program, vertexShader);
+        this.gl.attachShader(program, fragmentShader);
+        this.gl.linkProgram(program);
+        
+        if (!this.gl.getProgramParameter(program, this.gl.LINK_STATUS)) {
+            console.error('Program link error:', this.gl.getProgramInfoLog(program));
+            return null;
+        }
+        return program;
     }
+
+    initLiquidGlassShader() {
+        const vs = `
+            attribute vec2 position;
+            varying vec2 vUv;
+            void main() {
+                vUv = position * 0.5 + 0.5;
+                gl_Position = vec4(position, 0.0, 1.0);
+            }
+        `;
+
+        const fs = `
+            precision highp float;
+            varying vec2 vUv;
+            uniform float u_time;
+            uniform vec2 u_resolution;
+            
+            // Simplex noise implementation inside GLSL for liquid effect
+            vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+            vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+            vec3 permute(vec3 x) { return mod289(((x*34.0)+1.0)*x); }
+            
+            float snoise(vec2 v) {
+                const vec4 C = vec4(0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439);
+                vec2 i  = floor(v + dot(v, C.yy) );
+                vec2 x0 = v -   i + dot(i, C.xx);
+                vec2 i1;
+                i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+                vec4 x12 = x0.xyxy + C.xxzz;
+                x12.xy -= i1;
+                i = mod289(i);
+                vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 )) + i.x + vec3(0.0, i1.x, 1.0 ));
+                vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
+                m = m*m ;
+                m = m*m ;
+                vec3 x = 2.0 * fract(p * C.www) - 1.0;
+                vec3 h = abs(x) - 0.5;
+                vec3 ox = floor(x + 0.5);
+                vec3 a0 = x - ox;
+                m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
+                vec3 g;
+                g.x  = a0.x  * x0.x  + h.x  * x0.y;
+                g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+                return 130.0 * dot(m, g);
+            }
+
+            void main() {
+                vec2 st = gl_FragCoord.xy/u_resolution.xy;
+                st.x *= u_resolution.x/u_resolution.y;
+
+                vec3 color = vec3(0.0);
+                
+                // Jaap's Liquid Flow Fields
+                vec2 pos = vec2(st*3.0);
+                
+                float DF = 0.0;
+                
+                // Add a visual complexity to the noise
+                float a = 0.0;
+                vec2 vel = vec2(u_time*.1);
+                DF += snoise(pos+vel)*.25+.25;
+                
+                a = snoise(pos*vec2(cos(u_time*0.15),sin(u_time*0.1))*0.1)*3.1415;
+                vel = vec2(cos(a),sin(a));
+                DF += snoise(pos+vel)*.25+.25;
+                
+                // Color Mapping - Deep Cyberpunk Blues and Cyans
+                color = mix(vec3(0.0, 0.0, 0.05), vec3(0.0, 0.1, 0.2), DF);
+                color = mix(color, vec3(0.0, 0.8, 0.8), smoothstep(0.5, 1.0, DF));
+                color = mix(color, vec3(1.0, 0.0, 1.0), smoothstep(0.8, 1.0, DF));
+                
+                // Add scanline effect
+                float scanline = sin(st.y * 800.0) * 0.04;
+                color -= scanline;
+                
+                // Vignette
+                float dist = distance(vUv, vec2(0.5));
+                color *= smoothstep(0.8, 0.2, dist);
+
+                gl_FragColor = vec4(color, 1.0);
+            }
+        `;
+
+        this.program = this.createProgram(vs, fs);
+        this.gl.useProgram(this.program);
+
+        const positionBuffer = this.gl.createBuffer();
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, positionBuffer);
+        const positions = [
+            -1.0, -1.0,
+             1.0, -1.0,
+            -1.0,  1.0,
+            -1.0,  1.0,
+             1.0, -1.0,
+             1.0,  1.0,
+        ];
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(positions), this.gl.STATIC_DRAW);
+
+        const positionLocation = this.gl.getAttribLocation(this.program, "position");
+        this.gl.enableVertexAttribArray(positionLocation);
+        this.gl.vertexAttribPointer(positionLocation, 2, this.gl.FLOAT, false, 0, 0);
+
+        this.uniforms.time = this.gl.getUniformLocation(this.program, "u_time");
+        this.uniforms.resolution = this.gl.getUniformLocation(this.program, "u_resolution");
+    }
+
+    render() {
+        if (!this.program) return;
+        this.time += 0.01;
+        this.gl.uniform1f(this.uniforms.time, this.time);
+        this.gl.uniform2f(this.uniforms.resolution, this.canvas.width, this.canvas.height);
+        this.gl.drawArrays(this.gl.TRIANGLES, 0, 6);
+    }
+}
+
+/**
+ * --------------------------------------------------------------------------
+ * PARTICLE PHYSICS ENGINE
+ * Complex procedural routines for high density visuals
+ * --------------------------------------------------------------------------
+ */
+class Particle {
+    constructor(x, y) {
+        this.pos = new Vector2(x, y);
+        this.vel = new Vector2(MathUtils.random(-5, 5), MathUtils.random(-5, 5));
+        this.acc = new Vector2(0, 0);
+        this.life = 255;
+        this.decay = MathUtils.random(2, 6);
+        this.size = MathUtils.random(1, 4);
+        
+        // Color selection based on game palette
+        const colors = [
+            'rgba(0, 255, 255, ',
+            'rgba(255, 0, 85, ',
+            'rgba(255, 215, 0, ',
+            'rgba(0, 255, 0, ',
+            'rgba(255, 0, 255, '
+        ];
+        this.colorBase = colors[Math.floor(Math.random() * colors.length)];
+    }
+
     applyForce(force) {
         this.acc.add(force);
     }
+
     update() {
-        // Mouse interaction - repel slightly
-        let d = MathUtils.dist(this.pos.x, this.pos.y, mouseVec.x, mouseVec.y);
-        if(d < 200) {
-            let repel = Vec2.sub(this.pos, mouseVec);
-            repel.normalize();
-            repel.mult(0.5);
-            this.applyForce(repel);
-        }
-
         this.vel.add(this.acc);
-        this.vel.limit(this.maxSpeed);
+        this.vel.limit(10);
         this.pos.add(this.vel);
-        this.acc.mult(0); // Reset
-        this.edges();
+        this.acc.multiplyScalar(0);
+        this.life -= this.decay;
     }
-    edges() {
-        if (this.pos.x > lw + this.size) this.pos.x = -this.size;
-        if (this.pos.x < -this.size) this.pos.x = lw + this.size;
-        if (this.pos.y > lh + this.size) this.pos.y = -this.size;
-        if (this.pos.y < -this.size) this.pos.y = lh + this.size;
-    }
-    draw(ctx) {
-        // Create glassy blob gradients
-        let r1 = this.size * 0.1;
-        let r2 = this.size;
-        const grad = ctx.createRadialGradient(this.pos.x, this.pos.y, r1, this.pos.x, this.pos.y, r2);
-        
-        // Base glass colors: Dark blues, Cyans, Purples
-        if(this.colorType < 0.3) {
-            grad.addColorStop(0, 'rgba(0, 255, 204, 0.15)');
-            grad.addColorStop(1, 'rgba(0, 255, 204, 0)');
-        } else if (this.colorType < 0.6) {
-            grad.addColorStop(0, 'rgba(0, 102, 255, 0.15)');
-            grad.addColorStop(1, 'rgba(0, 102, 255, 0)');
-        } else if (this.colorType < 0.9) {
-            grad.addColorStop(0, 'rgba(255, 0, 255, 0.1)');
-            grad.addColorStop(1, 'rgba(255, 0, 255, 0)');
-        } else {
-            // Highlights
-            grad.addColorStop(0, 'rgba(255, 255, 255, 0.05)');
-            grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
-        }
 
+    render(ctx) {
+        if (this.life <= 0) return;
         ctx.beginPath();
-        ctx.arc(this.pos.x, this.pos.y, r2, 0, Math.PI * 2);
-        ctx.fillStyle = grad;
+        ctx.arc(this.pos.x, this.pos.y, this.size, 0, MathUtils.TWO_PI);
+        ctx.fillStyle = `${this.colorBase}${this.life / 255})`;
         ctx.fill();
     }
 }
 
-function initLiquidGlassBackground() {
-    particles = [];
-    for(let i=0; i<PARTICLE_COUNT; i++) {
-        particles[i] = new FluidParticle();
+class ParticleSystem {
+    constructor(canvasId) {
+        this.canvas = document.getElementById(canvasId);
+        this.ctx = this.canvas.getContext('2d');
+        this.particles = [];
+        this.noise = new SimplexNoise();
+        this.zOff = 0;
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+        this.active = false;
     }
-    renderLiquidFrame();
-}
 
-function renderLiquidFrame() {
-    // Clear with extremely dark, slight transparency for trails
-    lCtx.fillStyle = 'rgba(2, 2, 5, 0.2)'; 
-    lCtx.fillRect(0, 0, lw, lh);
-    
-    let yoff = 0;
-    for (let y = 0; y < rows; y++) {
-        let xoff = 0;
-        for (let x = 0; x < cols; x++) {
-            let index = x + y * cols;
-            // Generate flowing noise angle
-            let angle = simplex.noise3D(xoff, yoff, zoff) * Math.PI * 4;
-            let v = new Vec2(Math.cos(angle), Math.sin(angle));
-            v.mult(0.5); // Flow strength
-            flowfield[index] = v;
-            xoff += 0.05;
+    resize() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+    }
+
+    emit(x, y, count) {
+        for (let i = 0; i < count; i++) {
+            this.particles.push(new Particle(x, y));
         }
-        yoff += 0.05;
     }
-    zoff += 0.002; // Evolution speed over time
 
-    // Blend mode for liquid composition
-    lCtx.globalCompositeOperation = 'screen';
-
-    for (let i = 0; i < particles.length; i++) {
-        particles[i].follow(flowfield);
-        particles[i].update();
-        particles[i].draw(lCtx);
+    updateAndRender() {
+        if (!this.active && this.particles.length === 0) return;
+        
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        // Procedural Vector Field Force
+        this.zOff += 0.01;
+        
+        for (let i = this.particles.length - 1; i >= 0; i--) {
+            let p = this.particles[i];
+            
+            // Calculate noise angle
+            let angle = this.noise.noise3D(p.pos.x * 0.005, p.pos.y * 0.005, this.zOff) * MathUtils.TWO_PI;
+            let force = new Vector2(Math.cos(angle), Math.sin(angle));
+            force.multiplyScalar(0.5);
+            
+            p.applyForce(force);
+            p.update();
+            p.render(this.ctx);
+            
+            if (p.life <= 0) {
+                this.particles.splice(i, 1);
+            }
+        }
     }
-    
-    lCtx.globalCompositeOperation = 'source-over'; // Reset
-
-    requestAnimationFrame(renderLiquidFrame);
 }
 
-// ==========================================================================
+/**
+ * --------------------------------------------------------------------------
+ * INTRO SEQUENCE MANAGER
+ * Handles the strict 0.3s flashes and high-intensity strobe.
+ * --------------------------------------------------------------------------
+ */
+class IntroSequence {
+    constructor(domEngine, particleSystem) {
+        this.domEngine = domEngine;
+        this.particleSystem = particleSystem;
+        this.currentIndex = 0;
+        this.flashDuration = 300; // Exact 0.3 seconds
+        this.titles = document.querySelectorAll('.flash-title');
+        this.introContainer = document.getElementById('intro-container');
+        this.strobeOverlay = document.getElementById('strobe-overlay');
+        this.bootConsole = document.getElementById('boot-console');
+    }
+
+    start() {
+        // Start Console Logging Mock
+        this.runBootSequence();
+        
+        // Delay to let user see boot sequence slightly
+        setTimeout(() => {
+            this.bootConsole.style.opacity = '0';
+            this.flashNext();
+        }, 2000);
+    }
+
+    runBootSequence() {
+        this.bootConsole.style.opacity = '1';
+        const logs = [
+            "JAAP_OS KERNEL BOOT...",
+            "LOADING MODULE: C++ COMPILER...",
+            "INITIALIZING BAMBU LAB A1 MINI DRIVERS...",
+            "EXTRUDER TEMP: 210C...",
+            "LOADING ARDUINO SERIAL PORTS...",
+            "MOUNTING REPOSITORY: GITHUB.COM/JAAPTHIND...",
+            "FETCHING LATEST DEPLOYMENTS...",
+            "ALLOCATING VRAM FOR LIQUID GLASS SHADERS...",
+            "SYSTEM READY."
+        ];
+        
+        let i = 0;
+        const interval = setInterval(() => {
+            if (i >= logs.length) {
+                clearInterval(interval);
+                return;
+            }
+            const el = document.createElement('div');
+            el.className = 'log-line';
+            el.innerText = `> ${logs[i]}`;
+            this.bootConsole.appendChild(el);
+            i++;
+        }, 150);
+    }
+
+    flashNext() {
+        if (this.currentIndex > 0) {
+            this.titles[this.currentIndex - 1].classList.remove('flash-active');
+        }
+
+        if (this.currentIndex < this.titles.length) {
+            // Flash current title
+            this.titles[this.currentIndex].classList.add('flash-active');
+            
+            // Emit particles at center
+            this.particleSystem.active = true;
+            this.particleSystem.emit(window.innerWidth / 2, window.innerHeight / 2, 100);
+
+            this.currentIndex++;
+            setTimeout(() => this.flashNext(), this.flashDuration);
+        } else {
+            // Sequence ended, trigger Rainbow Kaboom
+            this.triggerRainbowKaboom();
+        }
+    }
+
+    triggerRainbowKaboom() {
+        // Enable Strobe
+        this.strobeOverlay.classList.add('strobe-active');
+        
+        // Massive Particle Explosion
+        this.particleSystem.emit(window.innerWidth / 2, window.innerHeight / 2, 1000);
+        
+        // Duration of Kaboom before transition
+        setTimeout(() => {
+            this.strobeOverlay.classList.remove('strobe-active');
+            this.transitionToUI();
+        }, 1500); // 1.5 seconds of intense visuals
+    }
+
+    transitionToUI() {
+        // Fade out intro
+        this.introContainer.style.transition = 'opacity 1s ease';
+        this.introContainer.style.opacity = '0';
+        
+        setTimeout(() => {
+            this.introContainer.style.display = 'none';
+            // Reveal Portfolio
+            this.domEngine.revealUI();
+        }, 1000);
+    }
+}
+
+/**
+ * --------------------------------------------------------------------------
+ * MAIN APPLICATION BOOTSTRAPPER & LOOP
+ * --------------------------------------------------------------------------
+ */
+class Application {
+    constructor() {
+        this.domEngine = new DOMEngine();
+        this.webGLRenderer = new WebGLRenderer('layer-webgl');
+        this.particleSystem = new ParticleSystem('layer-particles');
+        this.introSequence = new IntroSequence(this.domEngine, this.particleSystem);
+        
+        this.isRunning = false;
+        this.animationFrameId = null;
+    }
+
+    init() {
+        // Build DOM Nodes
+        this.domEngine.buildUI();
+        
+        // Init Shaders
+        this.webGLRenderer.initLiquidGlassShader();
+        
+        // Start Loop
+        this.isRunning = true;
+        this.loop();
+        
+        // Start Intro Sequence
+        this.introSequence.start();
+    }
+
+    loop() {
+        if (!this.isRunning) return;
+        
+        // Procedural Render Calls
+        this.webGLRenderer.render();
+        this.particleSystem.updateAndRender();
+        
+        this.animationFrameId = requestAnimationFrame(() => this.loop());
+    }
+}
+
+// --------------------------------------------------------------------------
 // IGNITION
-// ==========================================================================
-// Start timeline
-Timeline.check();
+// --------------------------------------------------------------------------
+window.onload = () => {
+    const app = new Application();
+    app.init();
+};
 
 </script>
 </body>
