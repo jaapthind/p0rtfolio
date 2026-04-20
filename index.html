@@ -3,49 +3,39 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Jaaps Protiflio | Advanced Deployment Architecture</title>
+<title>JAAP_OS // ENTERPRISE PROTFOLIO KERNEL</title>
 <style>
 /* ==========================================================================
-   CSS ENTERPRISE ARCHITECTURE
+   ENTERPRISE CSS ARCHITECTURE
    ========================================================================== */
-
 :root {
-    --sys-color-bg-base: #020204;
+    --sys-color-black: #000000;
+    --sys-color-bg-base: #030305;
     --sys-color-bg-surface: #0a0a10;
-    --sys-color-bg-panel: rgba(15, 20, 30, 0.45);
+    --sys-color-bg-panel: rgba(10, 15, 20, 0.65);
     
-    --sys-color-accent-primary: #00ffff;
-    --sys-color-accent-secondary: #ff0055;
-    --sys-color-accent-tertiary: #ffd700;
-    --sys-color-accent-quaternary: #00ff00;
-    --sys-color-accent-quinary: #ff00ff;
-    --sys-color-accent-senary: #ff5500;
+    --sys-color-accent-ice: #00ffff;
+    --sys-color-accent-mars: #ff0055;
+    --sys-color-accent-japa: #ffd700;
+    --sys-color-accent-felix: #00ff00;
+    --sys-color-accent-fruit: #ff00ff;
+    --sys-color-accent-drop: #ff5500;
     
     --sys-color-text-primary: #ffffff;
-    --sys-color-text-secondary: #a0a0b0;
+    --sys-color-text-secondary: #888899;
     --sys-color-text-console: #00ffcc;
     --sys-color-text-error: #ff3333;
     --sys-color-text-warn: #ffcc00;
     
-    --sys-font-primary: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    --sys-font-console: 'Consolas', 'Monaco', 'Courier New', monospace;
+    --sys-font-primary: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --sys-font-console: 'Consolas', 'Courier New', monospace;
     
-    --sys-spacing-xs: 4px;
-    --sys-spacing-sm: 8px;
-    --sys-spacing-md: 16px;
-    --sys-spacing-lg: 32px;
-    --sys-spacing-xl: 64px;
-    
-    --sys-border-radius-sm: 8px;
-    --sys-border-radius-md: 16px;
-    --sys-border-radius-lg: 32px;
-    
-    --sys-z-index-background: 0;
-    --sys-z-index-canvas: 10;
-    --sys-z-index-ui: 100;
-    --sys-z-index-overlay: 1000;
-    --sys-z-index-flash: 10000;
-    --sys-z-index-strobe: 20000;
+    --sys-z-bg: 0;
+    --sys-z-canvas: 10;
+    --sys-z-ui: 100;
+    --sys-z-hud: 500;
+    --sys-z-flash: 1000;
+    --sys-z-strobe: 2000;
 }
 
 *, *::before, *::after {
@@ -64,12 +54,10 @@ html, body {
     font-family: var(--sys-font-primary);
     overflow: hidden;
     perspective: 2000px;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
 }
 
 /* --------------------------------------------------------------------------
-   CANVAS RENDERING LAYERS
+   CANVAS LAYERS
    -------------------------------------------------------------------------- */
 .sys-canvas-layer {
     position: absolute;
@@ -78,362 +66,283 @@ html, body {
     width: 100vw;
     height: 100vh;
     pointer-events: none;
-    transform-style: preserve-3d;
 }
 
-#canvas-liquid-glass {
-    z-index: var(--sys-z-index-background);
-    filter: blur(4px) contrast(1.2);
+#canvas-liquid-glass { z-index: var(--sys-z-bg); filter: blur(8px) contrast(1.5); }
+#canvas-matrix { z-index: var(--sys-z-canvas); mix-blend-mode: screen; opacity: 0; }
+
+/* --------------------------------------------------------------------------
+   INTRO SEQUENCE
+   -------------------------------------------------------------------------- */
+#intro-master {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: var(--sys-z-flash);
+    background-color: var(--sys-color-black);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    transition: opacity 1.5s ease-in-out;
 }
 
-#canvas-matrix-stream {
-    z-index: var(--sys-z-index-canvas);
+.flash-title {
+    position: absolute;
+    font-family: var(--sys-font-console);
+    font-size: 10vw;
+    font-weight: 900;
+    text-transform: uppercase;
+    text-align: center;
+    opacity: 0;
+    visibility: hidden;
+    color: transparent;
+    transform: scale(1.2) translateZ(0);
+    will-change: transform, opacity;
+}
+
+.flash-title.active {
+    visibility: visible;
+    opacity: 1;
+    transform: scale(1) translateZ(100px);
+    animation: chromaticAberration 0.3s ease-out forwards;
+}
+
+@keyframes chromaticAberration {
+    0% { filter: blur(10px) brightness(2); transform: scale(1.5); }
+    100% { filter: blur(0px) brightness(1); transform: scale(1); }
+}
+
+/* Specific Outlines */
+#title-0 { -webkit-text-stroke: 2px var(--sys-color-accent-ice); text-shadow: 0 0 50px var(--sys-color-accent-ice); }
+#title-1 { -webkit-text-stroke: 2px var(--sys-color-accent-mars); text-shadow: 0 0 50px var(--sys-color-accent-mars); }
+#title-2 { -webkit-text-stroke: 2px var(--sys-color-accent-japa); text-shadow: 0 0 50px var(--sys-color-accent-japa); }
+#title-3 { -webkit-text-stroke: 2px var(--sys-color-accent-felix); text-shadow: 0 0 50px var(--sys-color-accent-felix); }
+#title-4 { -webkit-text-stroke: 2px var(--sys-color-accent-fruit); text-shadow: 0 0 50px var(--sys-color-accent-fruit); }
+#title-5 { -webkit-text-stroke: 2px var(--sys-color-accent-drop); text-shadow: 0 0 50px var(--sys-color-accent-drop); }
+
+/* Strobe */
+#strobe-layer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: var(--sys-z-strobe);
+    pointer-events: none;
     opacity: 0;
     mix-blend-mode: screen;
 }
 
-#canvas-diagnostics {
-    z-index: calc(var(--sys-z-index-canvas) + 1);
-    opacity: 0;
-}
-
 /* --------------------------------------------------------------------------
-   HIGH-FIDELITY INTRO SEQUENCE
+   TERMINAL HUD
    -------------------------------------------------------------------------- */
-#container-intro-sequence {
-    position: fixed;
+#terminal-hud {
+    position: absolute;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: var(--sys-z-index-flash);
-    background-color: var(--sys-color-bg-base);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    transition: opacity 1.5s cubic-bezier(0.19, 1, 0.22, 1);
-}
-
-.title-card {
-    position: absolute;
-    font-family: var(--sys-font-console);
-    font-size: 12vw;
-    font-weight: 900;
-    text-transform: uppercase;
-    text-align: center;
-    letter-spacing: -2px;
-    color: transparent;
-    opacity: 0;
-    visibility: hidden;
-    transform: scale(1.1) translateZ(0);
-    will-change: transform, opacity, filter;
-    text-shadow: 0 0 0 transparent;
-}
-
-.title-card.active {
-    visibility: visible;
-    opacity: 1;
-    transform: scale(1) translateZ(50px);
-}
-
-/* Title Card Specific Colors */
-#title-0 { -webkit-text-stroke: 2px var(--sys-color-accent-primary); text-shadow: 0 0 50px var(--sys-color-accent-primary); }
-#title-1 { -webkit-text-stroke: 2px var(--sys-color-accent-secondary); text-shadow: 0 0 50px var(--sys-color-accent-secondary); }
-#title-2 { -webkit-text-stroke: 2px var(--sys-color-accent-tertiary); text-shadow: 0 0 50px var(--sys-color-accent-tertiary); }
-#title-3 { -webkit-text-stroke: 2px var(--sys-color-accent-quaternary); text-shadow: 0 0 50px var(--sys-color-accent-quaternary); }
-#title-4 { -webkit-text-stroke: 2px var(--sys-color-accent-quinary); text-shadow: 0 0 50px var(--sys-color-accent-quinary); }
-#title-5 { -webkit-text-stroke: 2px var(--sys-color-accent-senary); text-shadow: 0 0 50px var(--sys-color-accent-senary); }
-
-#container-strobe {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: var(--sys-z-index-strobe);
-    background-color: transparent;
-    pointer-events: none;
-    opacity: 0;
-    mix-blend-mode: color-dodge;
-}
-
-.strobe-active {
-    opacity: 1 !important;
-}
-
-/* --------------------------------------------------------------------------
-   DIAGNOSTIC HUD & CONSOLE
-   -------------------------------------------------------------------------- */
-#hud-diagnostics {
-    position: absolute;
-    top: var(--sys-spacing-xl);
-    left: var(--sys-spacing-xl);
-    width: 600px;
-    height: auto;
-    max-height: 80vh;
-    z-index: var(--sys-z-index-overlay);
+    z-index: var(--sys-z-hud);
     font-family: var(--sys-font-console);
     font-size: 14px;
     color: var(--sys-color-text-console);
-    text-shadow: 0 0 5px rgba(0, 255, 204, 0.5);
+    padding: 40px;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-    opacity: 0;
+    justify-content: flex-end;
     pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(circle at center, transparent 0%, rgba(0,25,0,0.4) 100%);
+    text-shadow: 0 0 4px var(--sys-color-text-console);
 }
 
-.hud-line {
+.term-line {
     margin: 2px 0;
-    white-space: pre;
-    line-height: 1.2;
+    line-height: 1.4;
+    white-space: pre-wrap;
+    word-wrap: break-word;
 }
 
-.hud-warn { color: var(--sys-color-text-warn); }
-.hud-err { color: var(--sys-color-text-error); }
-.hud-ascii { font-size: 10px; line-height: 10px; margin-bottom: 20px; color: var(--sys-color-accent-quinary); }
+.term-ascii {
+    white-space: pre;
+    font-size: 10px;
+    line-height: 10px;
+    color: var(--sys-color-accent-fruit);
+    margin-bottom: 20px;
+}
+
+.color-err { color: var(--sys-color-text-error); }
+.color-warn { color: var(--sys-color-text-warn); }
+.color-ok { color: var(--sys-color-accent-felix); }
 
 /* --------------------------------------------------------------------------
-   MAIN UI ARCHITECTURE
+   MAIN UI - RESPONSIVE FIX
    -------------------------------------------------------------------------- */
-#container-main-ui {
+#main-ui-wrapper {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: var(--sys-z-index-ui);
-    padding: var(--sys-spacing-xl) var(--sys-spacing-lg);
+    z-index: var(--sys-z-ui);
     overflow-y: auto;
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 60px 20px;
     opacity: 0;
     visibility: hidden;
-    transform: translateZ(-200px);
-    transition: opacity 1.5s cubic-bezier(0.19, 1, 0.22, 1), transform 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+    transform: translateZ(-300px);
+    transition: opacity 2s cubic-bezier(0.19, 1, 0.22, 1), transform 2s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
-#container-main-ui.ui-visible {
+#main-ui-wrapper.visible {
     opacity: 1;
     visibility: visible;
     transform: translateZ(0);
 }
 
-.ui-header-module {
+.ui-header {
     background: var(--sys-color-bg-panel);
-    backdrop-filter: blur(50px) saturate(200%);
-    -webkit-backdrop-filter: blur(50px) saturate(200%);
-    border: 1px solid rgba(255,255,255,0.05);
-    border-top: 1px solid rgba(255,255,255,0.2);
-    border-radius: var(--sys-border-radius-lg);
-    padding: var(--sys-spacing-xl) 100px;
-    margin-bottom: 100px;
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 24px;
+    padding: 40px 5vw;
+    margin-bottom: 60px;
+    width: 100%;
+    max-width: 1400px;
     text-align: center;
-    box-shadow: 0 40px 100px rgba(0,0,0,0.8), inset 0 2px 10px rgba(255,255,255,0.1);
-    position: relative;
-    overflow: hidden;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
-.ui-header-module::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.05) 0%, transparent 50%);
-    pointer-events: none;
-    animation: headerPulse 8s infinite alternate;
-}
-
-@keyframes headerPulse {
-    0% { transform: scale(1) translate(0, 0); }
-    100% { transform: scale(1.2) translate(5%, 5%); }
-}
-
-.header-primary-text {
-    font-size: 5rem;
+/* FIXED PORTFOLIO TRUNCATION */
+.header-title {
+    font-size: clamp(2rem, 8vw, 6rem);
     font-weight: 900;
-    background: linear-gradient(90deg, var(--sys-color-accent-primary), var(--sys-color-accent-quinary), var(--sys-color-accent-tertiary));
+    text-transform: uppercase;
+    white-space: nowrap; /* Prevents wrapping/truncation */
+    overflow: visible;
+    background: linear-gradient(90deg, var(--sys-color-accent-ice), var(--sys-color-accent-fruit), var(--sys-color-accent-japa));
     background-size: 200% auto;
     color: transparent;
     -webkit-background-clip: text;
     background-clip: text;
-    animation: gradientShift 6s linear infinite;
-    letter-spacing: 5px;
-    margin-bottom: var(--sys-spacing-sm);
-    text-transform: uppercase;
+    animation: gradientFlow 5s linear infinite;
+    letter-spacing: clamp(2px, 1vw, 8px);
+    margin-bottom: 10px;
 }
 
-@keyframes gradientShift {
+@keyframes gradientFlow {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
 }
 
-.header-secondary-text {
+.header-subtitle {
     font-family: var(--sys-font-console);
-    font-size: 1.2rem;
+    font-size: clamp(0.8rem, 2vw, 1.2rem);
     color: var(--sys-color-text-secondary);
-    letter-spacing: 3px;
-    text-transform: uppercase;
+    letter-spacing: 4px;
 }
 
-/* --------------------------------------------------------------------------
-   GRID SYSTEM & GLASS CARDS
-   -------------------------------------------------------------------------- */
-.ui-grid-system {
+.game-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: var(--sys-spacing-xl);
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 40px;
     width: 100%;
-    max-width: 1800px;
-    padding-bottom: 150px;
+    max-width: 1400px;
+    padding-bottom: 100px;
 }
 
-.card-container {
-    text-decoration: none;
-    perspective: 2000px;
-    display: block;
-    outline: none;
-}
-
-.glass-card-component {
-    background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
-    backdrop-filter: blur(40px);
-    -webkit-backdrop-filter: blur(40px);
-    border-radius: var(--sys-border-radius-lg);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-top: 1px solid rgba(255,255,255,0.25);
-    border-left: 1px solid rgba(255,255,255,0.15);
-    height: 400px;
-    padding: var(--sys-spacing-xl);
+.glass-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.01));
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 40px;
+    height: 380px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    position: relative;
+    text-decoration: none;
     transform-style: preserve-3d;
-    transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1), 
-                box-shadow 0.6s cubic-bezier(0.165, 0.84, 0.44, 1),
-                border-color 0.6s ease;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.6), inset 0 0 0 transparent;
+    transition: transform 0.5s ease, box-shadow 0.5s ease, border-color 0.5s ease;
+    position: relative;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.5);
 }
 
-.card-container:hover .glass-card-component {
-    transform: translateY(-25px) rotateX(8deg) rotateY(-4deg);
-    box-shadow: 0 50px 100px rgba(0,0,0,0.9), inset 0 0 30px rgba(255,255,255,0.05);
-}
-
-.glass-card-component::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 4px;
-    background: transparent;
-    transition: background 0.6s ease;
-    border-bottom-left-radius: var(--sys-border-radius-lg);
-    border-bottom-right-radius: var(--sys-border-radius-lg);
+.glass-card:hover {
+    transform: translateY(-15px) rotateX(5deg);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.8);
 }
 
 .card-title {
-    font-size: 3.5rem;
+    font-size: 2.5rem;
     font-weight: 800;
     color: var(--sys-color-text-primary);
-    transform: translateZ(60px);
-    text-shadow: 0 10px 30px rgba(0,0,0,0.8);
-    line-height: 1.1;
-    margin-bottom: var(--sys-spacing-md);
+    transform: translateZ(40px);
 }
 
-.card-metadata {
+.card-meta {
     font-family: var(--sys-font-console);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: var(--sys-color-text-secondary);
-    transform: translateZ(40px);
+    transform: translateZ(20px);
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 4px;
 }
 
-.card-action-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    transform: translateZ(50px);
-    margin-top: auto;
-    border-top: 1px solid rgba(255,255,255,0.1);
-    padding-top: var(--sys-spacing-md);
-}
-
-.action-text {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: var(--sys-color-text-secondary);
-    letter-spacing: 2px;
-    transition: color 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.action-icon {
-    font-family: var(--sys-font-console);
-    transition: transform 0.3s ease;
-}
-
-.card-container:hover .action-text {
-    color: var(--sys-color-text-primary);
-}
-
-.card-container:hover .action-icon {
-    transform: translateX(15px);
-}
-
-/* Badge System */
-.badge-container {
-    position: absolute;
-    top: -15px;
-    right: -15px;
-    width: 200px;
-    height: 200px;
-    overflow: hidden;
-    z-index: 20;
-    transform: translateZ(80px);
-    pointer-events: none;
-}
-
-.badge-ribbon {
-    position: absolute;
-    top: 45px;
-    right: -60px;
-    background: linear-gradient(90deg, #ff0055, #ffaa00, #ff0055);
-    background-size: 200% auto;
-    color: #ffffff;
-    padding: 12px 60px;
-    font-weight: 900;
+.card-action {
     font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--sys-color-text-secondary);
     text-transform: uppercase;
-    letter-spacing: 3px;
-    transform: rotate(45deg);
-    box-shadow: 0 10px 30px rgba(255,0,85,0.8);
-    animation: gradientShift 3s linear infinite;
-    text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    letter-spacing: 2px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 20px;
+    transform: translateZ(30px);
+    transition: color 0.3s;
 }
 
-/* Scrollbar Customization */
-::-webkit-scrollbar { width: 12px; }
-::-webkit-scrollbar-track { background: var(--sys-color-bg-base); }
-::-webkit-scrollbar-thumb { 
-    background: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05)); 
-    border-radius: 10px; 
-    border: 2px solid var(--sys-color-bg-base);
+.glass-card:hover .card-action { color: var(--sys-color-text-primary); }
+
+.famous-badge {
+    position: absolute;
+    top: 20px;
+    right: -40px;
+    background: linear-gradient(90deg, #ff0055, #ffaa00);
+    padding: 8px 50px;
+    font-weight: 900;
+    font-size: 0.9rem;
+    color: white;
+    transform: rotate(45deg) translateZ(50px);
+    box-shadow: 0 5px 15px rgba(255,0,85,0.5);
+    animation: pulseBadge 2s infinite;
 }
+
+@keyframes pulseBadge {
+    0% { box-shadow: 0 5px 15px rgba(255,0,85,0.5); }
+    50% { box-shadow: 0 5px 30px rgba(255,0,85,1); }
+    100% { box-shadow: 0 5px 15px rgba(255,0,85,0.5); }
+}
+
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--sys-color-bg-base); }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 5px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
 
 </style>
@@ -441,199 +350,229 @@ html, body {
 <body>
 
 <canvas id="canvas-liquid-glass" class="sys-canvas-layer"></canvas>
-<canvas id="canvas-matrix-stream" class="sys-canvas-layer"></canvas>
-<canvas id="canvas-diagnostics" class="sys-canvas-layer"></canvas>
+<canvas id="canvas-matrix" class="sys-canvas-layer"></canvas>
 
-<div id="container-strobe"></div>
-<div id="container-intro-sequence">
-    <div id="title-0" class="title-card">ICE AGE</div>
-    <div id="title-1" class="title-card">MILES MARS</div>
-    <div id="title-2" class="title-card">JAPA JUMP</div>
-    <div id="title-3" class="title-card">FELIX FART</div>
-    <div id="title-4" class="title-card">FRUIT</div>
-    <div id="title-5" class="title-card">JAAPER DROPPER</div>
+<div id="strobe-layer"></div>
+<div id="intro-master">
+    <div id="title-0" class="flash-title">ICE AGE</div>
+    <div id="title-1" class="flash-title">MILES MARS</div>
+    <div id="title-2" class="flash-title">JAPA JUMP</div>
+    <div id="title-3" class="flash-title">FELIX FART</div>
+    <div id="title-4" class="flash-title">FRUIT</div>
+    <div id="title-5" class="flash-title">JAAPER DROPPER</div>
 </div>
+<div id="terminal-hud"></div>
 
-<div id="hud-diagnostics"></div>
-
-<div id="container-main-ui">
-    <header class="ui-header-module">
-        <h1 class="header-primary-text">JAAPS PROTIFLIO</h1>
-        <div class="header-secondary-text">ENTERPRISE AI DEPLOYMENT NODE // V_9.9.4</div>
+<div id="main-ui-wrapper">
+    <header class="ui-header">
+        <h1 class="header-title">JAAPS PROTIFLIO</h1>
+        <div class="header-subtitle">ENTERPRISE CORE ENGINE v9.9.4 // INITIALIZED</div>
     </header>
-    <main class="ui-grid-system" id="dynamic-grid-mount"></main>
+    <main class="game-grid" id="grid-container"></main>
 </div>
 
 <script>
 /**
- * ==========================================================================
- * JAAPS PROTIFLIO - ENTERPRISE CORE ENGINE
- * ==========================================================================
- * Provides multi-threaded simulation architecture, high-precision timing,
- * object-oriented data management, and WebGL-equivalent rendering contexts.
+ * ============================================================================
+ * JAAP_OS: ENTERPRISE CORE FRAMEWORK
+ * ============================================================================
+ * @author Jaap Singh Thind
+ * @version 9.9.4
+ * @description Massive, uncompromising architectural rebuild of the portfolio.
+ * Features state machines, rigorous OOP math libraries, localized string dictionaries,
+ * extensive hardware diagnostic simulations, and high-fidelity intro sequencing.
+ * ============================================================================
  */
 
-'use strict';
+"use strict";
 
 /**
- * MODULE 1: GLOBAL CONSTANTS & CONFIGURATIONS
- * Exhaustive system parameters for engine initialization.
+ * ----------------------------------------------------------------------------
+ * PART 1: ENTERPRISE CONFIGURATION & DICTIONARIES
+ * ----------------------------------------------------------------------------
+ */
+
+/**
+ * Global Configuration Object
+ * @type {Object}
  */
 const SYS_CONFIG = {
-    ENGINE_VERSION: '9.9.4-STABLE',
-    AUTHOR: 'Jaap Singh Thind',
-    TIMING_FLASH_DURATION_MS: 300,
-    TIMING_STROBE_DURATION_MS: 1200,
-    TIMING_MATRIX_DURATION_MS: 4000,
-    PHYSICS_GRAVITY: 9.81,
-    PHYSICS_DRAG: 0.98,
-    PARTICLE_DENSITY_HIGH: 2000,
-    PARTICLE_DENSITY_LOW: 500,
-    MATRIX_CHAR_SIZE: 16,
-    DEBUG_MODE: false
-};
-
-/**
- * MODULE 2: MULTI-LANGUAGE LOCALIZATION TABLES
- * Professional grade string management for system events.
- */
-const I18N_REGISTRY = {
-    EN: {
-        BOOT_SEQ_01: "[SYS] INITIALIZING KERNEL MODULES...",
-        BOOT_SEQ_02: "[SYS] MOUNTING VFS PARITY DRIVES...",
-        BOOT_SEQ_03: "[SYS] ALLOCATING NEURAL NETWORK VRAM...",
-        BOOT_SEQ_04: "[SYS] COMPILING C++ BINARIES FOR TARGET ENVIRONMENT...",
-        BOOT_SEQ_05: "[WARN] THERMAL THROTTLING DETECTED IN SECTOR 7G",
-        BOOT_SEQ_06: "[SYS] RESOLVING DEPENDENCIES...",
-        BOOT_SEQ_07: "[SYS] DEPLOYING AI ASSETS TO EDGE NODES...",
-        BOOT_SEQ_08: "[SYS] HANDSHAKE ESTABLISHED WITH GITHUB.IO",
-        BOOT_SEQ_09: "[OK] ALL SYSTEMS NOMINAL. ENTERING USER SPACE.",
-        ACTION_LAUNCH: "INITIALIZE PROTOCOL",
-        BADGE_FAMOUS: "MOST FAMOUS!"
+    VERSION: "9.9.4-PROD",
+    DEBUG_LOGGING: false,
+    TIMING: {
+        FLASH_INTERVAL_MS: 300,
+        STROBE_DURATION_MS: 1500,
+        BOOT_DURATION_MS: 6700,
+        TOTAL_MIN_INTRO_MS: 10000
     },
-    JA: {
-        BOOT_SEQ_01: "[SYS] カーネルモジュールを初期化中...",
-        BOOT_SEQ_02: "[SYS] VFSパリティドライブをマウント中...",
-        BOOT_SEQ_03: "[SYS] ニューラルネットワークVRAMを割り当て中...",
-        BOOT_SEQ_04: "[SYS] ターゲット環境向けにC++バイナリをコンパイル中...",
-        BOOT_SEQ_05: "[WARN] セクター7Gでサーマルスロットリングを検出",
-        BOOT_SEQ_06: "[SYS] 依存関係を解決中...",
-        BOOT_SEQ_07: "[SYS] エッジノードにAIアセットをデプロイ中...",
-        BOOT_SEQ_08: "[SYS] GITHUB.IOとのハンドシェイクが確立されました",
-        BOOT_SEQ_09: "[OK] 全システム正常。ユーザースペースに移行します。",
-        ACTION_LAUNCH: "プロトコルを初期化",
-        BADGE_FAMOUS: "最も有名！"
+    RENDER: {
+        MATRIX_FONT_SIZE: 14,
+        LIQUID_PARTICLE_COUNT: 45
+    },
+    PHYSICS: {
+        GRAVITY: 9.81,
+        DRAG: 0.99,
+        TIMESTEP: 1 / 60
     }
 };
 
 /**
- * MODULE 3: ASCII ASSET DICTIONARY
- * Detailed technical representations for boot sequences.
+ * Enterprise Internationalization (i18n) Dictionary
+ * Provides multi-locale string management for terminal logs and UI components.
+ * @type {Object}
  */
-const ASCII_ARCHIVES = {
-    MOTHERBOARD: `
-       .-----------------------------------------------------------.
-      /  +---------------------------------------------------+  /|
-     /  /|                                                   | / |
-    /  / |  [CPU] Intel/AMD Architecture Compatible        |/  |
-   /  /  |  [RAM] 128GB DDR5 ECC Registered                |   |
-  /  /   |  [GPU] Dual Tensor Core Matrix Accelerators     |   |
- /  /    |                                                   |   |
-/  +---------------------------------------------------+  /    |
-+-------------------------------------------------------+      |
-|  SYS_BOARD_ID: JAAP_CORE_V9.9                         |      |
-|  STATUS: ONLINE & SYNCHRONIZED                        |      /
-|  POWER: 1200W PLATINUM RATED                          |     /
-+-------------------------------------------------------+    /
+const I18N = {
+    EN: {
+        BOOT_00: "[KERNEL] INITIATING SECURE BOOT PROTOCOL...",
+        BOOT_01: "[SYS] ALLOCATING MEMORY BLOCKS [====================] 100%",
+        BOOT_02: "[SYS] MOUNTING VIRTUAL FILE SYSTEMS (VFS)... OK.",
+        BOOT_03: "[SYS] LOADING C++ RUNTIME DEPENDENCIES... OK.",
+        BOOT_04: "[WARN] THERMAL THROTTLING DETECTED ON GPU 0. COMPENSATING...",
+        BOOT_05: "[SYS] ESTABLISHING SECURE CONNECTION TO GITHUB.IO...",
+        BOOT_06: "[SYS] PARSING PORTFOLIO METADATA REPOSITORIES...",
+        BOOT_07: "[OK] HANDSHAKE SUCCESSFUL. SSL CERTIFICATE VALID.",
+        BOOT_08: "[SYS] INITIALIZING NEURAL MATRIX RENDERING ENGINE...",
+        BOOT_09: "[OK] JAAP_OS DEPLOYMENT READY. ENTERING USER SPACE.",
+        UI_LAUNCH: "INITIALIZE MODULE",
+        UI_FAMOUS: "MOST FAMOUS!"
+    },
+    JP: {
+        BOOT_00: "[カーネル] セキュアブートプロトコルを開始中...",
+        BOOT_01: "[システム] メモリブロックを割り当て中 [====================] 100%",
+        BOOT_02: "[システム] 仮想ファイルシステム(VFS)をマウント中... 完了。",
+        BOOT_03: "[システム] C++ランタイム依存関係をロード中... 完了。",
+        BOOT_04: "[警告] GPU 0でサーマルスロットリングを検出。補正中...",
+        BOOT_05: "[システム] GITHUB.IOへのセキュア接続を確立中...",
+        BOOT_06: "[システム] ポートフォリオのメタデータリポジトリを解析中...",
+        BOOT_07: "[成功] ハンドシェイク完了。SSL証明書は有効です。",
+        BOOT_08: "[システム] ニューラルマトリックスレンダリングエンジンを初期化中...",
+        BOOT_09: "[成功] JAAP_OSデプロイ準備完了。ユーザースペースに移行します。",
+        UI_LAUNCH: "モジュールを初期化",
+        UI_FAMOUS: "最も有名！"
+    },
+    ES: {
+        BOOT_00: "[KERNEL] INICIANDO PROTOCOLO DE ARRANQUE SEGURO...",
+        BOOT_01: "[SYS] ASIGNANDO BLOQUES DE MEMORIA [====================] 100%",
+        BOOT_02: "[SYS] MONTANDO SISTEMAS DE ARCHIVOS VIRTUALES (VFS)... OK.",
+        BOOT_03: "[SYS] CARGANDO DEPENDENCIAS DE TIEMPO DE EJECUCIÓN C++... OK.",
+        BOOT_04: "[WARN] ACELERACIÓN TÉRMICA DETECTADA EN GPU 0. COMPENSANDO...",
+        BOOT_05: "[SYS] ESTABLECIENDO CONEXIÓN SEGURA A GITHUB.IO...",
+        BOOT_06: "[SYS] ANALIZANDO REPOSITORIOS DE METADATOS DEL PORTAFOLIO...",
+        BOOT_07: "[OK] APRETÓN DE MANOS EXITOSO. CERTIFICADO SSL VÁLIDO.",
+        BOOT_08: "[SYS] INICIALIZANDO MOTOR DE RENDERIZADO DE MATRIZ NEURAL...",
+        BOOT_09: "[OK] DESPLIEGUE DE JAAP_OS LISTO. ENTRANDO AL ESPACIO DE USUARIO.",
+        UI_LAUNCH: "INICIALIZAR MÓDULO",
+        UI_FAMOUS: "¡MÁS FAMOSO!"
+    }
+};
+
+/**
+ * Active language configuration
+ * @type {string}
+ */
+const CURRENT_LOCALE = "EN";
+
+/**
+ * Massive ASCII Art Dictionary
+ * Hard-coded diagnostics and system representations.
+ * @type {Object}
+ */
+const ASCII_ART = {
+    JAAP_LOGO: `
+      :::::::::::   :::     :::     :::::::::      ::::::::   ::::::::
+         :+:      :+: :+:   :+: :+:   :+:    :+:    :+:    :+: :+:    :+:
+         +:+     +:+   +:+  +:+   +:+ +:+    +:+    +:+    +:+ +:+
+         +#+    +#++:++#++: +#++:++#++: +#++:++#+     +#+    +:+ +#++:++#++
+         +#+    +#+     +#+ +#+     +#+ +#+           +#+    +#+        +#+
+     #+# #+#    #+#     #+# #+#     #+# #+#           #+#    #+# #+#    #+#
+      #####     ###     ### ###     ### ###            ########   ########
     `,
-    AI_CORE: `
-         ,A.
-        /   \\
-       /     \\
-      /       \\
-     /  (o o)  \\
-    /  (  _  )  \\
-   /    \\___/    \\
-  /_______________\\
-  [ NEURAL ENGINE ]
+    SYSTEM_DIAG: `
+    [ SYSTEM ARCHITECTURE TOPOLOGY ]
+    +---------------------------------------------------+
+    |  CPU: QUANTUM THREAD PROCESSOR v9                 |
+    |  MEM: 256TB ECC OPTICAL                           |
+    |  GPU: DUAL TENSOR CORE MATRIX ACCELERATOR         |
+    |  NET: GIGABIT FIBER OPTIC UPLINK                  |
+    +---------------------------------------------------+
+    |  OS: JAAP_OS KERNEL                               |
+    |  BUILD: 9.9.4-PROD                                |
+    +---------------------------------------------------+
     `
 };
 
 /**
- * MODULE 4: EXTENSIVE METADATA & INVENTORY REGISTRY
- * Detailed object structures representing the target projects.
+ * ----------------------------------------------------------------------------
+ * PART 2: DATABASE & INVENTORY METADATA
+ * ----------------------------------------------------------------------------
  */
-class GameMetadata {
+
+/**
+ * Formal definition of an Inventory Item / Game Node
+ */
+class PortfolioNode {
     /**
-     * Constructs a formal metadata object.
-     * @param {string} id Unique identifier
-     * @param {string} title Display name
-     * @param {string} url Target href
-     * @param {string} hexColor Base branding color
-     * @param {boolean} isFamous Flag for special UI treatment
-     * @param {string} engine Underlying technology stack
-     * @param {string} build Compilation version
+     * @param {string} id Unique Node ID
+     * @param {string} title Display Name
+     * @param {string} url Target Endpoint
+     * @param {string} hex Primary Branding Color
+     * @param {boolean} famous Special Highlight Flag
+     * @param {string} engine Underlying Tech Stack
+     * @param {number} memory Simulated Memory Footprint
      */
-    constructor(id, title, url, hexColor, isFamous, engine, build) {
-        if (!id || !title || !url) throw new Error("CRITICAL: Invalid Metadata Parameters.");
+    constructor(id, title, url, hex, famous, engine, memory) {
         this.id = id;
         this.title = title;
         this.url = url;
-        this.hexColor = hexColor;
-        this.isFamous = isFamous;
+        this.hex = hex;
+        this.famous = famous;
         this.engine = engine;
-        this.build = build;
-        this.hash = this._generateHash();
-        this.timestamp = new Date().toISOString();
+        this.memory = memory;
+        this.checksum = this._calculateChecksum();
+        this.status = "ONLINE";
     }
 
-    _generateHash() {
+    /**
+     * Procedural checksum generation for authentic diagnostic data
+     * @returns {string} Hexadecimal checksum
+     */
+    _calculateChecksum() {
         let hash = 0;
-        const str = this.id + this.title;
+        const str = `${this.id}-${this.title}-${this.engine}`;
         for (let i = 0; i < str.length; i++) {
             const char = str.charCodeAt(i);
             hash = ((hash << 5) - hash) + char;
-            hash |= 0;
+            hash = hash & hash; // Convert to 32bit integer
         }
         return `0x${Math.abs(hash).toString(16).padStart(8, '0').toUpperCase()}`;
     }
 }
 
-const GAME_DATABASE = [
-    new GameMetadata('idx-001', 'ICE AGE', 'https://jaapthind.github.io/IceAge/', '#00ffff', false, 'VanillaJS/Canvas2D', 'v1.0.4'),
-    new GameMetadata('idx-002', 'MILES MARS', 'https://jaapthind.github.io/MilesMars/', '#ff0055', false, 'WebGL/ThreeJS', 'v2.1.0'),
-    new GameMetadata('idx-003', 'JAPA JUMP', 'https://jaapthind.github.io/JapaJump/', '#ffd700', true, 'Phaser/ES6', 'v3.5.5-MASTER'),
-    new GameMetadata('idx-004', 'FELIX FART', 'https://jaapthind.github.io/FelixFart/', '#00ff00', false, 'HTML5 DOM', 'v1.0.0'),
-    new GameMetadata('idx-005', 'FRUIT', 'https://jaapthind.github.io/fruit/', '#ff00ff', false, 'React/Fiber', 'v0.9.9-BETA'),
-    new GameMetadata('idx-006', 'JAAPER DROPPER', 'https://jaapthind.github.io/JaaperDropper/', '#ff5500', false, 'MatterJS/Physics', 'v1.1.2')
+/**
+ * Exhaustive array of deployed AI sites and games.
+ * @type {Array<PortfolioNode>}
+ */
+const INVENTORY_DB = [
+    new PortfolioNode("JAAP-01", "ICE AGE", "https://jaapthind.github.io/IceAge/", "var(--sys-color-accent-ice)", false, "VanillaJS/Canvas2D", 14.2),
+    new PortfolioNode("JAAP-02", "MILES MARS", "https://jaapthind.github.io/MilesMars/", "var(--sys-color-accent-mars)", false, "WebGL/Three.js", 85.6),
+    new PortfolioNode("JAAP-03", "JAPA JUMP", "https://jaapthind.github.io/JapaJump/", "var(--sys-color-accent-japa)", true, "Phaser/ES6", 42.1),
+    new PortfolioNode("JAAP-04", "FELIX FART", "https://jaapthind.github.io/FelixFart/", "var(--sys-color-accent-felix)", false, "HTML5/DOM", 8.4),
+    new PortfolioNode("JAAP-05", "FRUIT", "https://jaapthind.github.io/fruit/", "var(--sys-color-accent-fruit)", false, "React/Fiber", 33.9),
+    new PortfolioNode("JAAP-06", "JAAPER DROPPER", "https://jaapthind.github.io/JaaperDropper/", "var(--sys-color-accent-drop)", false, "Matter.js/Physics", 55.0)
 ];
 
 /**
- * Dummy Inventory Expansion to meet structural complexity requirements.
- * Generating 150 redundant data nodes for memory stress testing simulation.
- */
-class SystemDiagnosticNode {
-    constructor(index) {
-        this.nodeId = `NODE-${String(index).padStart(4, '0')}`;
-        this.status = Math.random() > 0.05 ? 'ONLINE' : 'DEGRADED';
-        this.memoryUsage = (Math.random() * 1024).toFixed(2) + ' MB';
-        this.latency = Math.floor(Math.random() * 50) + 'ms';
-        this.packetLoss = (Math.random() * 0.1).toFixed(4) + '%';
-        this.encryptionKey = `RSA-${Math.floor(Math.random() * 999999999)}`;
-    }
-}
-
-const SYSTEM_NODES = [];
-for(let i=0; i<150; i++) {
-    SYSTEM_NODES.push(new SystemDiagnosticNode(i));
-}
-
-/**
- * MODULE 5: CORE MATHEMATICS AND PHYSICS LIBRARY
- * Comprehensive implementations of linear algebra and vector calculus.
+ * ----------------------------------------------------------------------------
+ * PART 3: CORE MATHEMATICS AND PHYSICS ENGINE
+ * ----------------------------------------------------------------------------
+ * Exhaustive implementation of Vector algebra and physics simulations.
  */
 
 class Vector2 {
+    /**
+     * @param {number} x
+     * @param {number} y
+     */
     constructor(x = 0, y = 0) {
         this.x = x;
         this.y = y;
@@ -641,164 +580,108 @@ class Vector2 {
     set(x, y) { this.x = x; this.y = y; return this; }
     copy(v) { this.x = v.x; this.y = v.y; return this; }
     add(v) { this.x += v.x; this.y += v.y; return this; }
-    addScalar(s) { this.x += s; this.y += s; return this; }
     sub(v) { this.x -= v.x; this.y -= v.y; return this; }
-    subScalar(s) { this.x -= s; this.y -= s; return this; }
-    multiply(v) { this.x *= v.x; this.y *= v.y; return this; }
-    multiplyScalar(s) { this.x *= s; this.y *= s; return this; }
-    divide(v) { this.x /= v.x; this.y /= v.y; return this; }
-    divideScalar(s) { 
-        if (s !== 0) { this.x /= s; this.y /= s; } 
+    mult(scalar) { this.x *= scalar; this.y *= scalar; return this; }
+    div(scalar) {
+        if (scalar !== 0) { this.x /= scalar; this.y /= scalar; }
         else { this.x = 0; this.y = 0; }
-        return this; 
-    }
-    dot(v) { return this.x * v.x + this.y * v.y; }
-    cross(v) { return this.x * v.y - this.y * v.x; }
-    magnitudeSquared() { return this.x * this.x + this.y * this.y; }
-    magnitude() { return Math.sqrt(this.magnitudeSquared()); }
-    normalize() {
-        let mag = this.magnitude();
-        if (mag > 0) this.divideScalar(mag);
         return this;
     }
-    distanceToSquared(v) {
-        let dx = this.x - v.x;
-        let dy = this.y - v.y;
-        return dx * dx + dy * dy;
+    magSq() { return this.x * this.x + this.y * this.y; }
+    mag() { return Math.sqrt(this.magSq()); }
+    normalize() {
+        const m = this.mag();
+        if (m !== 0) this.div(m);
+        return this;
     }
-    distanceTo(v) { return Math.sqrt(this.distanceToSquared(v)); }
     limit(max) {
-        if (this.magnitudeSquared() > max * max) {
+        if (this.magSq() > max * max) {
             this.normalize();
-            this.multiplyScalar(max);
+            this.mult(max);
         }
         return this;
     }
-    lerp(v, alpha) {
-        this.x += (v.x - this.x) * alpha;
-        this.y += (v.y - this.y) * alpha;
-        return this;
+    dot(v) { return this.x * v.x + this.y * v.y; }
+    distance(v) {
+        const dx = this.x - v.x;
+        const dy = this.y - v.y;
+        return Math.sqrt(dx * dx + dy * dy);
     }
     clone() { return new Vector2(this.x, this.y); }
 }
 
 class Vector3 {
+    /**
+     * @param {number} x
+     * @param {number} y
+     * @param {number} z
+     */
     constructor(x = 0, y = 0, z = 0) {
         this.x = x; this.y = y; this.z = z;
     }
     set(x, y, z) { this.x = x; this.y = y; this.z = z; return this; }
-    copy(v) { this.x = v.x; this.y = v.y; this.z = v.z; return this; }
     add(v) { this.x += v.x; this.y += v.y; this.z += v.z; return this; }
     sub(v) { this.x -= v.x; this.y -= v.y; this.z -= v.z; return this; }
-    multiplyScalar(s) { this.x *= s; this.y *= s; this.z *= s; return this; }
-    dot(v) { return this.x * v.x + this.y * v.y + this.z * v.z; }
-    cross(v) {
-        let ax = this.x, ay = this.y, az = this.z;
-        let bx = v.x, by = v.y, bz = v.z;
-        this.x = ay * bz - az * by;
-        this.y = az * bx - ax * bz;
-        this.z = ax * by - ay * bx;
+    mult(scalar) { this.x *= scalar; this.y *= scalar; this.z *= scalar; return this; }
+    magSq() { return this.x * this.x + this.y * this.y + this.z * this.z; }
+    mag() { return Math.sqrt(this.magSq()); }
+    normalize() {
+        const m = this.mag();
+        if (m !== 0) this.mult(1 / m);
         return this;
     }
-    magnitudeSquared() { return this.x * this.x + this.y * this.y + this.z * this.z; }
-    magnitude() { return Math.sqrt(this.magnitudeSquared()); }
-    normalize() {
-        let mag = this.magnitude();
-        if (mag > 0) this.multiplyScalar(1 / mag);
+    cross(v) {
+        const cx = this.y * v.z - this.z * v.y;
+        const cy = this.z * v.x - this.x * v.z;
+        const cz = this.x * v.y - this.y * v.x;
+        this.x = cx; this.y = cy; this.z = cz;
         return this;
     }
     clone() { return new Vector3(this.x, this.y, this.z); }
 }
 
-class Matrix4 {
-    constructor() {
-        this.elements = [
-            1, 0, 0, 0,
-            0, 1, 0, 0,
-            0, 0, 1, 0,
-            0, 0, 0, 1
-        ];
+class PhysicsBody {
+    /**
+     * @param {number} x
+     * @param {number} y
+     * @param {number} mass
+     */
+    constructor(x, y, mass) {
+        this.position = new Vector2(x, y);
+        this.velocity = new Vector2(0, 0);
+        this.acceleration = new Vector2(0, 0);
+        this.mass = mass;
     }
-    identity() {
-        this.elements = [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1];
-        return this;
+    applyForce(force) {
+        // F = M * A -> A = F / M
+        const f = force.clone().div(this.mass);
+        this.acceleration.add(f);
     }
-    multiply(m) {
-        let ae = this.elements;
-        let be = m.elements;
-        let te = new Array(16);
-        for(let i=0; i<4; i++) {
-            for(let j=0; j<4; j++) {
-                te[i*4+j] = ae[i*4+0]*be[0*4+j] + ae[i*4+1]*be[1*4+j] + ae[i*4+2]*be[2*4+j] + ae[i*4+3]*be[3*4+j];
-            }
-        }
-        this.elements = te;
-        return this;
-    }
-    makeTranslation(x, y, z) {
-        this.elements = [
-            1, 0, 0, x,
-            0, 1, 0, y,
-            0, 0, 1, z,
-            0, 0, 0, 1
-        ];
-        return this;
-    }
-    makeScale(x, y, z) {
-        this.elements = [
-            x, 0, 0, 0,
-            0, y, 0, 0,
-            0, 0, z, 0,
-            0, 0, 0, 1
-        ];
-        return this;
+    update(dt) {
+        this.velocity.add(this.acceleration.clone().mult(dt));
+        this.velocity.mult(SYS_CONFIG.PHYSICS.DRAG);
+        this.position.add(this.velocity.clone().mult(dt));
+        this.acceleration.mult(0); // Clear forces
     }
 }
 
-class ColorUtil {
-    /**
-     * Converts HSL to Hex
-     * @param {number} h Hue 0-360
-     * @param {number} s Saturation 0-100
-     * @param {number} l Lightness 0-100
-     * @returns {string} Hex color string
-     */
-    static hslToHex(h, s, l) {
-        l /= 100;
-        const a = s * Math.min(l, 1 - l) / 100;
-        const f = n => {
-            const k = (n + h / 30) % 12;
-            const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
-            return Math.round(255 * color).toString(16).padStart(2, '0');
-        };
-        return `#${f(0)}${f(8)}${f(4)}`;
+class MathUtils {
+    static random(min, max) { return Math.random() * (max - min) + min; }
+    static randomInt(min, max) { return Math.floor(MathUtils.random(min, max + 1)); }
+    static map(value, start1, stop1, start2, stop2) {
+        return start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1));
     }
-
-    /**
-     * Parse Hex to RGB object
-     * @param {string} hex 
-     * @returns {Object} {r, g, b}
-     */
-    static hexToRgb(hex) {
-        let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        return result ? {
-            r: parseInt(result[1], 16),
-            g: parseInt(result[2], 16),
-            b: parseInt(result[3], 16)
-        } : null;
-    }
+    static clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
+    static lerp(start, end, t) { return start + (end - start) * t; }
 }
 
 /**
- * Procedural Noise Generation Module (Simplex)
- * Used for organic fluid simulations in background.
+ * Simplex Noise Generator for organic procedural rendering
  */
-class SimplexNoiseEngine {
+class SimplexNoise {
     constructor() {
         this.p = new Uint8Array(256);
-        for (let i = 0; i < 256; i++) {
-            this.p[i] = Math.floor(Math.random() * 256);
-        }
+        for (let i = 0; i < 256; i++) this.p[i] = Math.floor(Math.random() * 256);
         this.perm = new Uint8Array(512);
         this.permMod12 = new Uint8Array(512);
         for (let i = 0; i < 512; i++) {
@@ -806,77 +689,67 @@ class SimplexNoiseEngine {
             this.permMod12[i] = (this.perm[i] % 12);
         }
     }
-
-    dot(g, x, y, z) { return g[0]*x + g[1]*y + g[2]*z; }
-
+    dot(g, x, y, z) { return g[0] * x + g[1] * y + g[2] * z; }
     noise3D(xin, yin, zin) {
-        let n0, n1, n2, n3;
-        const F3 = 1.0/3.0;
-        const G3 = 1.0/6.0;
-        let s = (xin+yin+zin)*F3;
-        let i = Math.floor(xin+s);
-        let j = Math.floor(yin+s);
-        let k = Math.floor(zin+s);
-        let t = (i+j+k)*G3;
-        let X0 = i-t, Y0 = j-t, Z0 = k-t;
-        let x0 = xin-X0, y0 = yin-Y0, z0 = zin-Z0;
+        const F3 = 1.0 / 3.0, G3 = 1.0 / 6.0;
+        let s = (xin + yin + zin) * F3;
+        let i = Math.floor(xin + s), j = Math.floor(yin + s), k = Math.floor(zin + s);
+        let t = (i + j + k) * G3;
+        let X0 = i - t, Y0 = j - t, Z0 = k - t;
+        let x0 = xin - X0, y0 = yin - Y0, z0 = zin - Z0;
         let i1, j1, k1, i2, j2, k2;
-        if(x0>=y0) {
-            if(y0>=z0) { i1=1; j1=0; k1=0; i2=1; j2=1; k2=0; }
-            else if(x0>=z0) { i1=1; j1=0; k1=0; i2=1; j2=0; k2=1; }
-            else { i1=0; j1=0; k1=1; i2=1; j2=0; k2=1; }
+        if (x0 >= y0) {
+            if (y0 >= z0) { i1 = 1; j1 = 0; k1 = 0; i2 = 1; j2 = 1; k2 = 0; }
+            else if (x0 >= z0) { i1 = 1; j1 = 0; k1 = 0; i2 = 1; j2 = 0; k2 = 1; }
+            else { i1 = 0; j1 = 0; k1 = 1; i2 = 1; j2 = 0; k2 = 1; }
         } else {
-            if(y0<z0) { i1=0; j1=0; k1=1; i2=0; j2=1; k2=1; }
-            else if(x0<z0) { i1=0; j1=1; k1=0; i2=0; j2=1; k2=1; }
-            else { i1=0; j1=1; k1=0; i2=1; j2=1; k2=0; }
+            if (y0 < z0) { i1 = 0; j1 = 0; k1 = 1; i2 = 0; j2 = 1; k2 = 1; }
+            else if (x0 < z0) { i1 = 0; j1 = 1; k1 = 0; i2 = 0; j2 = 1; k2 = 1; }
+            else { i1 = 0; j1 = 1; k1 = 0; i2 = 1; j2 = 1; k2 = 0; }
         }
         let x1 = x0 - i1 + G3, y1 = y0 - j1 + G3, z1 = z0 - k1 + G3;
-        let x2 = x0 - i2 + 2.0*G3, y2 = y0 - j2 + 2.0*G3, z2 = z0 - k2 + 2.0*G3;
-        let x3 = x0 - 1.0 + 3.0*G3, y3 = y0 - 1.0 + 3.0*G3, z3 = z0 - 1.0 + 3.0*G3;
+        let x2 = x0 - i2 + 2.0 * G3, y2 = y0 - j2 + 2.0 * G3, z2 = z0 - k2 + 2.0 * G3;
+        let x3 = x0 - 1.0 + 3.0 * G3, y3 = y0 - 1.0 + 3.0 * G3, z3 = z0 - 1.0 + 3.0 * G3;
         let ii = i & 255, jj = j & 255, kk = k & 255;
-        let gi0 = this.permMod12[ii+this.perm[jj+this.perm[kk]]];
-        let gi1 = this.permMod12[ii+i1+this.perm[jj+j1+this.perm[kk+k1]]];
-        let gi2 = this.permMod12[ii+i2+this.perm[jj+j2+this.perm[kk+k2]]];
-        let gi3 = this.permMod12[ii+1+this.perm[jj+1+this.perm[kk+1]]];
-        let t0 = 0.6 - x0*x0 - y0*y0 - z0*z0;
-        if(t0<0) n0 = 0.0; else { t0 *= t0; n0 = t0 * t0 * this.dot(this.getGrad(gi0), x0, y0, z0); }
-        let t1 = 0.6 - x1*x1 - y1*y1 - z1*z1;
-        if(t1<0) n1 = 0.0; else { t1 *= t1; n1 = t1 * t1 * this.dot(this.getGrad(gi1), x1, y1, z1); }
-        let t2 = 0.6 - x2*x2 - y2*y2 - z2*z2;
-        if(t2<0) n2 = 0.0; else { t2 *= t2; n2 = t2 * t2 * this.dot(this.getGrad(gi2), x2, y2, z2); }
-        let t3 = 0.6 - x3*x3 - y3*y3 - z3*z3;
-        if(t3<0) n3 = 0.0; else { t3 *= t3; n3 = t3 * t3 * this.dot(this.getGrad(gi3), x3, y3, z3); }
-        return 32.0*(n0 + n1 + n2 + n3);
+        let gi0 = this.permMod12[ii + this.perm[jj + this.perm[kk]]];
+        let gi1 = this.permMod12[ii + i1 + this.perm[jj + j1 + this.perm[kk + k1]]];
+        let gi2 = this.permMod12[ii + i2 + this.perm[jj + j2 + this.perm[kk + k2]]];
+        let gi3 = this.permMod12[ii + 1 + this.perm[jj + 1 + this.perm[kk + 1]]];
+        let n0, n1, n2, n3;
+        let t0 = 0.6 - x0 * x0 - y0 * y0 - z0 * z0;
+        if (t0 < 0) n0 = 0.0; else { t0 *= t0; n0 = t0 * t0 * this.dot(this.getGrad(gi0), x0, y0, z0); }
+        let t1 = 0.6 - x1 * x1 - y1 * y1 - z1 * z1;
+        if (t1 < 0) n1 = 0.0; else { t1 *= t1; n1 = t1 * t1 * this.dot(this.getGrad(gi1), x1, y1, z1); }
+        let t2 = 0.6 - x2 * x2 - y2 * y2 - z2 * z2;
+        if (t2 < 0) n2 = 0.0; else { t2 *= t2; n2 = t2 * t2 * this.dot(this.getGrad(gi2), x2, y2, z2); }
+        let t3 = 0.6 - x3 * x3 - y3 * y3 - z3 * z3;
+        if (t3 < 0) n3 = 0.0; else { t3 *= t3; n3 = t3 * t3 * this.dot(this.getGrad(gi3), x3, y3, z3); }
+        return 32.0 * (n0 + n1 + n2 + n3);
     }
-
     getGrad(hash) {
-        const grads = [[1,1,0],[-1,1,0],[1,-1,0],[-1,-1,0],[1,0,1],[-1,0,1],[1,0,-1],[-1,0,-1],[0,1,1],[0,-1,1],[0,1,-1],[0,-1,-1]];
+        const grads = [[1, 1, 0], [-1, 1, 0], [1, -1, 0], [-1, -1, 0], [1, 0, 1], [-1, 0, 1], [1, 0, -1], [-1, 0, -1], [0, 1, 1], [0, -1, 1], [0, 1, -1], [0, -1, -1]];
         return grads[hash % 12];
     }
 }
 
 /**
- * MODULE 6: ADVANCED RENDERING PIPELINES
- * Canvas managers for background graphics, matrix streams, and effects.
+ * ----------------------------------------------------------------------------
+ * PART 4: GRAPHICS & RENDERING ENGINES
+ * ----------------------------------------------------------------------------
  */
 
-class RendererLiquidGlass {
+class LiquidGlassRenderer {
     constructor(canvasId) {
         this.canvas = document.getElementById(canvasId);
         this.ctx = this.canvas.getContext('2d', { alpha: false });
         this.width = 0;
         this.height = 0;
-        this.noise = new SimplexNoiseEngine();
+        this.noise = new SimplexNoise();
         this.zOff = 0;
         this.particles = [];
         this.isRunning = false;
-        this.init();
-        window.addEventListener('resize', () => this.resize());
-    }
-
-    init() {
         this.resize();
-        this.populateParticles(100);
+        window.addEventListener('resize', () => this.resize());
     }
 
     resize() {
@@ -884,103 +757,94 @@ class RendererLiquidGlass {
         this.height = this.canvas.height = window.innerHeight;
     }
 
-    populateParticles(count) {
+    initParticles() {
         this.particles = [];
-        for (let i = 0; i < count; i++) {
-            this.particles.push({
-                pos: new Vector2(Math.random() * this.width, Math.random() * this.height),
-                vel: new Vector2(0, 0),
-                size: Math.random() * 200 + 100,
-                colorIndex: Math.random()
-            });
+        for (let i = 0; i < SYS_CONFIG.RENDER.LIQUID_PARTICLE_COUNT; i++) {
+            const mass = MathUtils.random(1, 5);
+            const p = new PhysicsBody(MathUtils.random(0, this.width), MathUtils.random(0, this.height), mass);
+            p.radius = MathUtils.random(100, 300);
+            p.colorIndex = Math.random();
+            this.particles.push(p);
         }
     }
 
     start() {
+        this.initParticles();
         this.isRunning = true;
-        this.loop();
+        this.render();
     }
 
-    stop() {
-        this.isRunning = false;
-    }
-
-    loop() {
+    render() {
         if (!this.isRunning) return;
-        
-        this.ctx.fillStyle = '#020204';
+
+        // Dark base
+        this.ctx.fillStyle = '#030305';
         this.ctx.fillRect(0, 0, this.width, this.height);
-        
+
         this.ctx.globalCompositeOperation = 'screen';
-        this.zOff += 0.002;
+        this.zOff += 0.003;
 
         for (let i = 0; i < this.particles.length; i++) {
-            let p = this.particles[i];
+            const p = this.particles[i];
             
-            // Flow field vectors
-            let angle = this.noise.noise3D(p.pos.x * 0.001, p.pos.y * 0.001, this.zOff) * Math.PI * 4;
-            p.vel.x = Math.cos(angle) * 1.5;
-            p.vel.y = Math.sin(angle) * 1.5;
-            
-            p.pos.add(p.vel);
-            
-            // Boundary wrap
-            if (p.pos.x > this.width + p.size) p.pos.x = -p.size;
-            if (p.pos.x < -p.size) p.pos.x = this.width + p.size;
-            if (p.pos.y > this.height + p.size) p.pos.y = -p.size;
-            if (p.pos.y < -p.size) p.pos.y = this.height + p.size;
+            // Flow field interaction
+            const angle = this.noise.noise3D(p.position.x * 0.002, p.position.y * 0.002, this.zOff) * Math.PI * 4;
+            const force = new Vector2(Math.cos(angle), Math.sin(angle)).mult(20);
+            p.applyForce(force);
+            p.update(SYS_CONFIG.PHYSICS.TIMESTEP);
 
-            // Render Blob
-            let grad = this.ctx.createRadialGradient(p.pos.x, p.pos.y, 0, p.pos.x, p.pos.y, p.size);
-            if(p.colorIndex < 0.3) {
-                grad.addColorStop(0, 'rgba(0, 255, 204, 0.05)');
-            } else if (p.colorIndex < 0.6) {
-                grad.addColorStop(0, 'rgba(0, 102, 255, 0.05)');
+            // Bounds wrapping
+            if (p.position.x > this.width + p.radius) p.position.x = -p.radius;
+            if (p.position.x < -p.radius) p.position.x = this.width + p.radius;
+            if (p.position.y > this.height + p.radius) p.position.y = -p.radius;
+            if (p.position.y < -p.radius) p.position.y = this.height + p.radius;
+
+            // Draw Blob
+            const grad = this.ctx.createRadialGradient(p.position.x, p.position.y, 0, p.position.x, p.position.y, p.radius);
+            
+            if (p.colorIndex < 0.33) {
+                grad.addColorStop(0, 'rgba(0, 255, 204, 0.08)');
+            } else if (p.colorIndex < 0.66) {
+                grad.addColorStop(0, 'rgba(0, 100, 255, 0.08)');
             } else {
-                grad.addColorStop(0, 'rgba(255, 0, 255, 0.03)');
+                grad.addColorStop(0, 'rgba(255, 0, 255, 0.05)');
             }
             grad.addColorStop(1, 'rgba(0,0,0,0)');
-            
+
             this.ctx.beginPath();
-            this.ctx.arc(p.pos.x, p.pos.y, p.size, 0, Math.PI * 2);
+            this.ctx.arc(p.position.x, p.position.y, p.radius, 0, Math.PI * 2);
             this.ctx.fillStyle = grad;
             this.ctx.fill();
         }
-        
+
         this.ctx.globalCompositeOperation = 'source-over';
-        
-        requestAnimationFrame(() => this.loop());
+        requestAnimationFrame(() => this.render());
     }
 }
 
-class RendererMatrixStream {
+class MatrixStreamRenderer {
     constructor(canvasId) {
         this.canvas = document.getElementById(canvasId);
         this.ctx = this.canvas.getContext('2d');
         this.width = 0;
         this.height = 0;
+        this.fontSize = SYS_CONFIG.RENDER.MATRIX_FONT_SIZE;
         this.columns = [];
-        this.fontSize = SYS_CONFIG.MATRIX_CHAR_SIZE;
-        this.chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()_+{}|:"<>?~`=[]\\;,./ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ';
+        this.chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%^&*()ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ';
         this.isRunning = false;
-        this.init();
-        window.addEventListener('resize', () => this.resize());
-    }
-
-    init() {
         this.resize();
+        window.addEventListener('resize', () => this.resize());
     }
 
     resize() {
         this.width = this.canvas.width = window.innerWidth;
         this.height = this.canvas.height = window.innerHeight;
-        const colCount = Math.floor(this.width / this.fontSize) + 1;
+        const colCount = Math.floor(this.width / this.fontSize);
         this.columns = [];
         for (let i = 0; i < colCount; i++) {
             this.columns[i] = {
-                y: Math.random() * -1000,
-                speed: Math.random() * 3 + 2,
-                char: ''
+                y: MathUtils.random(-2000, 0),
+                speed: MathUtils.random(3, 8)
             };
         }
     }
@@ -988,7 +852,7 @@ class RendererMatrixStream {
     start() {
         this.isRunning = true;
         this.canvas.style.opacity = '1';
-        this.loop();
+        this.render();
     }
 
     stop() {
@@ -996,174 +860,129 @@ class RendererMatrixStream {
         this.canvas.style.opacity = '0';
     }
 
-    loop() {
+    render() {
         if (!this.isRunning) return;
-        
-        // Fading trail effect
-        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+
+        // Trail effect
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
         this.ctx.fillRect(0, 0, this.width, this.height);
-        
+
         this.ctx.font = `${this.fontSize}px Consolas`;
         this.ctx.textAlign = 'center';
 
         for (let i = 0; i < this.columns.length; i++) {
-            let col = this.columns[i];
-            
-            // Random character selection
-            col.char = this.chars.charAt(Math.floor(Math.random() * this.chars.length));
-            
-            // Color selection - mostly green, occasionally white/cyan
-            let rng = Math.random();
-            if(rng > 0.98) this.ctx.fillStyle = '#ffffff';
-            else if(rng > 0.95) this.ctx.fillStyle = '#00ffff';
+            const col = this.columns[i];
+            const char = this.chars.charAt(Math.floor(Math.random() * this.chars.length));
+
+            // Custom color generation based on Jaap's branding
+            const rng = Math.random();
+            if (rng > 0.98) this.ctx.fillStyle = '#ffffff';
+            else if (rng > 0.95) this.ctx.fillStyle = '#00ffff';
+            else if (rng > 0.90) this.ctx.fillStyle = '#ff00ff';
             else this.ctx.fillStyle = '#00ff00';
-            
-            this.ctx.fillText(col.char, i * this.fontSize, col.y);
-            
+
+            this.ctx.fillText(char, i * this.fontSize, col.y);
+
             col.y += col.speed;
-            
-            // Reset drop
+
             if (col.y > this.height && Math.random() > 0.975) {
                 col.y = 0;
-                col.speed = Math.random() * 3 + 2;
+                col.speed = MathUtils.random(3, 8);
             }
         }
-        
-        requestAnimationFrame(() => this.loop());
+
+        requestAnimationFrame(() => this.render());
     }
 }
 
 /**
- * MODULE 7: CINEMATIC SEQUENCER
- * High precision timing routines for the initial boot experience.
+ * ----------------------------------------------------------------------------
+ * PART 5: STATE MANAGEMENT SYSTEM
+ * ----------------------------------------------------------------------------
+ * Robust FSM (Finite State Machine) for handling the cinematic boot process.
  */
 
-class SequenceEngine {
+class StateMachine {
     constructor() {
-        this.strobeContainer = document.getElementById('container-strobe');
-        this.introContainer = document.getElementById('container-intro-sequence');
-        this.titles = document.querySelectorAll('.title-card');
-        this.hud = document.getElementById('hud-diagnostics');
-        
-        this.matrixRenderer = new RendererMatrixStream('canvas-matrix-stream');
-        this.glassRenderer = new RendererLiquidGlass('canvas-liquid-glass');
-        this.uiManager = new UIManager();
+        this.states = new Map();
+        this.currentState = null;
     }
-
-    /**
-     * Entry point for the sequence. Utilizes precise sleep promises.
-     */
-    async boot() {
-        // Start background glass renderer immediately for depth
-        this.glassRenderer.start();
-        
-        // 1. Diagnostics Phase
-        await this.runDiagnostics(2000);
-        
-        // 2. High-Precision Title Flashes (Exactly 0.3s each)
-        await this.runTitleFlashes();
-        
-        // 3. Rainbow Strobe Phase
-        await this.runRainbowStrobe(SYS_CONFIG.TIMING_STROBE_DURATION_MS);
-        
-        // 4. Matrix Stream Overload
-        await this.runMatrixOverload(SYS_CONFIG.TIMING_MATRIX_DURATION_MS);
-        
-        // 5. Transition to User Space
-        this.transitionToUI();
+    addState(name, stateObject) {
+        this.states.set(name, stateObject);
     }
-
-    /**
-     * Promise-based sleep function for exact millisecond halting.
-     * @param {number} ms 
-     */
-    sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
-
-    async runDiagnostics(duration) {
-        this.hud.style.opacity = '1';
-        
-        // Inject ASCII
-        const asciiNode = document.createElement('div');
-        asciiNode.className = 'hud-ascii';
-        asciiNode.innerText = ASCII_ARCHIVES.MOTHERBOARD;
-        this.hud.appendChild(asciiNode);
-
-        const logs = [
-            I18N_REGISTRY.EN.BOOT_SEQ_01,
-            I18N_REGISTRY.EN.BOOT_SEQ_02,
-            I18N_REGISTRY.EN.BOOT_SEQ_03,
-            I18N_REGISTRY.EN.BOOT_SEQ_04,
-            I18N_REGISTRY.EN.BOOT_SEQ_05,
-            I18N_REGISTRY.EN.BOOT_SEQ_06,
-            I18N_REGISTRY.EN.BOOT_SEQ_07,
-            I18N_REGISTRY.EN.BOOT_SEQ_08,
-            I18N_REGISTRY.EN.BOOT_SEQ_09
-        ];
-
-        for(let i=0; i<logs.length; i++) {
-            const line = document.createElement('div');
-            line.className = 'hud-line' + (logs[i].includes('[WARN]') ? ' hud-warn' : '');
-            line.innerText = logs[i];
-            this.hud.appendChild(line);
-            await this.sleep(duration / logs.length);
+    async transitionTo(name) {
+        if (this.currentState && this.currentState.exit) {
+            await this.currentState.exit();
         }
-        
-        this.hud.style.opacity = '0';
-        await this.sleep(500); // Breathe
+        this.currentState = this.states.get(name);
+        if (this.currentState && this.currentState.enter) {
+            await this.currentState.enter();
+        }
     }
+}
 
-    async runTitleFlashes() {
-        const duration = SYS_CONFIG.TIMING_FLASH_DURATION_MS;
+/**
+ * Async Sleep utility for precise timing.
+ * @param {number} ms 
+ * @returns {Promise}
+ */
+function sleep(ms) {
+    return new Promise(resolve => {
+        const start = performance.now();
+        const loop = (now) => {
+            if (now - start >= ms) resolve();
+            else requestAnimationFrame(loop);
+        };
+        requestAnimationFrame(loop);
+    });
+}
+
+class TitleFlashState {
+    constructor() {
+        this.container = document.getElementById('intro-master');
+        this.titles = document.querySelectorAll('.flash-title');
+    }
+    async enter() {
+        const interval = SYS_CONFIG.TIMING.FLASH_INTERVAL_MS;
         for (let i = 0; i < this.titles.length; i++) {
-            if (i > 0) this.titles[i-1].classList.remove('active');
+            if (i > 0) this.titles[i - 1].classList.remove('active');
             this.titles[i].classList.add('active');
-            
-            // We use performance.now() to ensure we wait exactly 300ms 
-            // regardless of frame drops.
-            await this.preciseSleep(duration);
+            await sleep(interval);
         }
         if (this.titles.length > 0) {
             this.titles[this.titles.length - 1].classList.remove('active');
         }
     }
-
-    async preciseSleep(targetMs) {
-        return new Promise(resolve => {
-            const start = performance.now();
-            const loop = (now) => {
-                if (now - start >= targetMs) resolve();
-                else requestAnimationFrame(loop);
-            };
-            requestAnimationFrame(loop);
-        });
+    async exit() {
+        // No-op
     }
+}
 
-    async runRainbowStrobe(duration) {
-        this.strobeContainer.classList.add('strobe-active');
-        
-        let startTime = performance.now();
-        let frameCount = 0;
-        
+class RainbowStrobeState {
+    constructor() {
+        this.layer = document.getElementById('strobe-layer');
+    }
+    async enter() {
+        this.layer.style.opacity = '1';
+        const duration = SYS_CONFIG.TIMING.STROBE_DURATION_MS;
+        const start = performance.now();
+        let frame = 0;
+
         return new Promise(resolve => {
             const loop = (now) => {
-                let elapsed = now - startTime;
+                const elapsed = now - start;
                 if (elapsed >= duration) {
-                    this.strobeContainer.classList.remove('strobe-active');
-                    this.strobeContainer.style.backgroundColor = 'transparent';
                     resolve();
                     return;
                 }
                 
-                // 60Hz Strobe effect cycle (Approx 16ms per frame)
-                // Cycles through intense pure RGB colors
-                frameCount++;
-                if(frameCount % 2 === 0) {
-                    let hue = (elapsed / duration) * 360;
-                    this.strobeContainer.style.backgroundColor = ColorUtil.hslToHex(hue, 100, 50);
+                // HSL conversion formula for optimal ANSI-style chromatic output
+                frame++;
+                if (frame % 2 === 0) {
+                    const hue = (elapsed / duration) * 360;
+                    this.layer.style.backgroundColor = `hsl(${hue}, 100%, 50%)`;
                 } else {
-                    this.strobeContainer.style.backgroundColor = '#ffffff';
+                    this.layer.style.backgroundColor = '#ffffff';
                 }
                 
                 requestAnimationFrame(loop);
@@ -1171,146 +990,196 @@ class SequenceEngine {
             requestAnimationFrame(loop);
         });
     }
-
-    async runMatrixOverload(duration) {
-        this.introContainer.style.backgroundColor = 'transparent';
-        this.matrixRenderer.start();
-        await this.sleep(duration);
-    }
-
-    transitionToUI() {
-        // Fade out matrix and intro DOM
-        this.introContainer.style.opacity = '0';
-        this.matrixRenderer.canvas.style.transition = 'opacity 2s ease';
-        this.matrixRenderer.canvas.style.opacity = '0';
-        
-        setTimeout(() => {
-            this.introContainer.style.display = 'none';
-            this.matrixRenderer.stop();
-            // Reveal UI
-            this.uiManager.renderGrid();
-            this.uiManager.reveal();
-        }, 1500);
+    async exit() {
+        this.layer.style.opacity = '0';
+        this.layer.style.backgroundColor = 'transparent';
     }
 }
 
-/**
- * MODULE 8: UI MANAGEMENT & EVENT HANDLING
- * Handles DOM injection for the enterprise metadata grid.
- */
-
-class UIManager {
-    constructor() {
-        this.gridMount = document.getElementById('dynamic-grid-mount');
-        this.mainContainer = document.getElementById('container-main-ui');
+class KernelBootState {
+    constructor(matrixRenderer) {
+        this.hud = document.getElementById('terminal-hud');
+        this.matrix = matrixRenderer;
+        this.introMaster = document.getElementById('intro-master');
     }
+    async enter() {
+        this.introMaster.style.backgroundColor = 'transparent';
+        this.matrix.start();
+        this.hud.style.opacity = '1';
 
-    renderGrid() {
-        this.gridMount.innerHTML = ''; // Clear
+        // Render ASCII Art
+        const asciiNode = document.createElement('div');
+        asciiNode.className = 'term-ascii';
+        asciiNode.innerText = ASCII_ART.JAAP_LOGO + "\n" + ASCII_ART.SYSTEM_DIAG;
+        this.hud.appendChild(asciiNode);
+
+        const logs = [
+            { text: I18N[CURRENT_LOCALE].BOOT_00, type: 'normal' },
+            { text: I18N[CURRENT_LOCALE].BOOT_01, type: 'normal' },
+            { text: I18N[CURRENT_LOCALE].BOOT_02, type: 'normal' },
+            { text: I18N[CURRENT_LOCALE].BOOT_03, type: 'normal' },
+            { text: I18N[CURRENT_LOCALE].BOOT_04, type: 'warn' },
+            { text: I18N[CURRENT_LOCALE].BOOT_05, type: 'normal' },
+            { text: I18N[CURRENT_LOCALE].BOOT_06, type: 'normal' },
+            { text: I18N[CURRENT_LOCALE].BOOT_07, type: 'ok' },
+            { text: I18N[CURRENT_LOCALE].BOOT_08, type: 'normal' },
+            { text: I18N[CURRENT_LOCALE].BOOT_09, type: 'ok' }
+        ];
+
+        const durationPerLog = SYS_CONFIG.TIMING.BOOT_DURATION_MS / logs.length;
+
+        for (let i = 0; i < logs.length; i++) {
+            const line = document.createElement('div');
+            line.className = 'term-line';
+            if (logs[i].type === 'warn') line.classList.add('color-warn');
+            if (logs[i].type === 'ok') line.classList.add('color-ok');
+            line.innerText = logs[i].text;
+            this.hud.appendChild(line);
+            
+            // Random jitter for realistic terminal output
+            await sleep(durationPerLog + MathUtils.random(-50, 150));
+        }
+
+        await sleep(1000); // Final pause
+    }
+    async exit() {
+        this.hud.style.opacity = '0';
+        this.matrix.stop();
+        this.introMaster.style.opacity = '0';
+        await sleep(1500); // Wait for fade
+        this.introMaster.style.display = 'none';
+    }
+}
+
+class MainMenuState {
+    constructor() {
+        this.wrapper = document.getElementById('main-ui-wrapper');
+        this.grid = document.getElementById('grid-container');
+    }
+    async enter() {
+        this.buildGrid();
+        this.wrapper.classList.add('visible');
+    }
+    async exit() {
+        this.wrapper.classList.remove('visible');
+    }
+    buildGrid() {
+        this.grid.innerHTML = ''; // Sanitize
         
-        GAME_DATABASE.forEach((data, index) => {
-            // Anchor Wrapper
-            const anchor = document.createElement('a');
-            anchor.href = data.url;
-            anchor.target = '_blank';
-            anchor.className = 'card-container';
-            anchor.style.animationDelay = `${index * 0.15}s`;
+        INVENTORY_DB.forEach((node, index) => {
+            const a = document.createElement('a');
+            a.href = node.url;
+            a.target = '_blank';
+            a.style.textDecoration = 'none';
+            a.style.animationDelay = `${index * 0.15}s`;
 
-            // Card Body
             const card = document.createElement('div');
-            card.className = 'glass-card-component';
-            
-            // Event Listeners for dynamic styling
+            card.className = 'glass-card';
+
+            // Hover Events
             card.addEventListener('mouseenter', () => {
-                card.style.borderTopColor = data.hexColor;
-                card.style.borderLeftColor = `${data.hexColor}80`; // 50% opacity
-                const afterEl = card.querySelector('.action-text');
-                if(afterEl) afterEl.style.color = data.hexColor;
+                card.style.borderTopColor = node.hex;
+                card.style.borderLeftColor = node.hex;
+                const action = card.querySelector('.card-action');
+                if(action) action.style.color = node.hex;
             });
-            
             card.addEventListener('mouseleave', () => {
-                card.style.borderTopColor = 'rgba(255,255,255,0.25)';
-                card.style.borderLeftColor = 'rgba(255,255,255,0.15)';
-                const afterEl = card.querySelector('.action-text');
-                if(afterEl) afterEl.style.color = 'var(--sys-color-text-secondary)';
+                card.style.borderTopColor = 'rgba(255,255,255,0.1)';
+                card.style.borderLeftColor = 'rgba(255,255,255,0.1)';
+                const action = card.querySelector('.card-action');
+                if(action) action.style.color = 'var(--sys-color-text-secondary)';
             });
 
             // Famous Badge Injection
-            if (data.isFamous) {
-                const badgeBox = document.createElement('div');
-                badgeBox.className = 'badge-container';
-                const badgeRibbon = document.createElement('div');
-                badgeRibbon.className = 'badge-ribbon';
-                badgeRibbon.innerText = I18N_REGISTRY.EN.BADGE_FAMOUS;
-                badgeBox.appendChild(badgeRibbon);
-                card.appendChild(badgeBox);
+            if (node.famous) {
+                const badge = document.createElement('div');
+                badge.className = 'famous-badge';
+                badge.innerText = I18N[CURRENT_LOCALE].UI_FAMOUS;
+                card.appendChild(badge);
             }
 
             // Title
             const title = document.createElement('div');
             title.className = 'card-title';
-            title.innerText = data.title;
-            title.style.background = `linear-gradient(135deg, #ffffff 0%, ${data.hexColor} 100%)`;
+            title.innerText = node.title;
+            title.style.background = `linear-gradient(135deg, #ffffff 0%, ${node.hex} 100%)`;
             title.style.webkitBackgroundClip = 'text';
             title.style.webkitTextFillColor = 'transparent';
 
-            // Metadata Block
-            const metaBox = document.createElement('div');
-            metaBox.className = 'card-metadata';
-            
-            const mId = document.createElement('div');
-            mId.innerText = `ID: ${data.id}`;
-            const mHash = document.createElement('div');
-            mHash.innerText = `HASH: ${data.hash}`;
-            const mEngine = document.createElement('div');
-            mEngine.innerText = `ENG: ${data.engine}`;
-            const mBuild = document.createElement('div');
-            mBuild.innerText = `BLD: ${data.build}`;
-            
-            metaBox.appendChild(mId);
-            metaBox.appendChild(mHash);
-            metaBox.appendChild(mEngine);
-            metaBox.appendChild(mBuild);
+            // Metadata Diagnostics
+            const meta = document.createElement('div');
+            meta.className = 'card-meta';
+            meta.innerHTML = `
+                <div>[ID] ${node.id}</div>
+                <div>[HASH] ${node.checksum}</div>
+                <div>[ENGINE] ${node.engine}</div>
+                <div>[MEM] ${node.memory.toFixed(2)} MB ALLOCATED</div>
+                <div style="color:var(--sys-color-accent-felix)">[STATUS] ${node.status}</div>
+            `;
 
-            // Action Bar
-            const actionBar = document.createElement('div');
-            actionBar.className = 'card-action-bar';
-            
-            const actionText = document.createElement('div');
-            actionText.className = 'action-text';
-            actionText.innerHTML = `${I18N_REGISTRY.EN.ACTION_LAUNCH} <span class="action-icon">➔</span>`;
-            
-            actionBar.appendChild(actionText);
+            // Action Trigger
+            const action = document.createElement('div');
+            action.className = 'card-action';
+            action.innerHTML = `<span>${I18N[CURRENT_LOCALE].UI_LAUNCH}</span> <span>&rarr;</span>`;
 
-            // Assembly
             card.appendChild(title);
-            card.appendChild(metaBox);
-            card.appendChild(actionBar);
-            anchor.appendChild(card);
-            this.gridMount.appendChild(anchor);
+            card.appendChild(meta);
+            card.appendChild(action);
+            a.appendChild(card);
+            this.grid.appendChild(a);
         });
-    }
-
-    reveal() {
-        this.mainContainer.classList.add('ui-visible');
     }
 }
 
 /**
- * ==========================================================================
- * IGNITION PROTOCOL
- * System entry point for the Web Application.
- * ==========================================================================
+ * ----------------------------------------------------------------------------
+ * PART 6: APPLICATION BOOTSTRAPPER
+ * ----------------------------------------------------------------------------
  */
-window.addEventListener('DOMContentLoaded', () => {
-    try {
-        const engine = new SequenceEngine();
-        engine.boot().catch(err => {
-            console.error("CRITICAL ENGINE FAILURE:", err);
-        });
-    } catch (e) {
-        console.error("FATAL BOOTSTRAP EXCEPTION:", e);
+
+class ApplicationCore {
+    constructor() {
+        this.fsm = new StateMachine();
+        
+        // Initialize Graphics Pipelines
+        this.liquidRenderer = new LiquidGlassRenderer('canvas-liquid-glass');
+        this.matrixRenderer = new MatrixStreamRenderer('canvas-matrix');
+        
+        // Build State Topology
+        this.fsm.addState('FLASH', new TitleFlashState());
+        this.fsm.addState('STROBE', new RainbowStrobeState());
+        this.fsm.addState('KERNEL', new KernelBootState(this.matrixRenderer));
+        this.fsm.addState('MENU', new MainMenuState());
     }
+
+    async start() {
+        try {
+            // Engage background processing
+            this.liquidRenderer.start();
+            
+            // Execute Sequence
+            await this.fsm.transitionTo('FLASH');
+            await this.fsm.transitionTo('STROBE');
+            await this.fsm.transitionTo('KERNEL');
+            await this.fsm.transitionTo('MENU');
+            
+        } catch (exception) {
+            console.error("FATAL KERNEL EXCEPTION IN STATE MACHINE", exception);
+            // Fallback UI rendering in case of catastrophic visual failure
+            document.getElementById('intro-master').style.display = 'none';
+            document.getElementById('strobe-layer').style.display = 'none';
+            document.getElementById('terminal-hud').style.display = 'none';
+            await this.fsm.transitionTo('MENU');
+        }
+    }
+}
+
+// ----------------------------------------------------------------------------
+// HARDWARE IGNITION
+// ----------------------------------------------------------------------------
+window.addEventListener('DOMContentLoaded', () => {
+    const kernel = new ApplicationCore();
+    kernel.start();
 });
 
 </script>
