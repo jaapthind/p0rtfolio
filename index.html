@@ -94,6 +94,7 @@
     animation: shimmerFlow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     pointer-events: none;
 }
+@keyframes rainbowGlow { 0% { border-color: hsl(0,100%,50%); } 33% { border-color: hsl(120,100%,50%); } 66% { border-color: hsl(240,100%,50%); } 100% { border-color: hsl(360,100%,50%); } }
 
 *, *::before, *::after {
     box-sizing: border-box;
@@ -179,6 +180,12 @@ html, body {
 #title-3 { -webkit-text-stroke: 2px var(--sys-color-accent-felix); text-shadow: 0 0 50px var(--sys-color-accent-felix); }
 #title-4 { -webkit-text-stroke: 2px var(--sys-color-accent-fruit); text-shadow: 0 0 50px var(--sys-color-accent-fruit); }
 #title-5 { -webkit-text-stroke: 2px var(--sys-color-accent-drop); text-shadow: 0 0 50px var(--sys-color-accent-drop); }
+#title-6 { -webkit-text-stroke: 2px var(--sys-color-accent-drop); text-shadow: 0 0 50px var(--sys-color-accent-drop); }
+#title-7 { -webkit-text-stroke: 2px var(--sys-color-accent-ice); text-shadow: 0 0 50px var(--sys-color-accent-ice); }
+#title-8 { -webkit-text-stroke: 2px var(--sys-color-accent-felix); text-shadow: 0 0 50px var(--sys-color-accent-felix); }
+#title-9 { -webkit-text-stroke: 2px var(--sys-color-accent-mars); text-shadow: 0 0 50px var(--sys-color-accent-mars); }
+#title-10 { -webkit-text-stroke: 2px var(--sys-color-accent-japa); text-shadow: 0 0 50px var(--sys-color-accent-japa); }
+#title-11 { -webkit-text-stroke: 2px var(--sys-color-accent-ice); text-shadow: 0 0 50px var(--sys-color-accent-ice); }
 
 /* Strobe */
 #strobe-layer {
@@ -420,6 +427,12 @@ html, body {
     <div id="title-3" class="flash-title">FELIX FART</div>
     <div id="title-4" class="flash-title">FRUIT SMASHER</div>
     <div id="title-5" class="flash-title">JAAPER DROPPER</div>
+    <div id="title-6" class="flash-title">ANDRES RACER</div>
+    <div id="title-7" class="flash-title">SOREN SOAR</div>
+    <div id="title-8" class="flash-title">WASTE SORT</div>
+    <div id="title-9" class="flash-title">WAR</div>
+    <div id="title-10" class="flash-title">DUMB TEST</div>
+    <div id="title-11" class="flash-title">SK</div>
 </div>
 <div id="terminal-hud"></div>
 
@@ -1160,12 +1173,7 @@ class MainMenuState {
             card.className = 'glass-card';
 
             // Hover Events
-            card.addEventListener('mouseenter', () => {
-                card.style.borderTopColor = node.hex;
-                card.style.borderLeftColor = node.hex;
-                const action = card.querySelector('.card-action');
-                if(action) action.style.color = node.hex;
-            });
+            card.addEventListener('mouseenter', () => { card.style.animation = 'rainbowGlow 0.5s linear infinite'; card.style.boxShadow = `0 0 30px ${node.hex}`; });
             card.addEventListener('mouseleave', () => {
                 card.style.borderTopColor = 'rgba(255,255,255,0.1)';
                 card.style.borderLeftColor = 'rgba(255,255,255,0.1)';
