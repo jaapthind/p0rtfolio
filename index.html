@@ -1301,7 +1301,8 @@ window.addEventListener('DOMContentLoaded', () => {
 /* JAAP_OS FAVICON KERNEL - ANIMATED CURSOR */
 /* JAAP_OS HYPER-CORE FAVICON - LIQUID SPECTRUM RING */
 /* JAAP_OS PINWHEEL FAVICON - RAINBOW LOADING CORE */
-const fv=document.createElement('canvas'),fx=fv.getContext('2d'),fl=document.createElement('link');fv.width=fv.height=32;fl.rel='icon';document.head.appendChild(fl);let ft=0;const fr=()=>{ft++;fx.clearRect(0,0,32,32);for(let i=0;i<12;i++){fx.save();fx.translate(16,16);fx.rotate((i*30)*Math.PI/180);const a=((i+Math.floor(ft/4))%12)/12;fx.globalAlpha=0.2+a*0.8;fx.beginPath();fx.strokeStyle=`hsl(${i*30},100%,60%)`;fx.lineWidth=4;fx.lineCap='round';fx.moveTo(0,-7);fx.lineTo(0,-13);fx.stroke();fx.restore()}fl.href=fv.toDataURL();requestAnimationFrame(fr)};fr();
+/* JAAP_OS CYBERNETIC EYE - MOUSE TRACKER KERNEL */
+const fv=document.createElement('canvas'),fx=fv.getContext('2d'),fl=document.createElement('link');fv.width=fv.height=32;fl.rel='icon';document.head.appendChild(fl);let mx=0,my=0;window.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});const fr=()=>{const cx=window.innerWidth/2,cy=window.innerHeight/2,ang=Math.atan2(my-cy,mx-cx),px=16+Math.cos(ang)*5,py=16+Math.sin(ang)*5;fx.clearRect(0,0,32,32);fx.beginPath();fx.arc(16,16,12,0,6.28);fx.strokeStyle='#00ffff';fx.lineWidth=2;fx.stroke();fx.beginPath();fx.arc(px,py,5,0,6.28);fx.fillStyle='#ff00ff';fx.shadowBlur=5;fx.shadowColor='#ff00ff';fx.fill();fl.href=fv.toDataURL();requestAnimationFrame(fr)};fr();
 </script>
 </body>
 </html>
