@@ -1245,18 +1245,20 @@ class MainMenuState {
 class ApplicationCore {
     constructor() {
         this.fsm = new StateMachine();
-               setInterval(() => { 
-                   const h = document.querySelector('.header-title'); 
-                   if(!h) return; 
-                   const orig = "JAAPS PortFOLIO"; // Use hardcoded string to prevent "chopping"
-                   let chars = orig.split('');
-                   for(let i=0; i<3; i++) {
-                       const r = Math.floor(Math.random() * chars.length);
-                       chars[r] = ["҂", "█", "▚", "0", "1"][Math.floor(Math.random() * 5)];
-                   }
-                   h.innerText = chars.join('');
-                   setTimeout(() => h.innerText = orig, 150); 
-               }, 2000);        // Initialize Graphics Pipelines
+               // Change 2000 to 100 for a constant "hacker" flicker
+                  setInterval(() => { 
+                      const h = document.querySelector('.header-title'); 
+                      if(!h) return; 
+                      const orig = "JAAPS PortFOLIO"; 
+                      let chars = orig.split('');
+                      // Increase '3' to '6' to corrupt more characters at once
+                      for(let i=0; i<4; i++) {
+                          const r = Math.floor(Math.random() * chars.length);
+                          chars[r] = ["҂", "█", "▚", "0", "1", "╬", "§"][Math.floor(Math.random() * 7)];
+                      }
+                      h.innerText = chars.join('');
+                      setTimeout(() => h.innerText = orig, 80); // Snap back slightly faster
+                  }, 200);      // Initialize Graphics Pipelines
         this.liquidRenderer = new LiquidGlassRenderer('canvas-liquid-glass');
         this.matrixRenderer = new MatrixStreamRenderer('canvas-matrix');
         
