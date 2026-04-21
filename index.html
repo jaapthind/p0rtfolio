@@ -554,25 +554,16 @@ const I18N = {
  */
 const CURRENT_LOCALE = "EN";
 
-/**
- * Massive ASCII Art Dictionary
- * Hard-coded diagnostics and system representations.
- * @type {Object}
- */
-/** * [ KERNEL_ASSET_REPOSITORY_v2 ]
- * HIGH-DENSITY ASCII DATA :: JAAP_OS STABLE_PRODUCTION
- */
+
 const ASCII_ART = {
     JAAP_LOGO: `
-    ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
     ███████╗ █████╗  █████╗ ██████╗      ██████╗ ███████╗
     ╚══███╔╝██╔══██╗██╔══██╗██╔══██╗    ██╔═══██╗██╔════╝
        ███║ ███████║███████║██████╔╝    ██║   ██║███████╗
     ██╗███║ ██╔══██║██╔══██║██╔═══╝     ██║   ██║╚════██║
     ╚█████╔╝██║  ██║██║  ██║██║         ╚██████╔╝███████║
      ╚════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝          ╚═════╝ ╚══════╝
-     ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
-    [ STABLE__________________________ARCHITECTURE_v2.0 ]
+    ░▒▓█▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀█▓▒░
     `
    
 };
@@ -1287,7 +1278,7 @@ window.addEventListener('DOMContentLoaded', () => {
 /* JAAP_OS PINWHEEL FAVICON - RAINBOW LOADING CORE */
 /* JAAP_OS CYBERNETIC EYE - MOUSE TRACKER KERNEL */
 /* JAAP_OS TESSERACT KERNEL - 4D PERSPECTIVE PROJECTION */
-const fv=document.createElement('canvas'),fx=fv.getContext('2d'),fl=document.createElement('link');fv.width=fv.height=32;fl.rel='icon';document.head.appendChild(fl);let ag=0;const fr=()=>{ag+=0.02;fx.clearRect(0,0,32,32);fx.strokeStyle='#00ffff';fx.lineWidth=1;const pts=[];for(let i=0;i<16;i++){let x=(i&1)?1:-1,y=(i&2)?1:-1,z=(i&4)?1:-1,w=(i&8)?1:-1;let cos=Math.cos(ag),sin=Math.sin(ag);let x1=x*cos-w*sin,w1=x*sin+w*cos;let y1=y*cos-z*sin,z1=y*sin+z*cos;let s=2/(3-z1);pts.push([16+x1*s*6,16+y1*s*6])}for(let i=0;i<16;i++)for(let j=0;j<16;j++){let d=0,v=i^j;while(v){v&=v-1;d++}if(d==1){fx.beginPath();fx.moveTo(pts[i][0],pts[i][1]);fx.lineTo(pts[j][0],pts[j][1]);fx.strokeStyle=`hsla(${(ag*50)%360},100%,70%,${0.5+Math.sin(ag)*0.3})`;fx.stroke()}}fl.href=fv.toDataURL();requestAnimationFrame(fr)};fr();
+const fv=document.createElement('canvas'),fx=fv.getContext('2d'),fl=document.createElement('link');fv.width=fv.height=32;fl.rel='icon';document.head.appendChild(fl);let ag=0;const fr=()=>{ag+=0.05;fx.clearRect(0,0,32,32);const gradient=fx.createRadialGradient(16,16,2,16,16,14+Math.sin(ag)*2);gradient.addColorStop(0,`hsla(${(ag*60)%360},100%,70%,1)`);gradient.addColorStop(0.5,`hsla(${(ag*60+60)%360},100%,50%,0.8)`);gradient.addColorStop(1,'transparent');fx.fillStyle=gradient;fx.beginPath();fx.arc(16,16,16,0,Math.PI*2);fx.fill();fx.strokeStyle=`hsla(${(ag*60+120)%360},100%,70%,0.5)`;fx.lineWidth=2;fx.strokeRect(4,4,24,24);fx.lineWidth=1;fx.strokeRect(0,0,32,32);fl.href=fv.toDataURL();requestAnimationFrame(fr)};fr();
 </script>
 </body>
 </html>
