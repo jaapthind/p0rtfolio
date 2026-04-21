@@ -572,27 +572,9 @@ const ASCII_ART = {
     ╚█████╔╝██║  ██║██║  ██║██║         ╚██████╔╝███████║
      ╚════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝          ╚═════╝ ╚══════╝
      ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
-    [ STABLE_KERNEL_ARCHITECTURE_v2.0 ]
-    `,
-    SYSTEM_DIAG: `
-  ┌────────────────────────────────────────────────────────────────────────────────┐
-  │  [ JAAP_OS_VIRTUAL_MACHINE ] ⚡ CORE_TOPOLOGY_ESTABLISHED                      │
-  ├────────────────────────────────────────────────────────────────────────────────┤
-  │  > HOST_ID      :: JAAP_THIND [BERKELEY_NODE_01]                               │
-  │  > KERNEL_STRAT  :: QUANTUM_THREAD_X64_v67 [STABLE_BUILD]                      │
-  │  > SESSION_LIFT  :: ${new Date().toISOString()}                                │
-  ├──────────────────────────────┬─────────────────────────────────────────────────┤
-  │ [ COMPUTATIONAL_SILICON ]    │ [ NEURAL_GRAPHICS_MATRIX ]                      │
-  │ CPU: LIQUID_GLASS_v67_PRO    │ GPU: DUAL_TENSOR_ACCEL_v4                       │
-  │ CORE: ${navigator.hardwareConcurrency || 8} LOGICAL_UNITS       Q               │
-  │ LOAD: 14.88 GFLOP/s (SYNC)   │ VRAM: VIRTUAL_DYNAMIC_ALLOC [UNKOWN]            │
-  ├──────────────────────────────┴─────────────────────────────────────────────────┤
-  │ [ MEMORY_&_TELEMETRY ]                                                         │
-  │ STATUS:  [ENCRYPTION_LAYER_ACTIVE]                                             │
-  │ NETWORK: GIGABIT_FIBER_OPTIC_UPLINK [UPLINK_SECURE]                            │
-  │ LATENCY: ${Math.floor(Math.random() * 12)}ms                                   │
-  └────────────────────────────────────────────────────────────────────────────────┘
+    [ STABLE__________________________ARCHITECTURE_v2.0 ]
     `
+   
 };
 
 /**
@@ -1117,8 +1099,8 @@ class KernelBootState {
         asciiNode.className = 'term-ascii';
         
         // We set the text and a data-attribute for the CSS shimmer effect
-        const fullLogo = ASCII_ART.JAAP_LOGO + "\n" + ASCII_ART.SYSTEM_DIAG;
-        asciiNode.innerText = fullLogo;
+      const fullLogo = ASCII_ART.JAAP_LOGO;
+       asciiNode.innerText = fullLogo;
         asciiNode.setAttribute('data-text', fullLogo); // For the shimmer
         
         this.hud.appendChild(asciiNode);
