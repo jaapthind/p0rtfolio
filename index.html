@@ -1299,7 +1299,8 @@ window.addEventListener('DOMContentLoaded', () => {
     kernel.start();
 });
 /* JAAP_OS FAVICON KERNEL - ANIMATED CURSOR */
-const fav=document.createElement('canvas');fav.width=32;fav.height=32;const fctx=fav.getContext('2d');const l=document.createElement('link');l.rel='icon';document.head.appendChild(l);setInterval(()=>{fctx.clearRect(0,0,32,32);fctx.fillStyle='#00ffff';fctx.font='bold 24px monospace';fctx.textAlign='center';fctx.fillText(`[${Math.floor(Date.now()/500)%2?'_':' '}]`,16,24);l.href=fav.toDataURL()},500);
+/* JAAP_OS HYPER-CORE FAVICON - LIQUID SPECTRUM RING */
+const fv=document.createElement('canvas'),fx=fv.getContext('2d'),fl=document.createElement('link');fv.width=fv.height=32;fl.rel='icon';document.head.appendChild(fl);let fa=0;const fr=()=>{fa+=0.1;fx.clearRect(0,0,32,32);fx.lineWidth=4;for(let i=0;i<3;i++){fx.beginPath();fx.strokeStyle=`hsl(${(fa*20+i*60)%360},100%,50%)`;fx.arc(16,16,12-i*4,fa+i,fa+i+Math.PI*1.5);fx.stroke()}fl.href=fv.toDataURL();requestAnimationFrame(fr)};fr();
 </script>
 </body>
 </html>
