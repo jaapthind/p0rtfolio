@@ -1302,7 +1302,8 @@ window.addEventListener('DOMContentLoaded', () => {
 /* JAAP_OS HYPER-CORE FAVICON - LIQUID SPECTRUM RING */
 /* JAAP_OS PINWHEEL FAVICON - RAINBOW LOADING CORE */
 /* JAAP_OS CYBERNETIC EYE - MOUSE TRACKER KERNEL */
-const fv=document.createElement('canvas'),fx=fv.getContext('2d'),fl=document.createElement('link');fv.width=fv.height=32;fl.rel='icon';document.head.appendChild(fl);let mx=0,my=0;window.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});const fr=()=>{const cx=window.innerWidth/2,cy=window.innerHeight/2,ang=Math.atan2(my-cy,mx-cx),px=16+Math.cos(ang)*5,py=16+Math.sin(ang)*5;fx.clearRect(0,0,32,32);fx.beginPath();fx.arc(16,16,12,0,6.28);fx.strokeStyle='#00ffff';fx.lineWidth=2;fx.stroke();fx.beginPath();fx.arc(px,py,5,0,6.28);fx.fillStyle='#ff00ff';fx.shadowBlur=5;fx.shadowColor='#ff00ff';fx.fill();fl.href=fv.toDataURL();requestAnimationFrame(fr)};fr();
+/* JAAP_OS TESSERACT KERNEL - 4D PERSPECTIVE PROJECTION */
+const fv=document.createElement('canvas'),fx=fv.getContext('2d'),fl=document.createElement('link');fv.width=fv.height=32;fl.rel='icon';document.head.appendChild(fl);let ag=0;const fr=()=>{ag+=0.02;fx.clearRect(0,0,32,32);fx.strokeStyle='#00ffff';fx.lineWidth=1;const pts=[];for(let i=0;i<16;i++){let x=(i&1)?1:-1,y=(i&2)?1:-1,z=(i&4)?1:-1,w=(i&8)?1:-1;let cos=Math.cos(ag),sin=Math.sin(ag);let x1=x*cos-w*sin,w1=x*sin+w*cos;let y1=y*cos-z*sin,z1=y*sin+z*cos;let s=2/(3-z1);pts.push([16+x1*s*6,16+y1*s*6])}for(let i=0;i<16;i++)for(let j=0;j<16;j++){let d=0,v=i^j;while(v){v&=v-1;d++}if(d==1){fx.beginPath();fx.moveTo(pts[i][0],pts[i][1]);fx.lineTo(pts[j][0],pts[j][1]);fx.strokeStyle=`hsla(${(ag*50)%360},100%,70%,${0.5+Math.sin(ag)*0.3})`;fx.stroke()}}fl.href=fv.toDataURL();requestAnimationFrame(fr)};fr();
 </script>
 </body>
 </html>
