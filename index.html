@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>JAAP_OS // ENTERPRISE PROTFOLIO KERNEL</title>
+<title>JAAP p0rtfolio</title>
 <style>
 /* ==========================================================================
    ENTERPRISE CSS ARCHITECTURE
@@ -188,6 +188,8 @@ html, body {
 #title-11 { -webkit-text-stroke: 2px var(--sys-color-accent-ice); text-shadow: 0 0 50px var(--sys-color-accent-ice); }
 #title-12 { -webkit-text-stroke: 2px var(--sys-color-accent-ice); text-shadow: 0 0 50px var(--sys-color-accent-ice); }
 #title-13 { -webkit-text-stroke: 2px var(--sys-color-accent-ice); text-shadow: 0 0 50px var(--sys-color-accent-ice); }
+#title-14 { -webkit-text-stroke: 2px var(--sys-color-accent-ice); text-shadow: 0 0 50px var(--sys-color-accent-ice); }
+
 
 
 
@@ -338,7 +340,7 @@ html, body {
     background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.01));
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
-    border-radius: 20px;
+    border-radius: 50px;
     border: 1px solid rgba(255,255,255,0.1);
     padding: 40px;
     height: 380px;
@@ -439,6 +441,7 @@ html, body {
     <div id="title-11" class="flash-title">3D BUMPER CAR</div>
     <div id="title-12" class="flash-title">EMULATION ERIC</div>
     <div id="title-13" class="flash-title">WAR2</div>
+   <div id="title-14" class="flash-title">MULTIPLAYER WARS</div>
 </div>
 <div id="terminal-hud"></div>
 
@@ -479,7 +482,7 @@ const SYS_CONFIG = {
     VERSION: "9.9.4-PROD",
     DEBUG_LOGGING: false,
     TIMING: {
-        FLASH_INTERVAL_MS: 300,
+        FLASH_INTERVAL_MS: 650,
         STROBE_DURATION_MS: 1500,
         BOOT_DURATION_MS: 6700,
         TOTAL_MIN_INTRO_MS: 10000
@@ -656,8 +659,10 @@ const INVENTORY_DB = [
     new PortfolioNode("JAAP-11", "WAR", "https://jaapthind.github.io/WAR/", "var(--sys-color-accent-mars)", false, "fun game", 31.2),
     new PortfolioNode("JAAP-12", "DUMB TEST", "https://jaapthind.github.io/dumbtest/", "var(--sys-color-accent-japa)", false, "Neural/Logic", 5.7),
     new PortfolioNode("JAAP-13", "SK", "https://jaapthind.github.io/SK/", "var(--sys-color-accent-ice)", false, "Kernel/Low-Level", 44.9),
-    new PortfolioNode("JAAP-14", "EMULATION ERIC", "https://jaapthind.github.io/EmulationEric/", "var(--sys-color-accent-ice)", false, "Kernel/Low-Level", 44.9),
-    new PortfolioNode("JAAP-15", "WAR2", "https://jaapthind.github.io/war2/", "var(--sys-color-accent-ice)", false, "Kernel/Low-Level", 44.9)
+    new PortfolioNode("JAAP-14", "EMULATION ERIC", "https://jaapthind.github.io/EmulationEric/", "var(--sys-color-accent-ice)", false, "drawing/Canvas", 62.9),
+    new PortfolioNode("JAAP-15", "WAR2", "https://jaapthind.github.io/war2/", "var(--sys-color-accent-ice)", false, "Kernel/Low-Level", 31.6),
+    new PortfolioNode("JAAP-16", "MULTIPLAYER WARS", "https://jaapthind.github.io/2PLAYERhub/", "var(--sys-color-accent-ice)", false, "Kernel/Low-Level", 12.6)
+
 
 ];
 
@@ -1293,7 +1298,8 @@ window.addEventListener('DOMContentLoaded', () => {
     let f=0,ls=performance.now(); const fps=()=>{f++;let n=performance.now();if(n-ls>=1000){if(document.getElementById('fps-v'))document.getElementById('fps-v').innerText=f;f=0;ls=n;}requestAnimationFrame(fps);};fps();
     kernel.start();
 });
-
+/* JAAP_OS FAVICON KERNEL - ANIMATED CURSOR */
+const fav=document.createElement('canvas');fav.width=32;fav.height=32;const fctx=fav.getContext('2d');const l=document.createElement('link');l.rel='icon';document.head.appendChild(l);setInterval(()=>{fctx.clearRect(0,0,32,32);fctx.fillStyle='#00ffff';fctx.font='bold 24px monospace';fctx.textAlign='center';fctx.fillText(`[${Math.floor(Date.now()/500)%2?'_':' '}]`,16,24);l.href=fav.toDataURL()},500);
 </script>
 </body>
 </html>
