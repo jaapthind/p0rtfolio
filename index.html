@@ -515,6 +515,75 @@ html, body {
         padding: 8px;
     }
 }
+   /* ==========================================================================
+   JAAP_OS MOBILE ADAPTIVE ENGINE
+   ========================================================================== */
+@media (max-width: 768px) {
+    /* Adjust Main Wrapper padding for small screens */
+    #main-ui-wrapper {
+        padding: 80px 10px 40px 10px;
+    }
+
+    /* Shrink the Header for mobile */
+    .ui-header {
+        padding: 25px 15px;
+        margin-bottom: 30px;
+        border-radius: 16px;
+    }
+
+    .header-title {
+        font-size: clamp(1.5rem, 10vw, 3rem);
+        letter-spacing: 2px;
+    }
+
+    .header-subtitle {
+        font-size: 0.7rem;
+        letter-spacing: 1px;
+    }
+
+    /* Force Grid to single column and shrink cards */
+    .game-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .glass-card {
+        height: auto;
+        min-height: 280px;
+        padding: 25px;
+        border-radius: 30px;
+    }
+
+    .card-title {
+        font-size: 1.8rem;
+    }
+
+    .card-meta {
+        font-size: 0.7rem;
+    }
+
+    /* Optimize Background for Mobile Performance */
+    #canvas-liquid-glass {
+        filter: blur(8px) contrast(1.1); /* Heavier blur saves GPU cycles */
+    }
+
+    /* Reposition Music Widget for Mobile Thumb Access */
+    #music-widget {
+        top: auto;
+        bottom: 20px; /* Move to bottom for easier reach */
+        left: 10px;
+        width: calc(100vw - 20px);
+        height: 65px;
+        border-radius: 12px;
+        background: rgba(10, 15, 20, 0.9); /* More opaque for readability */
+    }
+}
+
+/* Landscape Mode Fix */
+@media (max-height: 500px) and (orientation: landscape) {
+    .ui-header { display: none; } /* Hide header to save space for games */
+    #main-ui-wrapper { padding-top: 20px; }
+}
 
 </style>
 </head>
