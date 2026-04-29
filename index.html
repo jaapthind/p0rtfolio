@@ -421,12 +421,12 @@ html, body {
 ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
 
 
-   #music-widget {
+ #music-widget {
     position: fixed; 
     top: 20px; 
     left: 20px; 
-    /* Dynamic fluid sizing for mobile compatibility */
-    width: clamp(240px, 40vw, 380px); 
+    /* PRE-SCALED: 25% narrower natively on page load */
+    width: clamp(180px, 30vw, 285px); 
     height: clamp(60px, 10vh, 80px);
     background: linear-gradient(135deg, rgba(10, 15, 20, 0.75), rgba(0, 5, 10, 0.9));
     backdrop-filter: blur(25px); 
@@ -440,7 +440,7 @@ html, body {
     cursor: pointer; 
     box-shadow: 0 10px 40px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.05);
     transform-origin: center center;
-    transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s;
+    transition: background 0.3s;
     overflow: hidden;
 }
 
@@ -448,6 +448,7 @@ html, body {
     background: linear-gradient(135deg, rgba(0, 255, 204, 0.15), rgba(255, 0, 85, 0.1)); 
     border-color: rgba(0, 255, 204, 0.8); 
 }
+   
 
 #album-art { 
     width: clamp(40px, 12vw, 56px); 
@@ -623,7 +624,7 @@ html, body {
 <div id="main-ui-wrapper">
     <header class="ui-header">
         <h1 class="header-title">JAAP'S PortFOLIO</h1>
-        <div class="header-subtitle">[ V9.9.4 ] UPLINK_ESTABLISHED // BYPASS_COMPLETE // SYSTEM_LIVE</div>
+        <div class="header-subtitle">[ STATUS ] SYSTEM_LIVE // KERNEL_UPLINK: ▣▣▣▣ // BYPASS: 100% // ENTROPY: 0.042</div>
     </header>
     <main class="game-grid" id="grid-container"></main>
 </div>
@@ -1404,11 +1405,10 @@ class ApplicationCore {
                       // Increase '3' to '6' to corrupt more characters at once
                       for(let i=0; i<4; i++) {
                           const r = Math.floor(Math.random() * chars.length);
-                          chars[r] = ["҂", "█", "▚", "0", "1", "╬", "§"][Math.floor(Math.random() * 7)];
-                      }
+                        chars[r] = ["█", "▓", "▒", "░", "▖", "▗", "▘", "▙", "▚", "▛", "▜", "▝", "▞", "▟", "┼", "╬", "═", "║", "┌", "┐", "└", "┘", "┤", "├", "┬", "┴", "Δ", "Ω", "Σ", "Π", "Φ", "Ψ", "λ", "μ", "θ", "ξ", "δ", "∅", "∞", "√", "≈", "≠", "≤", "≥", "҂", "֎", "۞", "۝", "ꙮ", "§"][Math.floor(Math.random() * 50)];                      }
                       h.innerText = chars.join('');
-                      setTimeout(() => h.innerText = orig, 80); // Snap back slightly faster
-                  }, 200);      // Initialize Graphics Pipelines
+                      setTimeout(() => h.innerText = orig, 200); // Snap back slightly faster
+                  }, 500);      // Initialize Graphics Pipelines
         this.liquidRenderer = new LiquidGlassRenderer('canvas-liquid-glass');
         this.matrixRenderer = new MatrixStreamRenderer('canvas-matrix');
         
@@ -1458,17 +1458,12 @@ window.addEventListener('DOMContentLoaded', () => {
 const fv=document.createElement('canvas'),fx=fv.getContext('2d'),fl=document.createElement('link');fv.width=fv.height=32;fl.rel='icon';document.head.appendChild(fl);let ag=0;const fr=()=>{ag+=0.05;fx.clearRect(0,0,32,32);const gradient=fx.createRadialGradient(16,16,2,16,16,14+Math.sin(ag)*2);gradient.addColorStop(0,`hsla(${(ag*60)%360},100%,70%,1)`);gradient.addColorStop(0.5,`hsla(${(ag*60+60)%360},100%,50%,0.8)`);gradient.addColorStop(1,'transparent');fx.fillStyle=gradient;fx.beginPath();fx.arc(16,16,16,0,Math.PI*2);fx.fill();fx.strokeStyle=`hsla(${(ag*60+120)%360},100%,70%,0.5)`;fx.lineWidth=2;fx.strokeRect(4,4,24,24);fx.lineWidth=1;fx.strokeRect(0,0,32,32);fl.href=fv.toDataURL();requestAnimationFrame(fr)};fr();
 let audioCtx, analyser, dataArray, source;
 let isInitialized = false;
-let rattleDecay = 0;
+let peaks = []; // Stores the positions of the Liquid Glass gravity peaks
 
 function initAudio() {
     const audio = document.getElementById('bg-audio');
     const canvas = document.getElementById('viz-canvas');
     const ctx = canvas.getContext('2d');
-    const widget = document.getElementById('music-widget');
-    const albumArt = document.getElementById('album-art');
-
-    // Dynamically make widget 25% less wide
-    widget.style.width = "clamp(180px, 30vw, 285px)";
 
     if (!isInitialized) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1477,9 +1472,14 @@ function initAudio() {
         source.connect(analyser);
         analyser.connect(audioCtx.destination);
         
+        // High resolution matrix processing
         analyser.fftSize = 2048; 
         analyser.smoothingTimeConstant = 0.85; 
         dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+        // Seed 120 gravity peaks
+        for(let i = 0; i < 120; i++) peaks.push(0);
+
         isInitialized = true;
     }
 
@@ -1489,14 +1489,14 @@ function initAudio() {
         audio.pause(); 
     }
 
-    let beatThreshold = 165;
-    let beatHold = 0;
-    const NUM_BARS = 120; // Exactly 120 bars
+    const NUM_BARS = 120;
+    const GRAVITY = 1.2;
 
     function draw() {
         if (audio.paused) return;
         requestAnimationFrame(draw);
         
+        // Auto-scale internal canvas resolution
         const rect = canvas.getBoundingClientRect();
         if (canvas.width !== rect.width || canvas.height !== rect.height) {
             canvas.width = rect.width;
@@ -1506,52 +1506,31 @@ function initAudio() {
         analyser.getByteFrequencyData(dataArray);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // BEAT DETECTION LOGIC
-        let subBass = 0;
-        for(let i = 2; i < 6; i++) subBass += dataArray[i]; 
-        subBass /= 4;
-
-        if (subBass > beatThreshold && beatHold === 0) {
-            rattleDecay = 1.0; // Trigger the fluid rattle
-            beatHold = 22; 
-            beatThreshold = subBass * 1.05; 
-        }
-
-        // SMOOTH FLUID RATTLE PHYSICS
-        if (rattleDecay > 0.01) {
-            rattleDecay *= 0.88; // Exponential smoothing decay
-            
-            // Calculate organic sine-wave oscillations based on time and decay
-            const offsetX = Math.sin(Date.now() / 25) * rattleDecay * 5;
-            const offsetY = Math.cos(Date.now() / 20) * rattleDecay * 3;
-            const rotation = Math.sin(Date.now() / 35) * rattleDecay * 2.5;
-            const scale = 1 + (rattleDecay * 0.04);
-            
-            widget.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(${rotation}deg) scale(${scale})`;
-            albumArt.style.transform = `scale(${1 + rattleDecay * 0.15})`;
-        } else {
-            widget.style.transform = "translate(0px, 0px) rotate(0deg) scale(1)";
-            albumArt.style.transform = "scale(1)";
-        }
-
-        beatThreshold = Math.max(130, beatThreshold - 2); 
-        if (beatHold > 0) beatHold--;
-
-        // 120 LIQUID ROUNDED RAINBOW BARS
+        // 120 ADVANCED LIQUID GLASS BARS (NO WIDGET SHAKE)
         const barWidth = (canvas.width / NUM_BARS) * 0.75;
         const spacing = (canvas.width / NUM_BARS) * 0.25;
         let x = 0;
 
         for (let i = 0; i < NUM_BARS; i++) {
+            // Sample bottom 40% of frequencies for better visual response to music
             const dataIndex = Math.floor(i * (dataArray.length * 0.4) / NUM_BARS);
             let v = dataArray[dataIndex];
 
-            const barHeight = (v / 255) * canvas.height;
-            const actualHeight = Math.max(barHeight, 2);
+            const targetHeight = (v / 255) * canvas.height;
+            const actualHeight = Math.max(targetHeight, 2);
+
+            // Gravity Peak Physics
+            if (actualHeight >= peaks[i]) {
+                peaks[i] = actualHeight;
+            } else {
+                peaks[i] -= GRAVITY; // Fall down smoothly
+                if (peaks[i] < actualHeight) peaks[i] = actualHeight;
+            }
 
             const hue = (i * 3 + Date.now() / 15) % 360;
 
-            ctx.fillStyle = `hsla(${hue}, 100%, 55%, 0.9)`;
+            // LAYER 1: The Translucent Liquid Bar
+            ctx.fillStyle = `hsla(${hue}, 100%, 55%, 0.85)`;
             ctx.beginPath();
             if (ctx.roundRect) {
                 ctx.roundRect(x, canvas.height - actualHeight, barWidth, actualHeight, [4, 4, 0, 0]);
@@ -1559,6 +1538,20 @@ function initAudio() {
                 ctx.fillRect(x, canvas.height - actualHeight, barWidth, actualHeight);
             }
             ctx.fill();
+
+            // LAYER 2: The Glowing Glass Peak Dot
+            const peakY = canvas.height - peaks[i] - 2;
+            ctx.fillStyle = `hsla(${hue}, 100%, 85%, 1)`;
+            ctx.shadowBlur = 5;
+            ctx.shadowColor = `hsla(${hue}, 100%, 50%, 0.8)`;
+            ctx.beginPath();
+            if (ctx.roundRect) {
+                ctx.roundRect(x, peakY, barWidth, 3, [2]);
+            } else {
+                ctx.fillRect(x, peakY, barWidth, 3);
+            }
+            ctx.fill();
+            ctx.shadowBlur = 0; // Reset shadow for next loop
 
             x += barWidth + spacing;
         }
