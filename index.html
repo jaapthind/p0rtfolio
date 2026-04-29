@@ -1389,9 +1389,8 @@ window.addEventListener('DOMContentLoaded', () => {
 const fv=document.createElement('canvas'),fx=fv.getContext('2d'),fl=document.createElement('link');fv.width=fv.height=32;fl.rel='icon';document.head.appendChild(fl);let ag=0;const fr=()=>{ag+=0.05;fx.clearRect(0,0,32,32);const gradient=fx.createRadialGradient(16,16,2,16,16,14+Math.sin(ag)*2);gradient.addColorStop(0,`hsla(${(ag*60)%360},100%,70%,1)`);gradient.addColorStop(0.5,`hsla(${(ag*60+60)%360},100%,50%,0.8)`);gradient.addColorStop(1,'transparent');fx.fillStyle=gradient;fx.beginPath();fx.arc(16,16,16,0,Math.PI*2);fx.fill();fx.strokeStyle=`hsla(${(ag*60+120)%360},100%,70%,0.5)`;fx.lineWidth=2;fx.strokeRect(4,4,24,24);fx.lineWidth=1;fx.strokeRect(0,0,32,32);fl.href=fv.toDataURL();requestAnimationFrame(fr)};fr();
 let audioCtx, analyser, dataArray, source;
 let isInitialized = false;
-let peaks = [];
-let peakVelocities = [];
-let internalParticles = [];
+let currentScale = 1;
+let currentRotation = 0;
 
 function initAudio() {
     const audio = document.getElementById('bg-audio');
@@ -1407,28 +1406,9 @@ function initAudio() {
         source.connect(analyser);
         analyser.connect(audioCtx.destination);
         
-        // 2048 point FFT for supreme mathematical precision
         analyser.fftSize = 2048; 
-        analyser.smoothingTimeConstant = 0.82; 
+        analyser.smoothingTimeConstant = 0.85; 
         dataArray = new Uint8Array(analyser.frequencyBinCount);
-
-        // Pre-allocate memory for 130 exact bars and their physics models
-        for(let i = 0; i < 130; i++) {
-            peaks.push(0);
-            peakVelocities.push(0);
-        }
-
-        // Seed micro-particles for inside the visualizer screen
-        for(let i = 0; i < 40; i++) {
-            internalParticles.push({
-                x: Math.random() * 500, // Safe bound before dynamic resize
-                y: Math.random() * 100,
-                vx: (Math.random() - 0.5) * 2,
-                vy: (Math.random() - 0.5) * 2,
-                life: Math.random() * 100,
-                hueOffset: Math.random() * 60
-            });
-        }
         isInitialized = true;
     }
 
@@ -1438,18 +1418,14 @@ function initAudio() {
         audio.pause(); 
     }
 
-    // Advanced Matrix Math Variables
-    let beatThreshold = 180;
+    let beatThreshold = 175;
     let beatHold = 0;
-    const NUM_BARS = 130;
-    const GRAVITY = 0.85;
-    const SPRING_TENSION = 0.15;
+    const NUM_BARS = 120; // Exactly 120 bars
 
     function draw() {
         if (audio.paused) return;
         requestAnimationFrame(draw);
         
-        // Fix internal resolution of canvas dynamically based on CSS size
         const rect = canvas.getBoundingClientRect();
         if (canvas.width !== rect.width || canvas.height !== rect.height) {
             canvas.width = rect.width;
@@ -1459,81 +1435,44 @@ function initAudio() {
         analyser.getByteFrequencyData(dataArray);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // MULTI-BAND ISOLATION MATH
-        let subBass = 0, midRange = 0, treble = 0;
-        for(let i = 2; i < 8; i++) subBass += dataArray[i]; // Deep kicks
-        for(let i = 20; i < 60; i++) midRange += dataArray[i]; // Vocals/Synths
-        for(let i = 150; i < 250; i++) treble += dataArray[i]; // Hats/Snares
-        
-        subBass /= 6;
-        midRange /= 40;
-        treble /= 100;
+        // BEAT DETECTION
+        let subBass = 0;
+        for(let i = 2; i < 6; i++) subBass += dataArray[i]; 
+        subBass /= 4;
 
-        // DYNAMIC BEAT WOBBLE LOGIC
-        let isBeat = false;
+        // FLUID SPRING WOBBLE PHYSICS
         if (subBass > beatThreshold && beatHold === 0) {
-            isBeat = true;
-            beatHold = 22; // Frames to ignore subsequent bass calculations
-            beatThreshold = subBass * 1.08; // Auto-scaling threshold
-            
-            // Trigger DOM animations
-            widget.classList.remove('wobble-active');
-            void widget.offsetWidth; // Force CSS reflow to restart animation
-            widget.classList.add('wobble-active');
-            
-            // Pulse the album art
-            albumArt.style.transform = `scale(${1 + (subBass/1000)}) rotate(${Math.random() > 0.5 ? 5 : -5}deg)`;
-        } else {
-            albumArt.style.transform = "scale(1) rotate(0deg)";
+            currentScale = 1.08; // Punch out
+            currentRotation = (Math.random() > 0.5 ? 1 : -1) * 2; // Slight random tilt
+            beatHold = 20; 
+            beatThreshold = subBass * 1.05; 
+            albumArt.style.transform = `scale(1.1) rotate(${currentRotation * 2}deg)`;
         }
 
-        beatThreshold = Math.max(140, beatThreshold - 2.5); // Fast decay
+        // Smoothly decay back to normal
+        currentScale += (1 - currentScale) * 0.15; 
+        currentRotation += (0 - currentRotation) * 0.15;
+        
+        widget.style.transform = `scale(${currentScale}) rotate(${currentRotation}deg)`;
+        if (currentScale < 1.01) albumArt.style.transform = "scale(1) rotate(0deg)";
+
+        beatThreshold = Math.max(130, beatThreshold - 2); 
         if (beatHold > 0) beatHold--;
 
-        // INTERNAL PARTICLE SYSTEM (Reacts to Treble/Mids)
-        internalParticles.forEach(p => {
-            p.x += p.vx * (1 + treble * 0.05);
-            p.y += p.vy * (1 + midRange * 0.05);
-            p.life -= 1.5;
-
-            if (p.x < 0 || p.x > canvas.width || p.y < 0 || p.y > canvas.height || p.life <= 0) {
-                p.x = Math.random() * canvas.width;
-                p.y = isBeat ? canvas.height : Math.random() * canvas.height;
-                p.vx = (Math.random() - 0.5) * (isBeat ? 8 : 2);
-                p.vy = (Math.random() - 0.5) * (isBeat ? 8 : 2);
-                p.life = 100;
-            }
-
-            ctx.fillStyle = `hsla(${(Date.now()/10 + p.hueOffset) % 360}, 100%, 70%, ${p.life/100})`;
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, (treble / 50) + 1, 0, Math.PI*2);
-            ctx.fill();
-        });
-
-        // 130 ULTRA-SMOOTH ROUNDED RAINBOW BARS WITH SPRING PHYSICS
-        const barWidth = (canvas.width / NUM_BARS) * 0.8;
-        const spacing = (canvas.width / NUM_BARS) * 0.2;
+        // 120 SIMPLE ROUNDED RAINBOW BARS
+        const barWidth = (canvas.width / NUM_BARS) * 0.75;
+        const spacing = (canvas.width / NUM_BARS) * 0.25;
         let x = 0;
 
         for (let i = 0; i < NUM_BARS; i++) {
-            // Logarithmic frequency mapping for visual balance
-            const logIndex = Math.floor(Math.pow(i / NUM_BARS, 1.5) * (dataArray.length * 0.35));
-            let targetHeight = (dataArray[logIndex] / 255) * canvas.height * (isBeat ? 1.15 : 1);
-            let actualHeight = Math.max(targetHeight, 2);
+            const dataIndex = Math.floor(i * (dataArray.length * 0.4) / NUM_BARS);
+            let v = dataArray[dataIndex];
 
-            // Advanced Spring-Loaded Gravity Peak Math
-            if (actualHeight >= peaks[i]) {
-                peaks[i] = actualHeight;
-                peakVelocities[i] = (isBeat ? 4 : 1); // Upward punch
-            } else {
-                peakVelocities[i] -= GRAVITY * 0.2; // Acceleration
-                peaks[i] += peakVelocities[i]; // Velocity application
-                if (peaks[i] < actualHeight) peaks[i] = actualHeight; // Floor collision
-            }
+            const barHeight = (v / 255) * canvas.height;
+            const actualHeight = Math.max(barHeight, 2);
 
-            const hue = (i * 2.7 + Date.now() / 12 + (isBeat ? 40 : 0)) % 360;
+            const hue = (i * 3 + Date.now() / 15) % 360;
 
-            // Render Liquid Main Bar
             ctx.fillStyle = `hsla(${hue}, 100%, 55%, 0.9)`;
             ctx.beginPath();
             if (ctx.roundRect) {
@@ -1543,27 +1482,11 @@ function initAudio() {
             }
             ctx.fill();
 
-            // Render Independent Kinematic Peak Dot
-            const peakY = canvas.height - peaks[i] - 2;
-            const peakGlow = Math.min(100, 50 + (peakVelocities[i] * 10));
-            ctx.fillStyle = `hsla(${hue}, 100%, ${peakGlow}%, 1)`;
-            ctx.shadowBlur = 8;
-            ctx.shadowColor = `hsla(${hue}, 100%, 50%, 0.8)`;
-            ctx.beginPath();
-            if (ctx.roundRect) {
-                ctx.roundRect(x, peakY, barWidth, 3, [2]);
-            } else {
-                ctx.fillRect(x, peakY, barWidth, 3);
-            }
-            ctx.fill();
-            ctx.shadowBlur = 0; // Reset shadow for next bar performance
-
             x += barWidth + spacing;
         }
     }
 }
 
-// JAAP_OS GLOBAL IGNITION HOOK
 document.addEventListener('click', () => {
     const audio = document.getElementById('bg-audio');
     if (audio && audio.paused) initAudio();
