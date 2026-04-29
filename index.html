@@ -444,6 +444,10 @@ html, body {
     overflow: hidden;
 }
 
+ #wifi-hud { position: fixed; top: 20px; right: 80px; display: flex; gap: 3px; align-items: flex-end; z-index: 9999; height: 20px; }
+.bar { width: 4px; background: var(--sys-color-accent-ice); box-shadow: 0 0 10px var(--sys-color-accent-ice); animation: wifi-flicker 2s infinite; }
+@keyframes wifi-flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
 #music-widget:hover { 
     background: linear-gradient(135deg, rgba(0, 255, 204, 0.15), rgba(255, 0, 85, 0.1)); 
     border-color: rgba(0, 255, 204, 0.8); 
@@ -585,10 +589,21 @@ html, body {
     .ui-header { display: none; } /* Hide header to save space for games */
     #main-ui-wrapper { padding-top: 20px; }
 }
+   /* LIQUID GLASS CURSOR */
+* { cursor: none !important; }
+#l-cursor {
+    position: fixed; top: 0; left: 0; width: 20px; height: 20px;
+    background: rgba(255, 255, 255, 0.4); border: 1px solid rgba(0, 255, 204, 0.8);
+    border-radius: 50%; pointer-events: none; z-index: 99999;
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    box-shadow: 0 0 20px var(--sys-color-accent-ice), inset 0 0 10px white;
+    transition: transform 0.1s ease-out; mix-blend-mode: exclusion;
+}
 
 </style>
 </head>
 <body>
+   <div id="wifi-hud"><div class="bar" style="height:6px"></div><div class="bar" style="height:10px;animation-delay:0.2s"></div><div class="bar" style="height:14px;animation-delay:0.4s"></div><div class="bar" style="height:18px;animation-delay:0.6s"></div></div>
 
 
    <div id="music-widget" onclick="initAudio()">
@@ -1358,6 +1373,13 @@ class MainMenuState {
             const title = document.createElement('div');
             title.className = 'card-title';
             title.innerText = node.title;
+           card.onmouseenter = () => {
+             let count = 0;
+             const iter = setInterval(() => {
+                 title.innerText = title.innerText.split("").map(() => "█▓▒░▖▗▘▙▚▛▜▝▞▟"[Math.floor(Math.random()*16)]).join("");
+                 if (count++ > 10) { clearInterval(iter); title.innerText = node.title; }
+             }, 30);
+         };
             title.style.background = `linear-gradient(135deg, #ffffff 0%, ${node.hex} 100%)`;
             title.style.webkitBackgroundClip = 'text';
             title.style.webkitTextFillColor = 'transparent';
@@ -1563,6 +1585,20 @@ document.addEventListener('click', () => {
     const audio = document.getElementById('bg-audio');
     if (audio && audio.paused) initAudio();
 }, { once: true });
+
+   /* CURSOR ENGINE */
+const lc = document.createElement('div'); lc.id = 'l-cursor'; document.body.appendChild(lc);
+window.addEventListener('mousemove', e => { 
+    lc.style.transform = `translate3d(${e.clientX - 10}px, ${e.clientY - 10}px, 0)`; 
+});
+   window.onclick = () => {
+    const s = document.createElement('div');
+    s.style = `position:fixed;inset:0;z-index:99999;pointer-events:none;background:repeating-linear-gradient(90deg,transparent,transparent 2px,rgba(0,255,204,0.1) 2px,rgba(0,255,204,0.1) 4px);opacity:0.8;`;
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 100);
+    document.body.style.filter = `hue-rotate(${Math.random()*360}deg) contrast(2)`;
+    setTimeout(() => document.body.style.filter = '', 150);
+};
 </script>
 </body>
 </html>
