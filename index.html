@@ -422,15 +422,26 @@ html, body {
 
 
       #music-widget {
-       position: fixed; top: 20px; right: 20px; width: 220px; height: 60px;
-       background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px);
-       border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px;
-       display: flex; align-items: center; padding: 10px; z-index: 10000;
-       cursor: pointer; transition: 0.3s;
-   }
-   #music-widget:hover { background: rgba(255, 255, 255, 0.1); }
-   #album-art { width: 40px; height: 40px; border-radius: 4px; background: #222; margin-right: 12px; object-fit: cover; }
-   #viz-canvas { width: 140px; height: 30px; }
+    position: fixed; top: 20px; left: 20px; width: 260px; height: 70px;
+    background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px);
+    border: 1px solid rgba(0, 255, 204, 0.3); border-radius: 12px;
+    display: flex; align-items: center; padding: 10px; z-index: 10000;
+    cursor: pointer; transition: 0.3s;
+}
+#music-widget:hover { background: rgba(0, 255, 204, 0.1); border-color: var(--sys-color-accent-ice); }
+#album-art { width: 50px; height: 50px; border-radius: 6px; background: #111; margin-right: 12px; object-fit: cover; }
+#viz-canvas { flex-grow: 1; height: 50px; width: 100%; }
+
+   #album-art { 
+    width: 50px; 
+    height: 50px; 
+    border-radius: 6px; 
+    background: #111; 
+    margin-right: 12px; 
+    object-fit: cover;
+    /* ADD THIS LINE FOR A COOL NEON GLOW */
+    box-shadow: 0 0 15px rgba(0, 255, 204, 0.4); 
+}
 
 </style>
 </head>
@@ -1322,15 +1333,24 @@ function initAudio() {
     if (audio.paused) { audio.play(); draw(); } else { audio.pause(); }
 
     function draw() {
-        if (audio.paused) return;
-        requestAnimationFrame(draw);
-        analyser.getByteFrequencyData(dataArray);
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        dataArray.forEach((v, i) => {
-            ctx.fillStyle = `hsl(${(i * 10 + Date.now()/20) % 360}, 100%, 50%)`;
-            ctx.fillRect(i * 3, canvas.height - (v/8), 2, v/8);
-        });
-    }
+    if (audio.paused) return;
+    requestAnimationFrame(draw);
+    analyser.getByteFrequencyData(dataArray);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Dynamically calculate bar width to fill the box
+    const barWidth = (canvas.width / dataArray.length) * 2.5; 
+    let x = 0;
+
+    dataArray.forEach((v) => {
+        // Higher intensity colors
+        ctx.fillStyle = `hsl(${(x + Date.now()/20) % 360}, 100%, 50%)`;
+        // Scale height so it fills the 50px box better
+        const barHeight = v / 4; 
+        ctx.fillRect(x, canvas.height - barHeight, barWidth - 1, barHeight);
+        x += barWidth;
+    });
+  }
 }
 </script>
 </body>
