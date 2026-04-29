@@ -1317,31 +1317,54 @@ const fv=document.createElement('canvas'),fx=fv.getContext('2d'),fl=document.cre
    let audioCtx, analyser, dataArray, source;
 let snowflakes = [];
 let isInitialized = false;
+let snowCanvas, snowCtx;
 
 function initAudio() {
     const audio = document.getElementById('bg-audio');
-    const canvas = document.getElementById('viz-canvas');
-    const ctx = canvas.getContext('2d');
+    const vizCanvas = document.getElementById('viz-canvas');
+    const vizCtx = vizCanvas.getContext('2d');
 
-    // 1. BOOT SEQUENCE: ONLY RUN ONCE
+    // 1. BOOT SEQUENCE: INITIALIZE AUDIO & FULL-SCREEN SNOW
     if (!isInitialized) {
+        // Setup Audio Engine
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         analyser = audioCtx.createAnalyser();
         source = audioCtx.createMediaElementSource(audio);
         source.connect(analyser);
         analyser.connect(audioCtx.destination);
         
-        // High resolution for 130 exact bars
-        analyser.fftSize = 512; 
+        // V2 Triple Rainbow Resolution
+        analyser.fftSize = 256; 
         dataArray = new Uint8Array(analyser.frequencyBinCount);
 
-        // Seed 40 Snowflakes
-        for(let i = 0; i < 40; i++) {
+        // Dynamically Inject Full-Screen Snow Canvas into JAAP_OS
+        snowCanvas = document.createElement('canvas');
+        snowCanvas.id = 'snow-canvas';
+        snowCanvas.style.position = 'fixed';
+        snowCanvas.style.top = '0';
+        snowCanvas.style.left = '0';
+        snowCanvas.style.width = '100vw';
+        snowCanvas.style.height = '100vh';
+        snowCanvas.style.pointerEvents = 'none'; // Lets you click through it
+        snowCanvas.style.zIndex = '50'; // Sits right behind the main UI
+        document.body.appendChild(snowCanvas);
+        snowCtx = snowCanvas.getContext('2d');
+
+        // Handle Screen Resizing
+        const resizeSnow = () => {
+            snowCanvas.width = window.innerWidth;
+            snowCanvas.height = window.innerHeight;
+        };
+        window.addEventListener('resize', resizeSnow);
+        resizeSnow();
+
+        // Seed 150 Global Snowflakes
+        for(let i = 0; i < 150; i++) {
             snowflakes.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                size: Math.random() * 1.5 + 0.5,
-                speed: Math.random() * 1 + 0.2,
+                x: Math.random() * snowCanvas.width,
+                y: Math.random() * snowCanvas.height,
+                baseSize: Math.random() * 2 + 1,
+                baseSpeed: Math.random() * 1.5 + 0.5,
                 drift: Math.random() * 2 - 1,
                 angle: Math.random() * Math.PI * 2
             });
@@ -1353,90 +1376,74 @@ function initAudio() {
     if (audio.paused) { 
         audio.play().then(() => {
             draw(); 
-        }).catch(err => console.log("[KERNEL] Waiting for user interaction...", err));
+        }).catch(err => console.log("[KERNEL] Audio waiting for interaction..."));
     } else { 
         audio.pause(); 
     }
 
-    // 3. THE GRAPHICS ENGINE LOOP
+    // 3. THE DUAL-GRAPHICS ENGINE LOOP
     function draw() {
         if (audio.paused) return;
         requestAnimationFrame(draw);
         analyser.getByteFrequencyData(dataArray);
         
-        // Wipe canvas clean each frame
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // Clear both canvases
+        vizCtx.clearRect(0, 0, vizCanvas.width, vizCanvas.height);
+        snowCtx.clearRect(0, 0, snowCanvas.width, snowCanvas.height);
 
-        // Calculate "Sub-Bass Energy" (Bins 0-10) for beat detection
-        let totalBass = 0;
-        for(let i = 0; i < 10; i++) totalBass += dataArray[i];
-        let beatEnergy = totalBass / 10; // Value between 0 and 255
+        // Calculate Aggressive Bass Energy (Bins 1-4 usually hold the kick drum)
+        let bass = (dataArray[1] + dataArray[2] + dataArray[3] + dataArray[4]) / 4;
+        
+        // If bass hits hard (over 180), create a massive multiplier, otherwise normal speed
+        let beatMultiplier = bass > 180 ? (bass / 30) : 1; 
 
         // ==========================================
-        // LAYER 1: BEAT-REACTING SNOWFLAKES
+        // LAYER 1: THE V2 TRIPLE RAINBOW BARS (Widget)
         // ==========================================
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-        snowflakes.forEach(flake => {
-            flake.angle += 0.05;
-            // Snowflakes fall faster and jitter left/right when the beat hits
-            flake.y += flake.speed + (beatEnergy * 0.015);
-            flake.x += Math.sin(flake.angle) * flake.drift * (1 + beatEnergy * 0.01);
+        const barWidth = (vizCanvas.width / dataArray.length) * 1.5;
+        let x = 0;
 
-            // Wrap around screen
-            if (flake.y > canvas.height) {
-                flake.y = 0;
-                flake.x = Math.random() * canvas.width;
-            }
-
-            // Draw Snowflakes (they pulse in size slightly to the beat)
-            ctx.beginPath();
-            ctx.arc(flake.x, flake.y, flake.size + (beatEnergy * 0.004), 0, Math.PI * 2);
-            ctx.fill();
+        dataArray.forEach((v, i) => {
+            const hue = (i * 2 + Date.now() / 20) % 360;
+            vizCtx.fillStyle = `hsla(${hue}, 100%, 50%, 0.8)`;
+            const barHeight = v / 3.5; 
+            vizCtx.fillRect(x, vizCanvas.height - barHeight, barWidth - 0.5, barHeight);
+            x += barWidth;
         });
 
         // ==========================================
-        // LAYER 2: 130 ROUNDED RAINBOW BARS
+        // LAYER 2: GLOBAL BEAT-REACTING SNOWFLAKES (Full Screen)
         // ==========================================
-        const NUM_BARS = 130;
-        const barWidth = canvas.width / NUM_BARS;
-        let x = 0;
+        snowCtx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+        
+        snowflakes.forEach(flake => {
+            flake.angle += 0.02;
+            
+            // Physics: Multiply speed by the bass hit
+            flake.y += flake.baseSpeed * beatMultiplier;
+            flake.x += Math.sin(flake.angle) * flake.drift * beatMultiplier;
 
-        for (let i = 0; i < NUM_BARS; i++) {
-            // Sample the audio data (focusing on the most active frequencies)
-            const dataIndex = Math.floor(i * (dataArray.length * 0.6) / NUM_BARS);
-            const v = dataArray[dataIndex];
+            // Screen Wrap
+            if (flake.y > snowCanvas.height) flake.y = -10;
+            if (flake.x > snowCanvas.width) flake.x = -10;
+            if (flake.x < -10) flake.x = snowCanvas.width;
 
-            // Liquid Color Math
-            const hue = (i * 2.5 + Date.now() / 15) % 360;
-            ctx.fillStyle = `hsla(${hue}, 100%, 55%, 0.85)`;
-
-            // Scale bar height to fit the widget (max height is canvas height)
-            const barHeight = (v / 255) * canvas.height;
-            const actualHeight = Math.max(barHeight, 2); // Minimum 2px bump so it never looks empty
-
-            // Draw Advanced Rounded Rectangle (Top-Left & Top-Right rounded)
-            ctx.beginPath();
-            if (ctx.roundRect) {
-                // roundRect(x, y, width, height, radii array)
-                ctx.roundRect(x, canvas.height - actualHeight, barWidth - 0.5, actualHeight, [5, 5, 0, 0]);
-            } else {
-                // Fallback for extremely old browsers
-                ctx.fillRect(x, canvas.height - actualHeight, barWidth - 0.5, actualHeight);
-            }
-            ctx.fill();
-
-            x += barWidth;
-        }
+            // Draw Snowflake (pulses in size to the beat)
+            let currentSize = flake.baseSize + (bass > 180 ? 1.5 : 0);
+            snowCtx.beginPath();
+            snowCtx.arc(flake.x, flake.y, currentSize, 0, Math.PI * 2);
+            snowCtx.fill();
+        });
     }
 }
 
-// JAAP_OS GLOBAL IGNITION: Autoplay on first click anywhere on the screen
+// JAAP_OS GLOBAL IGNITION: Autoplay on first click ANYWHERE on the screen
 document.addEventListener('click', () => {
     const audio = document.getElementById('bg-audio');
     if (audio.paused) {
         initAudio();
     }
-}, { once: true }); // "once: true" means this hidden click listener destroys itself after running
+}, { once: true });
 </script>
 </body>
 </html>
