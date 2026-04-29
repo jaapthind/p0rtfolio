@@ -420,9 +420,28 @@ html, body {
 ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 5px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
 
+
+      #music-widget {
+       position: fixed; top: 20px; right: 20px; width: 220px; height: 60px;
+       background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px);
+       border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px;
+       display: flex; align-items: center; padding: 10px; z-index: 10000;
+       cursor: pointer; transition: 0.3s;
+   }
+   #music-widget:hover { background: rgba(255, 255, 255, 0.1); }
+   #album-art { width: 40px; height: 40px; border-radius: 4px; background: #222; margin-right: 12px; object-fit: cover; }
+   #viz-canvas { width: 140px; height: 30px; }
+
 </style>
 </head>
 <body>
+
+
+   <div id="music-widget" onclick="initAudio()">
+    <img id="album-art" src="https://via.placeholder.com/40" alt="Art">
+    <canvas id="viz-canvas"></canvas>
+    <audio id="bg-audio" loop src="falling.mp3"></audio>
+</div>
 
 <canvas id="canvas-liquid-glass" class="sys-canvas-layer"></canvas>
 <canvas id="canvas-matrix" class="sys-canvas-layer"></canvas>
@@ -1284,6 +1303,35 @@ window.addEventListener('DOMContentLoaded', () => {
 /* JAAP_OS CYBERNETIC EYE - MOUSE TRACKER KERNEL */
 /* JAAP_OS TESSERACT KERNEL - 4D PERSPECTIVE PROJECTION */
 const fv=document.createElement('canvas'),fx=fv.getContext('2d'),fl=document.createElement('link');fv.width=fv.height=32;fl.rel='icon';document.head.appendChild(fl);let ag=0;const fr=()=>{ag+=0.05;fx.clearRect(0,0,32,32);const gradient=fx.createRadialGradient(16,16,2,16,16,14+Math.sin(ag)*2);gradient.addColorStop(0,`hsla(${(ag*60)%360},100%,70%,1)`);gradient.addColorStop(0.5,`hsla(${(ag*60+60)%360},100%,50%,0.8)`);gradient.addColorStop(1,'transparent');fx.fillStyle=gradient;fx.beginPath();fx.arc(16,16,16,0,Math.PI*2);fx.fill();fx.strokeStyle=`hsla(${(ag*60+120)%360},100%,70%,0.5)`;fx.lineWidth=2;fx.strokeRect(4,4,24,24);fx.lineWidth=1;fx.strokeRect(0,0,32,32);fl.href=fv.toDataURL();requestAnimationFrame(fr)};fr();
+   let audioCtx, analyser, dataArray, source;
+function initAudio() {
+    const audio = document.getElementById('bg-audio');
+    const canvas = document.getElementById('viz-canvas');
+    const ctx = canvas.getContext('2d');
+
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioCtx.createAnalyser();
+        source = audioCtx.createMediaElementSource(audio);
+        source.connect(analyser);
+        analyser.connect(audioCtx.destination);
+        analyser.fftSize = 64;
+        dataArray = new Uint8Array(analyser.frequencyBinCount);
+    }
+
+    if (audio.paused) { audio.play(); draw(); } else { audio.pause(); }
+
+    function draw() {
+        if (audio.paused) return;
+        requestAnimationFrame(draw);
+        analyser.getByteFrequencyData(dataArray);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        dataArray.forEach((v, i) => {
+            ctx.fillStyle = `hsl(${(i * 10 + Date.now()/20) % 360}, 100%, 50%)`;
+            ctx.fillRect(i * 3, canvas.height - (v/8), 2, v/8);
+        });
+    }
+}
 </script>
 </body>
 </html>
