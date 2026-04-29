@@ -421,26 +421,99 @@ html, body {
 ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
 
 
-      #music-widget {
-    position: fixed; top: 20px; left: 20px; width: 260px; height: 70px;
-    background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px);
-    border: 1px solid rgba(0, 255, 204, 0.3); border-radius: 12px;
-    display: flex; align-items: center; padding: 10px; z-index: 10000;
-    cursor: pointer; transition: 0.3s;
+   #music-widget {
+    position: fixed; 
+    top: 20px; 
+    left: 20px; 
+    /* Dynamic fluid sizing for mobile compatibility */
+    width: clamp(240px, 40vw, 380px); 
+    height: clamp(60px, 10vh, 80px);
+    background: linear-gradient(135deg, rgba(10, 15, 20, 0.75), rgba(0, 5, 10, 0.9));
+    backdrop-filter: blur(25px); 
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(0, 255, 204, 0.3); 
+    border-radius: 16px;
+    display: flex; 
+    align-items: center; 
+    padding: clamp(8px, 2vw, 12px); 
+    z-index: 10000;
+    cursor: pointer; 
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.05);
+    transform-origin: center center;
+    transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s;
+    overflow: hidden;
 }
-#music-widget:hover { background: rgba(0, 255, 204, 0.1); border-color: var(--sys-color-accent-ice); }
-#album-art { width: 50px; height: 50px; border-radius: 6px; background: #111; margin-right: 12px; object-fit: cover; }
-#viz-canvas { flex-grow: 1; height: 50px; width: 100%; }
 
-   #album-art { 
-    width: 50px; 
-    height: 50px; 
-    border-radius: 6px; 
-    background: #111; 
-    margin-right: 12px; 
+#music-widget:hover { 
+    background: linear-gradient(135deg, rgba(0, 255, 204, 0.15), rgba(255, 0, 85, 0.1)); 
+    border-color: rgba(0, 255, 204, 0.8); 
+}
+
+#album-art { 
+    width: clamp(40px, 12vw, 56px); 
+    height: clamp(40px, 12vw, 56px); 
+    border-radius: 8px; 
+    background: #000; 
+    margin-right: clamp(10px, 3vw, 16px); 
     object-fit: cover;
-    /* ADD THIS LINE FOR A COOL NEON GLOW */
-    box-shadow: 0 0 15px rgba(0, 255, 204, 0.4); 
+    box-shadow: 0 0 20px rgba(0, 255, 204, 0.5);
+    z-index: 3;
+    transition: transform 0.1s ease-out;
+}
+
+#viz-canvas { 
+    flex-grow: 1; 
+    height: 100%; 
+    width: 100%; 
+    z-index: 2; 
+    filter: drop-shadow(0px 0px 6px rgba(0,0,0,0.8)); 
+}
+
+/* Advanced Multi-Axis Wobble Physics Animation */
+@keyframes ultimateWobble {
+    0% { transform: scale(1.06) rotate(0deg) translate(0px, 0px) skewX(0deg); box-shadow: 0 0 40px rgba(0, 255, 204, 0.9), inset 0 0 20px rgba(255, 0, 85, 0.4); border-color: #00ffff; }
+    15% { transform: scale(1.04) rotate(-3deg) translate(-3px, -2px) skewX(-2deg); }
+    30% { transform: scale(1.05) rotate(3deg) translate(3px, 2px) skewX(2deg); }
+    45% { transform: scale(1.02) rotate(-1deg) translate(-1px, -1px); }
+    60% { transform: scale(1.03) rotate(1deg) translate(1px, 1px); }
+    100% { transform: scale(1) rotate(0deg) translate(0px, 0px) skewX(0deg); box-shadow: 0 10px 40px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.05); border-color: rgba(0, 255, 204, 0.3); }
+}
+
+.wobble-active { 
+    animation: ultimateWobble 0.35s cubic-bezier(0.36, -0.24, 0.26, 1.33) forwards !important; 
+}
+
+/* Glass Sweep Glare Effect on Beat */
+#music-widget::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -150%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transform: skewX(-25deg);
+    z-index: 5;
+    pointer-events: none;
+}
+
+.wobble-active::after {
+    animation: glassSweep 0.35s ease-out forwards;
+}
+
+@keyframes glassSweep {
+    0% { left: -150%; opacity: 1; }
+    100% { left: 150%; opacity: 0; }
+}
+
+/* Mobile Strict Shrink Override */
+@media (max-width: 600px) {
+    #music-widget {
+        top: 10px;
+        left: 10px;
+        width: calc(100vw - 20px); /* Forces it to fit screen width exactly */
+        height: 65px;
+        border-radius: 12px;
+        padding: 8px;
+    }
 }
 
 </style>
@@ -1314,17 +1387,19 @@ window.addEventListener('DOMContentLoaded', () => {
 /* JAAP_OS CYBERNETIC EYE - MOUSE TRACKER KERNEL */
 /* JAAP_OS TESSERACT KERNEL - 4D PERSPECTIVE PROJECTION */
 const fv=document.createElement('canvas'),fx=fv.getContext('2d'),fl=document.createElement('link');fv.width=fv.height=32;fl.rel='icon';document.head.appendChild(fl);let ag=0;const fr=()=>{ag+=0.05;fx.clearRect(0,0,32,32);const gradient=fx.createRadialGradient(16,16,2,16,16,14+Math.sin(ag)*2);gradient.addColorStop(0,`hsla(${(ag*60)%360},100%,70%,1)`);gradient.addColorStop(0.5,`hsla(${(ag*60+60)%360},100%,50%,0.8)`);gradient.addColorStop(1,'transparent');fx.fillStyle=gradient;fx.beginPath();fx.arc(16,16,16,0,Math.PI*2);fx.fill();fx.strokeStyle=`hsla(${(ag*60+120)%360},100%,70%,0.5)`;fx.lineWidth=2;fx.strokeRect(4,4,24,24);fx.lineWidth=1;fx.strokeRect(0,0,32,32);fl.href=fv.toDataURL();requestAnimationFrame(fr)};fr();
-  let audioCtx, analyser, dataArray, source;
+let audioCtx, analyser, dataArray, source;
 let isInitialized = false;
-let peaks = []; // Array to store the falling peak dots
+let peaks = [];
+let peakVelocities = [];
+let internalParticles = [];
 
 function initAudio() {
     const audio = document.getElementById('bg-audio');
     const canvas = document.getElementById('viz-canvas');
     const ctx = canvas.getContext('2d');
-    const widget = document.getElementById('music-widget'); // Target widget for beat pulse
+    const widget = document.getElementById('music-widget');
+    const albumArt = document.getElementById('album-art');
 
-    // 1. BOOT SEQUENCE: HIGH-RES AUDIO ENGINE
     if (!isInitialized) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         analyser = audioCtx.createAnalyser();
@@ -1332,132 +1407,166 @@ function initAudio() {
         source.connect(analyser);
         analyser.connect(audioCtx.destination);
         
-        // SUPER PRECISE RESOLUTION (1024 points for smooth frequency curves)
-        analyser.fftSize = 1024; 
-        analyser.smoothingTimeConstant = 0.85; // Keeps bars responsive but smooth
+        // 2048 point FFT for supreme mathematical precision
+        analyser.fftSize = 2048; 
+        analyser.smoothingTimeConstant = 0.82; 
         dataArray = new Uint8Array(analyser.frequencyBinCount);
 
-        // Seed the peak trackers for our 130 bars
-        for(let i = 0; i < 130; i++) peaks.push(0);
+        // Pre-allocate memory for 130 exact bars and their physics models
+        for(let i = 0; i < 130; i++) {
+            peaks.push(0);
+            peakVelocities.push(0);
+        }
 
-        // Make the widget transition ultra-fast for beat pulses
-        widget.style.transition = "transform 0.05s ease-out, box-shadow 0.05s ease-out, background 0.3s";
+        // Seed micro-particles for inside the visualizer screen
+        for(let i = 0; i < 40; i++) {
+            internalParticles.push({
+                x: Math.random() * 500, // Safe bound before dynamic resize
+                y: Math.random() * 100,
+                vx: (Math.random() - 0.5) * 2,
+                vy: (Math.random() - 0.5) * 2,
+                life: Math.random() * 100,
+                hueOffset: Math.random() * 60
+            });
+        }
         isInitialized = true;
     }
 
-    // 2. TOGGLE PLAY/PAUSE
     if (audio.paused) { 
-        audio.play().then(() => {
-            draw(); 
-        }).catch(err => console.log("[KERNEL] Audio sequence waiting for user interaction..."));
+        audio.play().then(() => { draw(); }).catch(e => console.warn("Awaiting input", e));
     } else { 
         audio.pause(); 
     }
 
-    // 3. ADVANCED BEAT DETECTION VARIABLES
-    let beatThreshold = 150;
+    // Advanced Matrix Math Variables
+    let beatThreshold = 180;
     let beatHold = 0;
+    const NUM_BARS = 130;
+    const GRAVITY = 0.85;
+    const SPRING_TENSION = 0.15;
 
-    // 4. THE GRAPHICS ENGINE LOOP
     function draw() {
         if (audio.paused) return;
         requestAnimationFrame(draw);
-        analyser.getByteFrequencyData(dataArray);
         
-        // Wipe canvas clean each frame
+        // Fix internal resolution of canvas dynamically based on CSS size
+        const rect = canvas.getBoundingClientRect();
+        if (canvas.width !== rect.width || canvas.height !== rect.height) {
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+        }
+
+        analyser.getByteFrequencyData(dataArray);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // ==========================================
-        // MODULE A: DYNAMIC BEAT DETECTION
-        // ==========================================
-        let bassEnergy = 0;
-        // Sample the heavy kick/bass bins
-        for(let i = 2; i < 10; i++) bassEnergy += dataArray[i];
-        bassEnergy /= 8;
+        // MULTI-BAND ISOLATION MATH
+        let subBass = 0, midRange = 0, treble = 0;
+        for(let i = 2; i < 8; i++) subBass += dataArray[i]; // Deep kicks
+        for(let i = 20; i < 60; i++) midRange += dataArray[i]; // Vocals/Synths
+        for(let i = 150; i < 250; i++) treble += dataArray[i]; // Hats/Snares
+        
+        subBass /= 6;
+        midRange /= 40;
+        treble /= 100;
 
+        // DYNAMIC BEAT WOBBLE LOGIC
         let isBeat = false;
-        // Detect sudden spikes over the dynamic threshold
-        if (bassEnergy > beatThreshold && beatHold === 0) {
+        if (subBass > beatThreshold && beatHold === 0) {
             isBeat = true;
-            beatHold = 20; // Lockout to prevent double-triggering on one long bass note
-            beatThreshold = bassEnergy * 1.1; // Raise threshold dynamically
+            beatHold = 22; // Frames to ignore subsequent bass calculations
+            beatThreshold = subBass * 1.08; // Auto-scaling threshold
+            
+            // Trigger DOM animations
+            widget.classList.remove('wobble-active');
+            void widget.offsetWidth; // Force CSS reflow to restart animation
+            widget.classList.add('wobble-active');
+            
+            // Pulse the album art
+            albumArt.style.transform = `scale(${1 + (subBass/1000)}) rotate(${Math.random() > 0.5 ? 5 : -5}deg)`;
+        } else {
+            albumArt.style.transform = "scale(1) rotate(0deg)";
         }
 
-        // Cool down the beat threshold and lockout timer
-        beatThreshold = Math.max(130, beatThreshold - 1.5);
+        beatThreshold = Math.max(140, beatThreshold - 2.5); // Fast decay
         if (beatHold > 0) beatHold--;
 
-        // Trigger physical UI pulse on beat
-        if (isBeat) {
-            widget.style.boxShadow = `0 0 25px rgba(0, 255, 204, 0.7)`;
-            widget.style.transform = "scale(1.03)";
-        } else {
-            widget.style.boxShadow = "none";
-            widget.style.transform = "scale(1)";
-        }
+        // INTERNAL PARTICLE SYSTEM (Reacts to Treble/Mids)
+        internalParticles.forEach(p => {
+            p.x += p.vx * (1 + treble * 0.05);
+            p.y += p.vy * (1 + midRange * 0.05);
+            p.life -= 1.5;
 
-        // ==========================================
-        // MODULE B: 130 PRO-TIER RAINBOW BARS & PEAKS
-        // ==========================================
-        const NUM_BARS = 130;
-        // Calculate exact width and spacing
-        const barWidth = (canvas.width / NUM_BARS) * 0.75;
-        const spacing = (canvas.width / NUM_BARS) * 0.25;
+            if (p.x < 0 || p.x > canvas.width || p.y < 0 || p.y > canvas.height || p.life <= 0) {
+                p.x = Math.random() * canvas.width;
+                p.y = isBeat ? canvas.height : Math.random() * canvas.height;
+                p.vx = (Math.random() - 0.5) * (isBeat ? 8 : 2);
+                p.vy = (Math.random() - 0.5) * (isBeat ? 8 : 2);
+                p.life = 100;
+            }
+
+            ctx.fillStyle = `hsla(${(Date.now()/10 + p.hueOffset) % 360}, 100%, 70%, ${p.life/100})`;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, (treble / 50) + 1, 0, Math.PI*2);
+            ctx.fill();
+        });
+
+        // 130 ULTRA-SMOOTH ROUNDED RAINBOW BARS WITH SPRING PHYSICS
+        const barWidth = (canvas.width / NUM_BARS) * 0.8;
+        const spacing = (canvas.width / NUM_BARS) * 0.2;
         let x = 0;
 
         for (let i = 0; i < NUM_BARS; i++) {
-            // Map bars to the most active audio frequencies
-            const dataIndex = Math.floor(i * (dataArray.length * 0.4) / NUM_BARS);
-            let v = dataArray[dataIndex];
+            // Logarithmic frequency mapping for visual balance
+            const logIndex = Math.floor(Math.pow(i / NUM_BARS, 1.5) * (dataArray.length * 0.35));
+            let targetHeight = (dataArray[logIndex] / 255) * canvas.height * (isBeat ? 1.15 : 1);
+            let actualHeight = Math.max(targetHeight, 2);
 
-            // Scale height (and boost slightly if a beat hits)
-            const barHeight = (v / 255) * canvas.height * (isBeat ? 1.05 : 1);
-            const actualHeight = Math.max(barHeight, 2);
-
-            // Calculate Gravity Peaks (The falling dots)
+            // Advanced Spring-Loaded Gravity Peak Math
             if (actualHeight >= peaks[i]) {
-                peaks[i] = actualHeight; // Push peak up
+                peaks[i] = actualHeight;
+                peakVelocities[i] = (isBeat ? 4 : 1); // Upward punch
             } else {
-                peaks[i] -= 1.2; // Gravity pulls peak down
-                if (peaks[i] < 0) peaks[i] = 0;
+                peakVelocities[i] -= GRAVITY * 0.2; // Acceleration
+                peaks[i] += peakVelocities[i]; // Velocity application
+                if (peaks[i] < actualHeight) peaks[i] = actualHeight; // Floor collision
             }
 
-            // Liquid Color Math (Shifts faster on the beat)
-            const hue = (i * 2.5 + Date.now() / 15 + (isBeat ? 30 : 0)) % 360;
+            const hue = (i * 2.7 + Date.now() / 12 + (isBeat ? 40 : 0)) % 360;
 
-            // DRAW LAYER 1: THE BAR
-            ctx.fillStyle = `hsla(${hue}, 100%, 55%, 0.85)`;
+            // Render Liquid Main Bar
+            ctx.fillStyle = `hsla(${hue}, 100%, 55%, 0.9)`;
             ctx.beginPath();
             if (ctx.roundRect) {
-                ctx.roundRect(x, canvas.height - actualHeight, barWidth, actualHeight, [3, 3, 0, 0]);
+                ctx.roundRect(x, canvas.height - actualHeight, barWidth, actualHeight, [4, 4, 0, 0]);
             } else {
                 ctx.fillRect(x, canvas.height - actualHeight, barWidth, actualHeight);
             }
             ctx.fill();
 
-            // DRAW LAYER 2: THE GRAVITY PEAK DOT
-            ctx.fillStyle = `hsla(${hue}, 100%, 80%, 1)`; // Brighter color for the peak
+            // Render Independent Kinematic Peak Dot
+            const peakY = canvas.height - peaks[i] - 2;
+            const peakGlow = Math.min(100, 50 + (peakVelocities[i] * 10));
+            ctx.fillStyle = `hsla(${hue}, 100%, ${peakGlow}%, 1)`;
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = `hsla(${hue}, 100%, 50%, 0.8)`;
             ctx.beginPath();
             if (ctx.roundRect) {
-                // Draws a tiny 2px high rounded dot exactly where the peak currently is
-                ctx.roundRect(x, canvas.height - peaks[i] - 2, barWidth, 2, [1]);
+                ctx.roundRect(x, peakY, barWidth, 3, [2]);
             } else {
-                ctx.fillRect(x, canvas.height - peaks[i] - 2, barWidth, 2);
+                ctx.fillRect(x, peakY, barWidth, 3);
             }
             ctx.fill();
+            ctx.shadowBlur = 0; // Reset shadow for next bar performance
 
-            // Move to next bar position
             x += barWidth + spacing;
         }
     }
 }
 
-// JAAP_OS GLOBAL IGNITION: Autoplay on first click anywhere on the screen
+// JAAP_OS GLOBAL IGNITION HOOK
 document.addEventListener('click', () => {
     const audio = document.getElementById('bg-audio');
-    if (audio.paused) {
-        initAudio();
-    }
+    if (audio && audio.paused) initAudio();
 }, { once: true });
 </script>
 </body>
