@@ -590,14 +590,19 @@ html, body {
     #main-ui-wrapper { padding-top: 20px; }
 }
    /* LIQUID GLASS CURSOR */
+/* ADVANCED CANVAS LIQUID GLASS CURSOR */
 * { cursor: none !important; }
-#l-cursor {
-    position: fixed; top: 0; left: 0; width: 20px; height: 20px;
-    background: rgba(255, 255, 255, 0.4); border: 1px solid rgba(0, 255, 204, 0.8);
-    border-radius: 50%; pointer-events: none; z-index: 99999;
-    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
-    box-shadow: 0 0 20px var(--sys-color-accent-ice), inset 0 0 10px white;
-    transition: transform 0.1s ease-out; mix-blend-mode: exclusion;
+#liquid-glass-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 999999;
+    mix-blend-mode: hard-light;
+    transform: translateZ(0);
+    will-change: transform;
 }
 
 </style>
@@ -1587,10 +1592,129 @@ document.addEventListener('click', () => {
 }, { once: true });
 
    /* CURSOR ENGINE */
-const lc = document.createElement('div'); lc.id = 'l-cursor'; document.body.appendChild(lc);
-window.addEventListener('mousemove', e => { 
-    lc.style.transform = `translate3d(${e.clientX - 10}px, ${e.clientY - 10}px, 0)`; 
-});
+/* ==========================================================================
+   JAAP_OS: HARDWARE-ACCELERATED LIQUID GLASS RAINBOW CURSOR
+   ========================================================================== */
+class HyperLiquidCursor {
+    constructor() {
+        this.canvas = document.createElement('canvas');
+        this.ctx = this.canvas.getContext('2d', { alpha: true });
+        this.canvas.id = 'liquid-glass-cursor';
+        document.body.appendChild(this.canvas);
+        
+        this.width = window.innerWidth;
+        this.height = window.innerHeight;
+        this.canvas.width = this.width;
+        this.canvas.height = this.height;
+        
+        this.mouse = { x: this.width / 2, y: this.height / 2 };
+        this.pos = { x: this.width / 2, y: this.height / 2 };
+        
+        this.radius = 38; // MASSIVE LIQUID DROP
+        this.angle = 0;
+        
+        this.init();
+    }
+    
+    init() {
+        window.addEventListener('mousemove', e => {
+            this.mouse.x = e.clientX;
+            this.mouse.y = e.clientY;
+        });
+        
+        window.addEventListener('resize', () => {
+            this.width = window.innerWidth;
+            this.height = window.innerHeight;
+            this.canvas.width = this.width;
+            this.canvas.height = this.height;
+        });
+        
+        this.render();
+    }
+    
+    render() {
+        // LERP PHYSICS: ZERO LAG, PERFECT FLUID TRAILING
+        this.pos.x += (this.mouse.x - this.pos.x) * 0.35;
+        this.pos.y += (this.mouse.y - this.pos.y) * 0.35;
+        this.angle += 0.04; // Core rotation speed
+
+        this.ctx.clearRect(0, 0, this.width, this.height);
+        
+        const x = this.pos.x;
+        const y = this.pos.y;
+        
+        this.ctx.save();
+
+        // LAYER 1: AMBIENT SHADOW & LIQUID BASE
+        this.ctx.globalCompositeOperation = 'source-over';
+        this.ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+        this.ctx.shadowBlur = 25;
+        this.ctx.shadowOffsetY = 15;
+        
+        this.ctx.beginPath();
+        this.ctx.arc(x, y, this.radius, 0, Math.PI * 2);
+        this.ctx.fillStyle = 'rgba(10, 15, 25, 0.2)';
+        this.ctx.fill();
+
+        // LAYER 2: ROTATING RAINBOW PLASMA CORE
+        this.ctx.shadowColor = 'transparent';
+        this.ctx.globalCompositeOperation = 'screen';
+        
+        const gradient = this.ctx.createLinearGradient(
+            x + Math.cos(this.angle) * this.radius, 
+            y + Math.sin(this.angle) * this.radius,
+            x - Math.cos(this.angle) * this.radius, 
+            y - Math.sin(this.angle) * this.radius
+        );
+        
+        gradient.addColorStop(0, 'rgba(0, 255, 204, 0.9)');   // ICE
+        gradient.addColorStop(0.33, 'rgba(255, 0, 255, 0.9)'); // FRUIT
+        gradient.addColorStop(0.66, 'rgba(255, 215, 0, 0.9)'); // JAPA
+        gradient.addColorStop(1, 'rgba(255, 0, 85, 0.9)');     // MARS
+        
+        this.ctx.beginPath();
+        // Squeeze inner core slightly for thick glass rim effect
+        this.ctx.arc(x, y, this.radius * 0.75, 0, Math.PI * 2);
+        this.ctx.fillStyle = gradient;
+        this.ctx.fill();
+
+        // LAYER 3: HIGH-GLOSS SPECULAR GLARE (THE "GLASS" LOOK)
+        this.ctx.globalCompositeOperation = 'overlay';
+        const glare = this.ctx.createRadialGradient(
+            x - this.radius * 0.35, y - this.radius * 0.35, 0,
+            x - this.radius * 0.1, y - this.radius * 0.1, this.radius * 0.8
+        );
+        glare.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
+        glare.addColorStop(0.4, 'rgba(255, 255, 255, 0.1)');
+        glare.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        
+        this.ctx.beginPath();
+        this.ctx.arc(x, y, this.radius, 0, Math.PI * 2);
+        this.ctx.fillStyle = glare;
+        this.ctx.fill();
+
+        // LAYER 4: REFRACTIVE RIM LIGHTING
+        this.ctx.globalCompositeOperation = 'source-over';
+        this.ctx.beginPath();
+        this.ctx.arc(x, y, this.radius, 0, Math.PI * 2);
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+        this.ctx.stroke();
+        
+        // Inner rim
+        this.ctx.beginPath();
+        this.ctx.arc(x, y, this.radius * 0.85, 0, Math.PI * 2);
+        this.ctx.lineWidth = 1;
+        this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+        this.ctx.stroke();
+
+        this.ctx.restore();
+        requestAnimationFrame(() => this.render());
+    }
+}
+
+// IGNITE THE ENGINE
+new HyperLiquidCursor();
    window.onclick = () => {
     const s = document.createElement('div');
     s.style = `position:fixed;inset:0;z-index:99999;pointer-events:none;background:repeating-linear-gradient(90deg,transparent,transparent 2px,rgba(0,255,204,0.1) 2px,rgba(0,255,204,0.1) 4px);opacity:0.8;`;
