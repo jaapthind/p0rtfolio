@@ -1591,42 +1591,18 @@ document.addEventListener('click', () => {
     if (audio && audio.paused) initAudio();
 }, { once: true });
 
-   /* CURSOR ENGINE */
-/* ==========================================================================
-   JAAP_OS: HARDWARE-ACCELERATED LIQUID GLASS RAINBOW CURSOR
-   ========================================================================== */
-/**
- * ============================================================================
- * JAAP_OS HYPER-CORE: QUANTUM LIQUID GLASS CURSOR ENGINE
- * VERSION: 10.0.1_NIGHTLY
- * STATUS: FULLY AUTONOMOUS PHYSICS OVERRIDE
- * ============================================================================
- */
 
-// --- MATH & NOISE LIBRARIES ---
-class AdvancedVector {
-    constructor(x = 0, y = 0) {
-        this.x = x;
-        this.y = y;
-    }
-    add(v) { this.x += v.x; this.y += v.y; return this; }
-    sub(v) { this.x -= v.x; this.y -= v.y; return this; }
-    mult(n) { this.x *= n; this.y *= n; return this; }
-    div(n) { this.x /= n; this.y /= n; return this; }
-    magSq() { return this.x * this.x + this.y * this.y; }
-    mag() { return Math.sqrt(this.magSq()); }
-    normalize() { let m = this.mag(); if (m !== 0) this.div(m); return this; }
-    set(x, y) { this.x = x; this.y = y; return this; }
-    copy() { return new AdvancedVector(this.x, this.y); }
-    dist(v) { let dx = this.x - v.x; let dy = this.y - v.y; return Math.sqrt(dx * dx + dy * dy); }
-    lerp(x, y, t) { this.x += (x - this.x) * t; this.y += (y - this.y) * t; return this; }
-}
-
-class FastSimplexNoise {
+   class FastSimplexNoise {
     constructor() {
-        this.grad3 = [[1,1,0],[-1,1,0],[1,-1,0],[-1,-1,0],[1,0,1],[-1,0,1],[1,0,-1],[-1,0,-1],[0,1,1],[0,-1,1],[0,1,-1],[0,-1,-1]];
+        this.grad3 = [
+            [1, 1, 0], [-1, 1, 0], [1, -1, 0], [-1, -1, 0],
+            [1, 0, 1], [-1, 0, 1], [1, 0, -1], [-1, 0, -1],
+            [0, 1, 1], [0, -1, 1], [0, 1, -1], [0, -1, -1]
+        ];
         this.p = new Uint8Array(256);
-        for (let i = 0; i < 256; i++) this.p[i] = Math.floor(Math.random() * 256);
+        for (let i = 0; i < 256; i++) {
+            this.p[i] = Math.floor(Math.random() * 256);
+        }
         this.perm = new Uint8Array(512);
         this.permMod12 = new Uint8Array(512);
         for (let i = 0; i < 512; i++) {
@@ -1634,357 +1610,313 @@ class FastSimplexNoise {
             this.permMod12[i] = (this.perm[i] % 12);
         }
     }
-    dot(g, x, y) { return g[0] * x + g[1] * y; }
+
+    dot(g, x, y) {
+        return g[0] * x + g[1] * y;
+    }
+
     noise2D(xin, yin) {
         const F2 = 0.5 * (Math.sqrt(3.0) - 1.0);
         const G2 = (3.0 - Math.sqrt(3.0)) / 6.0;
-        let n0, n1, n2;
+        let n0, n1, n2; 
+        
         let s = (xin + yin) * F2;
         let i = Math.floor(xin + s);
         let j = Math.floor(yin + s);
         let t = (i + j) * G2;
-        let X0 = i - t;
-        let Y0 = j - t;
-        let x0 = xin - X0;
-        let y0 = yin - Y0;
-        let i1, j1;
-        if (x0 > y0) { i1 = 1; j1 = 0; } else { i1 = 0; j1 = 1; }
-        let x1 = x0 - i1 + G2;
-        let y1 = y0 - j1 + G2;
-        let x2 = x0 - 1.0 + 2.0 * G2;
-        let y2 = y0 - 1.0 + 2.0 * G2;
+        let X0 = i - t; 
+        let Y0 = j - t; 
+        let x0 = xin - X0; 
+        let y0 = yin - Y0; 
+        
+        let i1, j1; 
+        if (x0 > y0) {
+            i1 = 1; j1 = 0;
+        } else {
+            i1 = 0; j1 = 1;
+        }
+        
+        let x1 = x0 - i1 + G2; 
+        let y1 = y0 - j1 + G2; 
+        let x2 = x0 - 1.0 + 2.0 * G2; 
+        let y2 = y0 - 1.0 + 2.0 * G2; 
+        
         let ii = i & 255;
         let jj = j & 255;
         let gi0 = this.permMod12[ii + this.perm[jj]];
         let gi1 = this.permMod12[ii + i1 + this.perm[jj + j1]];
         let gi2 = this.permMod12[ii + 1 + this.perm[jj + 1]];
+        
         let t0 = 0.5 - x0 * x0 - y0 * y0;
-        if (t0 < 0) n0 = 0.0;
-        else { t0 *= t0; n0 = t0 * t0 * this.dot(this.grad3[gi0], x0, y0); }
+        if (t0 < 0) {
+            n0 = 0.0;
+        } else {
+            t0 *= t0;
+            n0 = t0 * t0 * this.dot(this.grad3[gi0], x0, y0);
+        }
+        
         let t1 = 0.5 - x1 * x1 - y1 * y1;
-        if (t1 < 0) n1 = 0.0;
-        else { t1 *= t1; n1 = t1 * t1 * this.dot(this.grad3[gi1], x1, y1); }
+        if (t1 < 0) {
+            n1 = 0.0;
+        } else {
+            t1 *= t1;
+            n1 = t1 * t1 * this.dot(this.grad3[gi1], x1, y1);
+        }
+        
         let t2 = 0.5 - x2 * x2 - y2 * y2;
-        if (t2 < 0) n2 = 0.0;
-        else { t2 *= t2; n2 = t2 * t2 * this.dot(this.grad3[gi2], x2, y2); }
+        if (t2 < 0) {
+            n2 = 0.0;
+        } else {
+            t2 *= t2;
+            n2 = t2 * t2 * this.dot(this.grad3[gi2], x2, y2);
+        }
+        
         return 70.0 * (n0 + n1 + n2);
     }
 }
 
-// --- FLUID PHYSICS NODES ---
-class FluidNode {
-    constructor(x, y, baseRadius) {
-        this.pos = new AdvancedVector(x, y);
-        this.target = new AdvancedVector(x, y);
-        this.vel = new AdvancedVector(0, 0);
-        this.baseRadius = baseRadius;
-        this.radius = baseRadius;
-        this.friction = 0.65; // High friction for fluid viscosity
-        this.springFactor = 0.35; // Snappiness
+/**
+ * ----------------------------------------------------------------------------
+ * MODULE 2: COLOR & OPTICS TOOLKIT
+ * ----------------------------------------------------------------------------
+ */
+class OpticsEngine {
+    static hslToRgba(h, s, l, a = 1) {
+        h = h % 360;
+        if (h < 0) h += 360;
+        s = Math.max(0, Math.min(100, s)) / 100;
+        l = Math.max(0, Math.min(100, l)) / 100;
+
+        let c = (1 - Math.abs(2 * l - 1)) * s;
+        let x = c * (1 - Math.abs((h / 60) % 2 - 1));
+        let m = l - c / 2;
+        let r = 0, g = 0, b = 0;
+
+        if (0 <= h && h < 60) { r = c; g = x; b = 0; }
+        else if (60 <= h && h < 120) { r = x; g = c; b = 0; }
+        else if (120 <= h && h < 180) { r = 0; g = c; b = x; }
+        else if (180 <= h && h < 240) { r = 0; g = x; b = c; }
+        else if (240 <= h && h < 300) { r = x; g = 0; b = c; }
+        else if (300 <= h && h < 360) { r = c; g = 0; b = x; }
+
+        r = Math.round((r + m) * 255);
+        g = Math.round((g + m) * 255);
+        b = Math.round((b + m) * 255);
+
+        return `rgba(${r}, ${g}, ${b}, ${a})`;
     }
-    update(nextPos, index, total, noiseVal, speed) {
-        // Spring physics
-        let dx = nextPos.x - this.pos.x;
-        let dy = nextPos.y - this.pos.y;
-        
-        this.vel.x += dx * this.springFactor;
-        this.vel.y += dy * this.springFactor;
-        
-        this.vel.mult(this.friction);
-        this.pos.add(this.vel);
-        
-        // Organic pulsing based on index, noise, and mouse speed
-        let speedStretch = Math.max(1, 1 - (speed * 0.015));
-        let indexScale = 1 - (index / total); // Taper off at the tail
-        let organicPulse = 1 + (noiseVal * 0.3);
-        
-        this.radius = this.baseRadius * indexScale * organicPulse * speedStretch;
-        if (this.radius < 0.1) this.radius = 0.1;
+
+    static createGlassHighlight(ctx, cx, cy, radius) {
+        const grad = ctx.createRadialGradient(
+            cx - radius * 0.3, cy - radius * 0.3, radius * 0.05,
+            cx, cy, radius * 0.9
+        );
+        grad.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
+        grad.addColorStop(0.2, 'rgba(255, 255, 255, 0.3)');
+        grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        return grad;
+    }
+
+    static createGlassShadow(ctx, cx, cy, radius) {
+        const grad = ctx.createRadialGradient(
+            cx + radius * 0.2, cy + radius * 0.2, radius * 0.4,
+            cx, cy, radius
+        );
+        grad.addColorStop(0, 'rgba(0, 0, 0, 0)');
+        grad.addColorStop(0.8, 'rgba(0, 0, 0, 0.4)');
+        grad.addColorStop(1, 'rgba(0, 255, 204, 0.8)');
+        return grad;
     }
 }
 
-// --- MAIN QUANTUM RENDERER ---
-class QuantumLiquidGlassEngine {
+/**
+ * ----------------------------------------------------------------------------
+ * MODULE 3: THE ZERO-LATENCY CURSOR RENDERER
+ * ----------------------------------------------------------------------------
+ */
+class InstantRainbowGlassCursor {
     constructor() {
-        this.canvas = document.getElementById('liquid-glass-cursor');
-        if (!this.canvas) {
-            this.canvas = document.createElement('canvas');
-            this.canvas.id = 'liquid-glass-cursor';
-            document.body.appendChild(this.canvas);
-        }
+        // Create an isolated, small canvas to guarantee 0 layout thrashing
+        this.size = 80; // Total canvas size
+        this.radius = 22; // Actual liquid drop size
         
-        this.ctx = this.canvas.getContext('2d', { alpha: true, desynchronized: true });
+        this.canvas = document.createElement('canvas');
+        this.canvas.width = this.size;
+        this.canvas.height = this.size;
+        this.ctx = this.canvas.getContext('2d', { alpha: true });
         
-        this.width = window.innerWidth;
-        this.height = window.innerHeight;
-        this.canvas.width = this.width;
-        this.canvas.height = this.height;
+        this.canvas.style.position = 'fixed';
+        this.canvas.style.top = `-${this.size / 2}px`;
+        this.canvas.style.left = `-${this.size / 2}px`;
+        this.canvas.style.pointerEvents = 'none';
+        this.canvas.style.zIndex = '9999999';
+        this.canvas.style.transform = `translate3d(-1000px, -1000px, 0)`;
+        this.canvas.style.willChange = 'transform';
+        this.canvas.style.mixBlendMode = 'hard-light';
         
-        this.mouse = new AdvancedVector(this.width / 2, this.height / 2);
-        this.prevMouse = new AdvancedVector(this.width / 2, this.height / 2);
-        this.mouseSpeed = 0;
+        document.body.appendChild(this.canvas);
         
+        // Physics & Render State
         this.noise = new FastSimplexNoise();
         this.time = 0;
-        this.colorShift = 0;
+        this.hue = 0;
         this.isClicking = false;
         
-        // Fluid Chain Configuration
-        this.nodeCount = 20;
-        this.nodes = [];
-        this.headRadius = 45; // Massive initial drop
-        
-        for (let i = 0; i < this.nodeCount; i++) {
-            this.nodes.push(new FluidNode(this.width / 2, this.height / 2, this.headRadius));
-        }
-        
+        // Event Listeners for absolute 1:1 Instant Tracking
         this.bindEvents();
+        
+        // Start Render Loop
         this.render();
     }
     
     bindEvents() {
+        // Direct transform update bypassing the render loop for absolute zero lag
         window.addEventListener('mousemove', (e) => {
-            this.prevMouse.set(this.mouse.x, this.mouse.y);
-            this.mouse.set(e.clientX, e.clientY);
-            this.mouseSpeed = this.mouse.dist(this.prevMouse);
+            this.canvas.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+        }, { passive: true });
+        
+        window.addEventListener('mousedown', () => {
+            this.isClicking = true;
         });
         
-        window.addEventListener('mousedown', () => this.isClicking = true);
-        window.addEventListener('mouseup', () => this.isClicking = false);
-        
-        window.addEventListener('resize', () => {
-            this.width = window.innerWidth;
-            this.height = window.innerHeight;
-            this.canvas.width = this.width;
-            this.canvas.height = this.height;
+        window.addEventListener('mouseup', () => {
+            this.isClicking = false;
         });
     }
     
-    // Smooth bezier curve generator for fluid hull
-    drawFluidHull(ctx, nodes) {
-        if (nodes.length < 2) return;
+    drawLiquidShape(cx, cy, baseRadius, timeOffset, depthMultiplier = 1) {
+        this.ctx.beginPath();
+        const segments = 60;
         
-        ctx.beginPath();
-        // Calculate outer tangent points
-        let points = [];
-        for (let i = 0; i < nodes.length - 1; i++) {
-            let n1 = nodes[i];
-            let n2 = nodes[i+1];
-            let angle = Math.atan2(n2.pos.y - n1.pos.y, n2.pos.x - n1.pos.x);
-            let perpAngle = angle + Math.PI / 2;
+        for (let i = 0; i <= segments; i++) {
+            const angle = (i / segments) * Math.PI * 2;
             
-            points.push({
-                x: n1.pos.x + Math.cos(perpAngle) * n1.radius,
-                y: n1.pos.y + Math.sin(perpAngle) * n1.radius
-            });
-            points.push({
-                x: n1.pos.x - Math.cos(perpAngle) * n1.radius,
-                y: n1.pos.y - Math.sin(perpAngle) * n1.radius
-            });
-        }
-        
-        // Fallback to simple thick line drawing which perfectly mimics viscous fluid when layered
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-        
-        for (let i = 0; i < nodes.length - 1; i++) {
-            ctx.beginPath();
-            ctx.moveTo(nodes[i].pos.x, nodes[i].pos.y);
-            ctx.lineTo(nodes[i+1].pos.x, nodes[i+1].pos.y);
-            // Average radius for smoothness
-            ctx.lineWidth = (nodes[i].radius + nodes[i+1].radius); 
-            ctx.stroke();
+            // Generate organic wobbly edge using simplex noise
+            const nx = Math.cos(angle) * 1.5;
+            const ny = Math.sin(angle) * 1.5;
+            const nVal = this.noise.noise2D(nx + timeOffset, ny + timeOffset);
             
-            // Fill gaps with arcs
-            ctx.beginPath();
-            ctx.arc(nodes[i].pos.x, nodes[i].pos.y, nodes[i].radius, 0, Math.PI * 2);
-            ctx.fill();
+            // Squeeze radius slightly on click
+            const clickSquish = this.isClicking ? 0.85 : 1.0;
+            const r = baseRadius * clickSquish + (nVal * 4 * depthMultiplier);
+            
+            const px = cx + Math.cos(angle) * r;
+            const py = cy + Math.sin(angle) * r;
+            
+            if (i === 0) {
+                this.ctx.moveTo(px, py);
+            } else {
+                this.ctx.lineTo(px, py);
+            }
         }
+        this.ctx.closePath();
     }
     
     render() {
-        this.time += 0.02;
-        this.colorShift += 1.5; // High-speed rainbow cycling
-        this.ctx.clearRect(0, 0, this.width, this.height);
+        // Advance time for color shift and liquid wobble
+        this.time += 0.03;
+        this.hue = (this.hue + 2) % 360;
         
-        // Physics Calculation Update
-        let targetX = this.mouse.x;
-        let targetY = this.mouse.y;
+        // Clear the mini-canvas
+        this.ctx.clearRect(0, 0, this.size, this.size);
         
-        // Click distortion
-        let headDistort = this.isClicking ? 0.6 : 1.0;
-        this.nodes[0].baseRadius = this.headRadius * headDistort;
-        
-        for (let i = 0; i < this.nodeCount; i++) {
-            let node = this.nodes[i];
-            let nVal = this.noise.noise2D(node.pos.x * 0.005, this.time);
-            
-            if (i === 0) {
-                // Head follows mouse directly but with slight lerp
-                node.pos.lerp(targetX, targetY, 0.4);
-                node.radius = node.baseRadius * (1 + nVal * 0.2);
-            } else {
-                // Tail nodes follow the node ahead of them
-                let prevNode = this.nodes[i - 1];
-                node.update(prevNode.pos, i, this.nodeCount, nVal, this.mouseSpeed);
-            }
-        }
+        const cx = this.size / 2;
+        const cy = this.size / 2;
         
         // ==========================================
-        // RENDER PASS 1: AMBIENT OPTICAL SHADOW
+        // PASS 1: AMBIENT DROP SHADOW
         // ==========================================
         this.ctx.save();
-        this.ctx.globalCompositeOperation = 'source-over';
-        this.ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
-        this.ctx.shadowBlur = 40;
+        this.ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+        this.ctx.shadowBlur = 15;
         this.ctx.shadowOffsetX = 0;
-        this.ctx.shadowOffsetY = 20;
-        this.ctx.fillStyle = 'rgba(5, 5, 10, 0.4)';
-        this.ctx.strokeStyle = 'rgba(5, 5, 10, 0.4)';
-        this.drawFluidHull(this.ctx, this.nodes);
+        this.ctx.shadowOffsetY = 8;
+        this.drawLiquidShape(cx, cy, this.radius, this.time, 1);
+        this.ctx.fillStyle = 'rgba(10, 10, 15, 0.4)';
+        this.ctx.fill();
         this.ctx.restore();
 
         // ==========================================
-        // RENDER PASS 2: DYNAMIC RAINBOW PLASMA
+        // PASS 2: ROTATING RAINBOW PLASMA BASE
+        // ==========================================
+        this.ctx.save();
+        this.drawLiquidShape(cx, cy, this.radius, this.time, 1);
+        this.ctx.clip();
+        
+        const plasmaGrad = this.ctx.createLinearGradient(
+            cx + Math.cos(this.time) * this.radius, 
+            cy + Math.sin(this.time) * this.radius,
+            cx - Math.cos(this.time) * this.radius, 
+            cy - Math.sin(this.time) * this.radius
+        );
+        
+        plasmaGrad.addColorStop(0, OpticsEngine.hslToRgba(this.hue, 100, 60, 0.9));
+        plasmaGrad.addColorStop(0.33, OpticsEngine.hslToRgba(this.hue + 60, 100, 50, 0.9));
+        plasmaGrad.addColorStop(0.66, OpticsEngine.hslToRgba(this.hue + 120, 100, 60, 0.9));
+        plasmaGrad.addColorStop(1, OpticsEngine.hslToRgba(this.hue + 180, 100, 50, 0.9));
+        
+        this.ctx.fillStyle = plasmaGrad;
+        this.ctx.fill();
+        this.ctx.restore();
+
+        // ==========================================
+        // PASS 3: INNER GLASS REFRACTION SHADOW
+        // ==========================================
+        this.ctx.save();
+        this.ctx.globalCompositeOperation = 'multiply';
+        this.drawLiquidShape(cx, cy, this.radius, this.time, 1);
+        this.ctx.fillStyle = OpticsEngine.createGlassShadow(this.ctx, cx, cy, this.radius);
+        this.ctx.fill();
+        this.ctx.restore();
+
+        // ==========================================
+        // PASS 4: HIGH-GLOSS SPECULAR FLARE
         // ==========================================
         this.ctx.save();
         this.ctx.globalCompositeOperation = 'screen';
-        
-        // Calculate bounding box for gradient mapping
-        let minX = this.width, maxX = 0, minY = this.height, maxY = 0;
-        for(let n of this.nodes) {
-            if(n.pos.x < minX) minX = n.pos.x;
-            if(n.pos.x > maxX) maxX = n.pos.x;
-            if(n.pos.y < minY) minY = n.pos.y;
-            if(n.pos.y > maxY) maxY = n.pos.y;
-        }
-        
-        // Fluid directional gradient
-        let angle = Math.atan2(this.mouse.y - this.nodes[this.nodeCount-1].pos.y, this.mouse.x - this.nodes[this.nodeCount-1].pos.x);
-        let gradLength = Math.max(200, this.mouseSpeed * 5);
-        
-        let gradient = this.ctx.createLinearGradient(
-            this.mouse.x - Math.cos(angle)*gradLength, 
-            this.mouse.y - Math.sin(angle)*gradLength,
-            this.mouse.x + Math.cos(angle)*gradLength, 
-            this.mouse.y + Math.sin(angle)*gradLength
-        );
-        
-        // Ultra-Vibrant HSL mapping
-        gradient.addColorStop(0, `hsla(${this.colorShift % 360}, 100%, 55%, 0.95)`);
-        gradient.addColorStop(0.33, `hsla(${(this.colorShift + 60) % 360}, 100%, 55%, 0.95)`);
-        gradient.addColorStop(0.66, `hsla(${(this.colorShift + 120) % 360}, 100%, 55%, 0.95)`);
-        gradient.addColorStop(1, `hsla(${(this.colorShift + 180) % 360}, 100%, 65%, 0.95)`);
-        
-        this.ctx.fillStyle = gradient;
-        this.ctx.strokeStyle = gradient;
-        
-        // Squeeze rendering slightly for core density
-        this.ctx.scale(1, 1);
-        this.drawFluidHull(this.ctx, this.nodes);
-        this.ctx.restore();
-
-        // ==========================================
-        // RENDER PASS 3: CHROMATIC REFRACTION EDGE
-        // ==========================================
-        this.ctx.save();
-        this.ctx.globalCompositeOperation = 'color-dodge';
-        this.ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
-        this.ctx.strokeStyle = `hsla(${(this.colorShift + 240) % 360}, 100%, 80%, 0.8)`; // Opposite hue
-        
-        // Draw slightly smaller hull for rim light effect
-        let innerNodes = this.nodes.map(n => {
-            let copy = new FluidNode(n.pos.x, n.pos.y, n.radius);
-            copy.radius = Math.max(1, n.radius * 0.8);
-            return copy;
-        });
-        
-        this.drawFluidHull(this.ctx, innerNodes);
-        this.ctx.restore();
-
-        // ==========================================
-        // RENDER PASS 4: HIGH-GLOSS SPECULAR FLARE
-        // ==========================================
-        this.ctx.save();
-        this.ctx.globalCompositeOperation = 'overlay';
-        
-        // Main Head Glare
-        let head = this.nodes[0];
-        let glareGrad = this.ctx.createRadialGradient(
-            head.pos.x - head.radius * 0.4, head.pos.y - head.radius * 0.4, 0,
-            head.pos.x - head.radius * 0.1, head.pos.y - head.radius * 0.1, head.radius * 0.9
-        );
-        glareGrad.addColorStop(0, 'rgba(255, 255, 255, 1)');
-        glareGrad.addColorStop(0.3, 'rgba(255, 255, 255, 0.4)');
-        glareGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
-        
-        this.ctx.fillStyle = glareGrad;
-        this.ctx.beginPath();
-        this.ctx.arc(head.pos.x, head.pos.y, head.radius, 0, Math.PI * 2);
+        this.drawLiquidShape(cx, cy, this.radius * 0.95, this.time, 0.9);
+        this.ctx.fillStyle = OpticsEngine.createGlassHighlight(this.ctx, cx, cy, this.radius);
         this.ctx.fill();
-        
-        // Body Micro-Glares
-        for (let i = 2; i < this.nodeCount; i+=3) {
-            let n = this.nodes[i];
-            if (n.radius < 5) continue;
-            
-            let mGlare = this.ctx.createRadialGradient(
-                n.pos.x - n.radius * 0.3, n.pos.y - n.radius * 0.3, 0,
-                n.pos.x, n.pos.y, n.radius * 0.8
-            );
-            mGlare.addColorStop(0, 'rgba(255, 255, 255, 0.7)');
-            mGlare.addColorStop(1, 'rgba(255, 255, 255, 0)');
-            
-            this.ctx.fillStyle = mGlare;
-            this.ctx.beginPath();
-            this.ctx.arc(n.pos.x, n.pos.y, n.radius, 0, Math.PI * 2);
-            this.ctx.fill();
-        }
         this.ctx.restore();
 
         // ==========================================
-        // RENDER PASS 5: HARD WHITE GLASS RIM
+        // PASS 5: CRISP FRESNEL RIM EDGE
         // ==========================================
         this.ctx.save();
-        this.ctx.globalCompositeOperation = 'source-over';
-        this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
-        this.ctx.fillStyle = 'transparent';
+        this.drawLiquidShape(cx, cy, this.radius, this.time, 1);
+        this.ctx.lineWidth = 1.5;
+        this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+        this.ctx.stroke();
         
-        let rimNodes = this.nodes.map(n => {
-            let copy = new FluidNode(n.pos.x, n.pos.y, n.radius);
-            copy.radius = n.radius * 0.95;
-            return copy;
-        });
-        
-        // Draw outline without fill
-        this.ctx.lineCap = 'round';
-        this.ctx.lineJoin = 'round';
-        for (let i = 0; i < rimNodes.length - 1; i++) {
-            this.ctx.beginPath();
-            // Create a sharp stroke effect that tapers
-            this.ctx.lineWidth = Math.max(0.5, (rimNodes[i].radius * 0.1));
-            this.ctx.moveTo(rimNodes[i].pos.x, rimNodes[i].pos.y - rimNodes[i].radius);
-            this.ctx.lineTo(rimNodes[i+1].pos.x, rimNodes[i+1].pos.y - rimNodes[i+1].radius);
-            this.ctx.stroke();
-        }
+        // Inner refractive line
+        this.drawLiquidShape(cx, cy, this.radius - 2, this.time, 0.95);
+        this.ctx.lineWidth = 1;
+        this.ctx.strokeStyle = OpticsEngine.hslToRgba(this.hue + 180, 100, 70, 0.5);
+        this.ctx.stroke();
         this.ctx.restore();
         
-        // Decay speed
-        this.mouseSpeed *= 0.9;
-        
+        // Loop internally
         requestAnimationFrame(() => this.render());
     }
 }
 
-// EXECUTE QUANTUM IGNITION
+/**
+ * ----------------------------------------------------------------------------
+ * BOOT SEQUENCE
+ * ----------------------------------------------------------------------------
+ */
 window.addEventListener('DOMContentLoaded', () => {
-    // Ensure existing cursors are purged
-    const old = document.getElementById('l-cursor');
-    if (old) old.remove();
+    // Purge any old cursors to prevent collision
+    const garbage1 = document.getElementById('l-cursor');
+    const garbage2 = document.getElementById('liquid-glass-cursor');
+    if (garbage1) garbage1.remove();
+    if (garbage2) garbage2.remove();
     
-    // Boot High-Fidelity Engine
-    new QuantumLiquidGlassEngine();
+    // Inject the new zero-latency engine
+    new InstantRainbowGlassCursor();
 });
+
+
    
    window.onclick = () => {
     const s = document.createElement('div');
