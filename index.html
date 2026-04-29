@@ -1326,31 +1326,34 @@ function initAudio() {
         source = audioCtx.createMediaElementSource(audio);
         source.connect(analyser);
         analyser.connect(audioCtx.destination);
-        analyser.fftSize = 64;
+        // TWEAK: Increased from 64 to 256 for "Triple" the bars/detail
+        analyser.fftSize = 256; 
         dataArray = new Uint8Array(analyser.frequencyBinCount);
     }
 
     if (audio.paused) { audio.play(); draw(); } else { audio.pause(); }
 
     function draw() {
-    if (audio.paused) return;
-    requestAnimationFrame(draw);
-    analyser.getByteFrequencyData(dataArray);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Dynamically calculate bar width to fill the box
-    const barWidth = (canvas.width / dataArray.length) * 2.5; 
-    let x = 0;
+        if (audio.paused) return;
+        requestAnimationFrame(draw);
+        analyser.getByteFrequencyData(dataArray);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // TWEAK: Narrower bars for a smoother, non-blocky "triple rainbow" look
+        const barWidth = (canvas.width / dataArray.length) * 1.5;
+        let x = 0;
 
-    dataArray.forEach((v) => {
-        // Higher intensity colors
-        ctx.fillStyle = `hsl(${(x + Date.now()/20) % 360}, 100%, 50%)`;
-        // Scale height so it fills the 50px box better
-        const barHeight = v / 4; 
-        ctx.fillRect(x, canvas.height - barHeight, barWidth - 1, barHeight);
-        x += barWidth;
-    });
-  }
+        dataArray.forEach((v, i) => {
+            // TWEAK: Layered Hue calculation for that smooth rainbow gradient
+            const hue = (i * 2 + Date.now() / 20) % 360;
+            ctx.fillStyle = `hsla(${hue}, 100%, 50%, 0.8)`;
+            
+            // TWEAK: Rounded tops for a "Liquid" feel
+            const barHeight = v / 3.5; 
+            ctx.fillRect(x, canvas.height - barHeight, barWidth - 0.5, barHeight);
+            x += barWidth;
+        });
+    }
 }
 </script>
 </body>
