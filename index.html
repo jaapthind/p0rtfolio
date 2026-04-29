@@ -1458,8 +1458,7 @@ window.addEventListener('DOMContentLoaded', () => {
 const fv=document.createElement('canvas'),fx=fv.getContext('2d'),fl=document.createElement('link');fv.width=fv.height=32;fl.rel='icon';document.head.appendChild(fl);let ag=0;const fr=()=>{ag+=0.05;fx.clearRect(0,0,32,32);const gradient=fx.createRadialGradient(16,16,2,16,16,14+Math.sin(ag)*2);gradient.addColorStop(0,`hsla(${(ag*60)%360},100%,70%,1)`);gradient.addColorStop(0.5,`hsla(${(ag*60+60)%360},100%,50%,0.8)`);gradient.addColorStop(1,'transparent');fx.fillStyle=gradient;fx.beginPath();fx.arc(16,16,16,0,Math.PI*2);fx.fill();fx.strokeStyle=`hsla(${(ag*60+120)%360},100%,70%,0.5)`;fx.lineWidth=2;fx.strokeRect(4,4,24,24);fx.lineWidth=1;fx.strokeRect(0,0,32,32);fl.href=fv.toDataURL();requestAnimationFrame(fr)};fr();
 let audioCtx, analyser, dataArray, source;
 let isInitialized = false;
-let currentScale = 1;
-let currentRotation = 0;
+let rattleDecay = 0;
 
 function initAudio() {
     const audio = document.getElementById('bg-audio');
@@ -1467,6 +1466,9 @@ function initAudio() {
     const ctx = canvas.getContext('2d');
     const widget = document.getElementById('music-widget');
     const albumArt = document.getElementById('album-art');
+
+    // Dynamically make widget 25% less wide
+    widget.style.width = "clamp(180px, 30vw, 285px)";
 
     if (!isInitialized) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1487,7 +1489,7 @@ function initAudio() {
         audio.pause(); 
     }
 
-    let beatThreshold = 175;
+    let beatThreshold = 165;
     let beatHold = 0;
     const NUM_BARS = 120; // Exactly 120 bars
 
@@ -1504,31 +1506,38 @@ function initAudio() {
         analyser.getByteFrequencyData(dataArray);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // BEAT DETECTION
+        // BEAT DETECTION LOGIC
         let subBass = 0;
         for(let i = 2; i < 6; i++) subBass += dataArray[i]; 
         subBass /= 4;
 
-        // FLUID SPRING WOBBLE PHYSICS
         if (subBass > beatThreshold && beatHold === 0) {
-            currentScale = 1.08; // Punch out
-            currentRotation = (Math.random() > 0.5 ? 1 : -1) * 2; // Slight random tilt
-            beatHold = 20; 
+            rattleDecay = 1.0; // Trigger the fluid rattle
+            beatHold = 22; 
             beatThreshold = subBass * 1.05; 
-            albumArt.style.transform = `scale(1.1) rotate(${currentRotation * 2}deg)`;
         }
 
-        // Smoothly decay back to normal
-        currentScale += (1 - currentScale) * 0.15; 
-        currentRotation += (0 - currentRotation) * 0.15;
-        
-        widget.style.transform = `scale(${currentScale}) rotate(${currentRotation}deg)`;
-        if (currentScale < 1.01) albumArt.style.transform = "scale(1) rotate(0deg)";
+        // SMOOTH FLUID RATTLE PHYSICS
+        if (rattleDecay > 0.01) {
+            rattleDecay *= 0.88; // Exponential smoothing decay
+            
+            // Calculate organic sine-wave oscillations based on time and decay
+            const offsetX = Math.sin(Date.now() / 25) * rattleDecay * 5;
+            const offsetY = Math.cos(Date.now() / 20) * rattleDecay * 3;
+            const rotation = Math.sin(Date.now() / 35) * rattleDecay * 2.5;
+            const scale = 1 + (rattleDecay * 0.04);
+            
+            widget.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(${rotation}deg) scale(${scale})`;
+            albumArt.style.transform = `scale(${1 + rattleDecay * 0.15})`;
+        } else {
+            widget.style.transform = "translate(0px, 0px) rotate(0deg) scale(1)";
+            albumArt.style.transform = "scale(1)";
+        }
 
         beatThreshold = Math.max(130, beatThreshold - 2); 
         if (beatHold > 0) beatHold--;
 
-        // 120 SIMPLE ROUNDED RAINBOW BARS
+        // 120 LIQUID ROUNDED RAINBOW BARS
         const barWidth = (canvas.width / NUM_BARS) * 0.75;
         const spacing = (canvas.width / NUM_BARS) * 0.25;
         let x = 0;
@@ -1556,6 +1565,7 @@ function initAudio() {
     }
 }
 
+// JAAP_OS GLOBAL IGNITION HOOK
 document.addEventListener('click', () => {
     const audio = document.getElementById('bg-audio');
     if (audio && audio.paused) initAudio();
