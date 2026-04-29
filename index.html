@@ -1315,46 +1315,128 @@ window.addEventListener('DOMContentLoaded', () => {
 /* JAAP_OS TESSERACT KERNEL - 4D PERSPECTIVE PROJECTION */
 const fv=document.createElement('canvas'),fx=fv.getContext('2d'),fl=document.createElement('link');fv.width=fv.height=32;fl.rel='icon';document.head.appendChild(fl);let ag=0;const fr=()=>{ag+=0.05;fx.clearRect(0,0,32,32);const gradient=fx.createRadialGradient(16,16,2,16,16,14+Math.sin(ag)*2);gradient.addColorStop(0,`hsla(${(ag*60)%360},100%,70%,1)`);gradient.addColorStop(0.5,`hsla(${(ag*60+60)%360},100%,50%,0.8)`);gradient.addColorStop(1,'transparent');fx.fillStyle=gradient;fx.beginPath();fx.arc(16,16,16,0,Math.PI*2);fx.fill();fx.strokeStyle=`hsla(${(ag*60+120)%360},100%,70%,0.5)`;fx.lineWidth=2;fx.strokeRect(4,4,24,24);fx.lineWidth=1;fx.strokeRect(0,0,32,32);fl.href=fv.toDataURL();requestAnimationFrame(fr)};fr();
    let audioCtx, analyser, dataArray, source;
+let snowflakes = [];
+let isInitialized = false;
+
 function initAudio() {
     const audio = document.getElementById('bg-audio');
     const canvas = document.getElementById('viz-canvas');
     const ctx = canvas.getContext('2d');
 
-    if (!audioCtx) {
+    // 1. BOOT SEQUENCE: ONLY RUN ONCE
+    if (!isInitialized) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         analyser = audioCtx.createAnalyser();
         source = audioCtx.createMediaElementSource(audio);
         source.connect(analyser);
         analyser.connect(audioCtx.destination);
-        // TWEAK: Increased from 64 to 256 for "Triple" the bars/detail
-        analyser.fftSize = 256; 
+        
+        // High resolution for 130 exact bars
+        analyser.fftSize = 512; 
         dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+        // Seed 40 Snowflakes
+        for(let i = 0; i < 40; i++) {
+            snowflakes.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 1.5 + 0.5,
+                speed: Math.random() * 1 + 0.2,
+                drift: Math.random() * 2 - 1,
+                angle: Math.random() * Math.PI * 2
+            });
+        }
+        isInitialized = true;
     }
 
-    if (audio.paused) { audio.play(); draw(); } else { audio.pause(); }
+    // 2. TOGGLE PLAY/PAUSE
+    if (audio.paused) { 
+        audio.play().then(() => {
+            draw(); 
+        }).catch(err => console.log("[KERNEL] Waiting for user interaction...", err));
+    } else { 
+        audio.pause(); 
+    }
 
+    // 3. THE GRAPHICS ENGINE LOOP
     function draw() {
         if (audio.paused) return;
         requestAnimationFrame(draw);
         analyser.getByteFrequencyData(dataArray);
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        // TWEAK: Narrower bars for a smoother, non-blocky "triple rainbow" look
-        const barWidth = (canvas.width / dataArray.length) * 1.5;
+        // Wipe canvas clean each frame
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Calculate "Sub-Bass Energy" (Bins 0-10) for beat detection
+        let totalBass = 0;
+        for(let i = 0; i < 10; i++) totalBass += dataArray[i];
+        let beatEnergy = totalBass / 10; // Value between 0 and 255
+
+        // ==========================================
+        // LAYER 1: BEAT-REACTING SNOWFLAKES
+        // ==========================================
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+        snowflakes.forEach(flake => {
+            flake.angle += 0.05;
+            // Snowflakes fall faster and jitter left/right when the beat hits
+            flake.y += flake.speed + (beatEnergy * 0.015);
+            flake.x += Math.sin(flake.angle) * flake.drift * (1 + beatEnergy * 0.01);
+
+            // Wrap around screen
+            if (flake.y > canvas.height) {
+                flake.y = 0;
+                flake.x = Math.random() * canvas.width;
+            }
+
+            // Draw Snowflakes (they pulse in size slightly to the beat)
+            ctx.beginPath();
+            ctx.arc(flake.x, flake.y, flake.size + (beatEnergy * 0.004), 0, Math.PI * 2);
+            ctx.fill();
+        });
+
+        // ==========================================
+        // LAYER 2: 130 ROUNDED RAINBOW BARS
+        // ==========================================
+        const NUM_BARS = 130;
+        const barWidth = canvas.width / NUM_BARS;
         let x = 0;
 
-        dataArray.forEach((v, i) => {
-            // TWEAK: Layered Hue calculation for that smooth rainbow gradient
-            const hue = (i * 2 + Date.now() / 20) % 360;
-            ctx.fillStyle = `hsla(${hue}, 100%, 50%, 0.8)`;
-            
-            // TWEAK: Rounded tops for a "Liquid" feel
-            const barHeight = v / 3.5; 
-            ctx.fillRect(x, canvas.height - barHeight, barWidth - 0.5, barHeight);
+        for (let i = 0; i < NUM_BARS; i++) {
+            // Sample the audio data (focusing on the most active frequencies)
+            const dataIndex = Math.floor(i * (dataArray.length * 0.6) / NUM_BARS);
+            const v = dataArray[dataIndex];
+
+            // Liquid Color Math
+            const hue = (i * 2.5 + Date.now() / 15) % 360;
+            ctx.fillStyle = `hsla(${hue}, 100%, 55%, 0.85)`;
+
+            // Scale bar height to fit the widget (max height is canvas height)
+            const barHeight = (v / 255) * canvas.height;
+            const actualHeight = Math.max(barHeight, 2); // Minimum 2px bump so it never looks empty
+
+            // Draw Advanced Rounded Rectangle (Top-Left & Top-Right rounded)
+            ctx.beginPath();
+            if (ctx.roundRect) {
+                // roundRect(x, y, width, height, radii array)
+                ctx.roundRect(x, canvas.height - actualHeight, barWidth - 0.5, actualHeight, [5, 5, 0, 0]);
+            } else {
+                // Fallback for extremely old browsers
+                ctx.fillRect(x, canvas.height - actualHeight, barWidth - 0.5, actualHeight);
+            }
+            ctx.fill();
+
             x += barWidth;
-        });
+        }
     }
 }
+
+// JAAP_OS GLOBAL IGNITION: Autoplay on first click anywhere on the screen
+document.addEventListener('click', () => {
+    const audio = document.getElementById('bg-audio');
+    if (audio.paused) {
+        initAudio();
+    }
+}, { once: true }); // "once: true" means this hidden click listener destroys itself after running
 </script>
 </body>
 </html>
