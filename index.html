@@ -108,31 +108,27 @@ html, body {
     width: 100%;
     height: 100%;
     
-    /* The Baffle Pastel Rainbow Gradient */
-   background: linear-gradient(-45deg, 
-        hsl(0, 100%, 85%), hsl(20, 100%, 85%), hsl(40, 100%, 85%), 
-        hsl(60, 100%, 85%), hsl(80, 100%, 85%), hsl(100, 100%, 85%), 
-        hsl(120, 100%, 85%), hsl(140, 100%, 85%), hsl(160, 100%, 85%), 
-        hsl(180, 100%, 85%), hsl(200, 100%, 85%), hsl(220, 100%, 85%), 
-        hsl(240, 100%, 85%), hsl(260, 100%, 85%), hsl(280, 100%, 85%), 
-        hsl(300, 100%, 85%), hsl(320, 100%, 85%), hsl(340, 100%, 85%)
+    /* Perfect Seamless Rainbow (0 to 360) */
+    background: linear-gradient(90deg, 
+        hsl(0, 100%, 82%), hsl(60, 100%, 82%), hsl(120, 100%, 82%), 
+        hsl(180, 100%, 82%), hsl(240, 100%, 82%), hsl(300, 100%, 82%), 
+        hsl(360, 100%, 82%)
     );
-    background-size: 400% 400%;
-    animation: liquidRainbow 15s ease infinite;
-
-    /* Swapped to dark text so it's readable on the light background! */
-    color: #1d1d1f; 
+    background-size: 200% 100%;
     
+    /* 'linear' stops it from slowing down, making it one continuous direction */
+    animation: liquidRainbow 10s linear infinite; 
+
+    color: #1d1d1f; 
     font-family: var(--sys-font-primary);
     overflow: hidden;
     perspective: 2000px;
 }
 
-/* The Animation Engine for the Flowing Background */
+/* Infinite scrolling, no stopping, no reversing */
 @keyframes liquidRainbow {
-    0% { background-position: 0% 0%; }
-    50% { background-position: 100% 100%; }
-    100% { background-position: 0% 0%; }
+    0% { background-position: 200% center; }
+    100% { background-position: 0% center; }
 }
 
 /* --------------------------------------------------------------------------
@@ -366,28 +362,17 @@ html, body {
 }
 
 .glass-card {
-    /* Thick Liquid Glass Body */
-    background: linear-gradient(
-        135deg, 
-        rgba(255, 255, 255, 0.45) 0%, 
-        rgba(255, 255, 255, 0.15) 40%, 
-        rgba(255, 255, 255, 0.05) 100%
-    );
-    backdrop-filter: blur(55px) saturate(220%) contrast(110%);
-    -webkit-backdrop-filter: blur(55px) saturate(220%) contrast(110%);
-    border-radius: 48px;
+    /* Clean Apple Glass Base */
+    background: rgba(255, 255, 255, 0.4); 
+    backdrop-filter: blur(45px) saturate(180%);
+    -webkit-backdrop-filter: blur(45px) saturate(180%);
+    border-radius: 44px;
     
-    /* 3D Volumetric Edge Lighting & Depth Shadows */
-    border: 1px solid transparent;
+    /* Ultra-crisp thin border & soft depth shadow */
+    border: 1px solid rgba(255, 255, 255, 0.7);
     box-shadow: 
-        /* Outer ambient drop shadow */
-        0 40px 80px -20px rgba(0, 0, 0, 0.15),
         0 20px 40px -10px rgba(0, 0, 0, 0.1),
-        /* Inner glowing edge rim (The "Liquid" thickness) */
-        inset 0 2px 3px rgba(255, 255, 255, 0.8),
-        inset 0 -2px 5px rgba(0, 0, 0, 0.05),
-        inset 0 20px 40px rgba(255, 255, 255, 0.2),
-        inset 0 0 0 1.5px rgba(255, 255, 255, 0.4);
+        inset 0 1px 1px rgba(255, 255, 255, 0.9);
         
     /* Layout & Mechanics */
     padding: 40px;
@@ -397,57 +382,40 @@ html, body {
     justify-content: space-between;
     text-decoration: none;
     transform-style: preserve-3d;
-    transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1); /* Apple's springy physics */
     position: relative;
     overflow: hidden;
-    
-    /* Hardware acceleration for crisp text inside the heavy blur */
-    -webkit-font-smoothing: antialiased;
-    backface-visibility: hidden;
 }
 
-/* The Volumetric Light Sweep & Liquid Shimmer */
+/* Force text readability inside the glass */
+.glass-card * {
+    color: #1d1d1f !important;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.4); /* White halo to pop off the background */
+}
+
+/* Hover Mechanics - Lift and slight brightness increase */
+.glass-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    background: rgba(255, 255, 255, 0.5);
+    box-shadow: 
+        0 30px 50px -12px rgba(0, 0, 0, 0.15),
+        inset 0 1px 1px rgba(255, 255, 255, 1);
+}
+
+/* Clean Diagonal Glint on Hover */
 .glass-card::after {
     content: '';
     position: absolute;
-    top: -50%; 
-    left: -100%;
-    width: 150%; 
-    height: 200%;
-    /* Complex dual-band gradient for realistic light refraction */
-    background: linear-gradient(
-        115deg, 
-        transparent 0%, 
-        rgba(255, 255, 255, 0.1) 30%, 
-        rgba(255, 255, 255, 0.6) 45%, 
-        rgba(255, 255, 255, 0.95) 50%, 
-        rgba(255, 255, 255, 0.6) 55%, 
-        rgba(255, 255, 255, 0.1) 70%, 
-        transparent 100%
-    );
-    transform: rotate(25deg);
-    transition: left 0.8s cubic-bezier(0.215, 0.61, 0.355, 1), opacity 0.8s ease;
-    opacity: 0;
+    top: 0; left: -150%;
+    width: 80%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transform: skewX(-20deg);
+    transition: left 0.6s ease-out;
     pointer-events: none;
-    z-index: 10;
-    mix-blend-mode: overlay;
 }
 
-/* Hover Mechanics */
 .glass-card:hover::after {
-    left: 100%;
-    opacity: 1;
-}
-
-.glass-card:hover {
-    transform: translateY(-12px) scale(1.02) rotateX(4deg) rotateY(-2deg);
-    box-shadow: 
-        0 50px 100px -20px rgba(0, 0, 0, 0.25),
-        0 30px 60px -15px rgba(0, 0, 0, 0.15),
-        inset 0 2px 3px rgba(255, 255, 255, 0.95),
-        inset 0 -2px 5px rgba(0, 0, 0, 0.05),
-        inset 0 20px 40px rgba(255, 255, 255, 0.35),
-        inset 0 0 0 1.5px rgba(255, 255, 255, 0.6);
+    left: 200%;
 }
 
 .card-title {
