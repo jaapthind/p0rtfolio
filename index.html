@@ -107,11 +107,32 @@
 html, body {
     width: 100%;
     height: 100%;
-    background-color: var(--sys-color-bg-base);
-    color: var(--sys-color-text-primary);
+    
+    /* The Baffle Pastel Rainbow Gradient */
+   background: linear-gradient(-45deg, 
+        hsl(0, 100%, 78%), hsl(20, 100%, 78%), hsl(40, 100%, 78%), 
+        hsl(60, 100%, 78%), hsl(80, 100%, 78%), hsl(100, 100%, 78%), 
+        hsl(120, 100%, 78%), hsl(140, 100%, 78%), hsl(160, 100%, 78%), 
+        hsl(180, 100%, 78%), hsl(200, 100%, 78%), hsl(220, 100%, 78%), 
+        hsl(240, 100%, 78%), hsl(260, 100%, 78%), hsl(280, 100%, 78%), 
+        hsl(300, 100%, 78%), hsl(320, 100%, 78%), hsl(340, 100%, 78%)
+    );
+    background-size: 400% 400%;
+    animation: liquidRainbow 15s ease infinite;
+
+    /* Swapped to dark text so it's readable on the light background! */
+    color: #1d1d1f; 
+    
     font-family: var(--sys-font-primary);
     overflow: hidden;
     perspective: 2000px;
+}
+
+/* The Animation Engine for the Flowing Background */
+@keyframes liquidRainbow {
+    0% { background-position: 0% 0%; }
+    50% { background-position: 100% 100%; }
+    100% { background-position: 0% 0%; }
 }
 
 /* --------------------------------------------------------------------------
@@ -127,8 +148,7 @@ html, body {
 }
 
 #canvas-liquid-glass { z-index: var(--sys-z-bg); filter: blur(4px) contrast(1.2); }
-#canvas-matrix { z-index: var(--sys-z-canvas); mix-blend-mode: screen; opacity: 0; }
-
+#canvas-matrix { z-index: var(--sys-z-canvas); mix-blend-mode: multiply; opacity: 0.4; }   
 /* --------------------------------------------------------------------------
    INTRO SEQUENCE
    -------------------------------------------------------------------------- */
@@ -346,18 +366,29 @@ html, body {
 }
 
 .glass-card {
-    /* Thick Liquid Glass Base */
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.02) 100%);
-    backdrop-filter: blur(45px) saturate(200%);
-    -webkit-backdrop-filter: blur(45px) saturate(200%);
-    border-radius: 46px;
+    /* Thick Liquid Glass Body */
+    background: linear-gradient(
+        135deg, 
+        rgba(255, 255, 255, 0.45) 0%, 
+        rgba(255, 255, 255, 0.15) 40%, 
+        rgba(255, 255, 255, 0.05) 100%
+    );
+    backdrop-filter: blur(55px) saturate(220%) contrast(110%);
+    -webkit-backdrop-filter: blur(55px) saturate(220%) contrast(110%);
+    border-radius: 48px;
     
-    /* 3D Edge Lighting */
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-top: 1.5px solid rgba(255, 255, 255, 0.6);
-    border-left: 1.5px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), inset 0 5px 20px rgba(255, 255, 255, 0.15);
-    
+    /* 3D Volumetric Edge Lighting & Depth Shadows */
+    border: 1px solid transparent;
+    box-shadow: 
+        /* Outer ambient drop shadow */
+        0 40px 80px -20px rgba(0, 0, 0, 0.15),
+        0 20px 40px -10px rgba(0, 0, 0, 0.1),
+        /* Inner glowing edge rim (The "Liquid" thickness) */
+        inset 0 2px 3px rgba(255, 255, 255, 0.8),
+        inset 0 -2px 5px rgba(0, 0, 0, 0.05),
+        inset 0 20px 40px rgba(255, 255, 255, 0.2),
+        inset 0 0 0 1.5px rgba(255, 255, 255, 0.4);
+        
     /* Layout & Mechanics */
     padding: 40px;
     height: 380px;
@@ -366,31 +397,57 @@ html, body {
     justify-content: space-between;
     text-decoration: none;
     transform-style: preserve-3d;
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+    transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
     position: relative;
     overflow: hidden;
+    
+    /* Hardware acceleration for crisp text inside the heavy blur */
+    -webkit-font-smoothing: antialiased;
+    backface-visibility: hidden;
 }
 
-/* The Liquid Shimmer Sweep Effect */
+/* The Volumetric Light Sweep & Liquid Shimmer */
 .glass-card::after {
     content: '';
     position: absolute;
-    top: 0; left: -150%;
-    width: 60%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
-    transform: skewX(-25deg);
-    transition: left 0.7s ease-in-out;
+    top: -50%; 
+    left: -100%;
+    width: 150%; 
+    height: 200%;
+    /* Complex dual-band gradient for realistic light refraction */
+    background: linear-gradient(
+        115deg, 
+        transparent 0%, 
+        rgba(255, 255, 255, 0.1) 30%, 
+        rgba(255, 255, 255, 0.6) 45%, 
+        rgba(255, 255, 255, 0.95) 50%, 
+        rgba(255, 255, 255, 0.6) 55%, 
+        rgba(255, 255, 255, 0.1) 70%, 
+        transparent 100%
+    );
+    transform: rotate(25deg);
+    transition: left 0.8s cubic-bezier(0.215, 0.61, 0.355, 1), opacity 0.8s ease;
+    opacity: 0;
     pointer-events: none;
     z-index: 10;
+    mix-blend-mode: overlay;
 }
 
+/* Hover Mechanics */
 .glass-card:hover::after {
-    left: 200%;
+    left: 100%;
+    opacity: 1;
 }
 
 .glass-card:hover {
-    transform: translateY(-15px) rotateX(5deg);
-    box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+    transform: translateY(-12px) scale(1.02) rotateX(4deg) rotateY(-2deg);
+    box-shadow: 
+        0 50px 100px -20px rgba(0, 0, 0, 0.25),
+        0 30px 60px -15px rgba(0, 0, 0, 0.15),
+        inset 0 2px 3px rgba(255, 255, 255, 0.95),
+        inset 0 -2px 5px rgba(0, 0, 0, 0.05),
+        inset 0 20px 40px rgba(255, 255, 255, 0.35),
+        inset 0 0 0 1.5px rgba(255, 255, 255, 0.6);
 }
 
 .card-title {
@@ -1046,50 +1103,7 @@ class SimplexNoise {
  * PART 4: GRAPHICS & RENDERING ENGINES
  * ----------------------------------------------------------------------------
  */
-class LiquidGlassRenderer {
-    constructor(canvasId) {
-        this.canvas = document.getElementById(canvasId);
-        this.ctx = this.canvas.getContext('2d', { alpha: false });
-        this.width = 0;
-        this.height = 0;
-        this.hue = 0;
-        this.isRunning = false;
-        this.resize();
-        window.addEventListener('resize', () => this.resize());
-    }
 
-    resize() {
-        this.width = this.canvas.width = window.innerWidth;
-        this.height = this.canvas.height = window.innerHeight;
-    }
-
-    start() {
-        this.isRunning = true;
-        this.render();
-    }
-
-    render() {
-        if (!this.isRunning) return;
-
-        // Advance the HSL color math
-        this.hue += 0.15; // Adjust this number to make the rainbow flow faster or slower
-
-        // Create a smooth, diagonal screen-spanning gradient
-        const grad = this.ctx.createLinearGradient(0, 0, this.width, this.height);
-        
-        // Soft, elegant rainbow that fits your dark theme (Light saturation, low lightness)
-        grad.addColorStop(0, `hsl(${this.hue % 360}, 60%, 18%)`);
-        grad.addColorStop(0.5, `hsl(${(this.hue + 60) % 360}, 50%, 12%)`);
-        grad.addColorStop(1, `hsl(${(this.hue + 120) % 360}, 60%, 8%)`);
-
-        // Paint the background
-        this.ctx.fillStyle = grad;
-        this.ctx.fillRect(0, 0, this.width, this.height);
-
-        // Loop the animation
-        requestAnimationFrame(() => this.render());
-    }
-}
 
 
 class MatrixStreamRenderer {
@@ -1430,7 +1444,6 @@ class ApplicationCore {
                       h.innerText = chars.join('');
                       setTimeout(() => h.innerText = orig, 200); // Snap back slightly faster
                   }, 500);      // Initialize Graphics Pipelines
-        this.liquidRenderer = new LiquidGlassRenderer('canvas-liquid-glass');
         this.matrixRenderer = new MatrixStreamRenderer('canvas-matrix');
         
         // Build State Topology
@@ -1443,7 +1456,6 @@ class ApplicationCore {
     async start() {
         try {
             // Engage background processing
-            this.liquidRenderer.start();
             
             // Execute Sequence
             await this.fsm.transitionTo('FLASH');
