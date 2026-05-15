@@ -192,6 +192,9 @@ html, body {
 #title-15 { -webkit-text-stroke: 2px var(--sys-color-accent-ice); text-shadow: 0 0 50px var(--sys-color-accent-ice); }
 #title-16 { -webkit-text-stroke: 2px var(--sys-color-accent-ice); text-shadow: 0 0 50px var(--sys-color-accent-ice); }
 #title-17 { -webkit-text-stroke: 2px var(--sys-color-accent-ice); text-shadow: 0 0 50px var(--sys-color-accent-ice); }
+#title-18 { -webkit-text-stroke: 2px var(--sys-color-accent-ice); text-shadow: 0 0 50px var(--sys-color-accent-ice); }
+#title-19 { -webkit-text-stroke: 2px var(--sys-color-accent-ice); text-shadow: 0 0 50px var(--sys-color-accent-ice); }
+
 
 
 
@@ -595,19 +598,7 @@ html, body {
 }
    /* LIQUID GLASS CURSOR */
 /* ADVANCED CANVAS LIQUID GLASS CURSOR */
-* { cursor: none !important; }
-#liquid-glass-cursor {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    pointer-events: none;
-    z-index: 999999;
-    mix-blend-mode: hard-light;
-    transform: translateZ(0);
-    will-change: transform;
-}
+
 
 </style>
 </head>
@@ -643,7 +634,10 @@ html, body {
    <div id="title-14" class="flash-title">MULTIPLAYER WARS</div>
     <div id="title-15" class="flash-title">ESCAPE</div>
    <div id="title-16" class="flash-title">LIQUID GLASS</div>
-    <div id="title-17" class="flash-title">JMESSAGE</div>
+   <div id="title-17" class="flash-title">JMESSAGE</div>
+   <div id="title-18" class="flash-title">RESISTANCE</div>
+ <div id="title-18" class="flash-title">WILLARD MAPS</div>
+
 </div>
 <div id="terminal-hud"></div>
 
@@ -839,7 +833,11 @@ const INVENTORY_DB = [
     new PortfolioNode("JAAP-16", "MULTIPLAYER WARS", "https://jaapthind.github.io/2PLAYERhub/", "var(--sys-color-accent-ice)", false, "Kernel/Low-Level", 12.6),
     new PortfolioNode("JAAP-17", "ESCAPE", "https://jaapthind.github.io/ESCAPE/", "var(--sys-color-accent-ice)", false, "Jail", 8.6),
     new PortfolioNode("JAAP-18", "LIQUID GLASS", "https://jaapthind.github.io/liquidGLASS/", "var(--sys-color-accent-ice)", false, "Satisfying Simulation", 21.6),
-    new PortfolioNode("JAAP-18", "JMESSAGE", "https://jaapthind.github.io/chat/", "var(--sys-color-accent-ice)", false, "In-browser messages", 6.7)
+    new PortfolioNode("JAAP-18", "JMESSAGE", "https://jaapthind.github.io/chat/", "var(--sys-color-accent-ice)", false, "In-browser messages", 6.7),
+   new PortfolioNode("JAAP-18", "RESISTANCE", "https://jaapthind.github.io/Resistance/", "var(--sys-color-accent-ice)", false, "History Project", 6.7),
+   new PortfolioNode("JAAP-18", "WILLARD MAPS", "https://jaapthind.github.io/WillardMaps/", "var(--sys-color-accent-ice)", false, "Built for 6th graders", 6.7)
+
+
 
 
 
@@ -1685,257 +1683,12 @@ document.addEventListener('click', () => {
     }
 }
 
-/**
- * ----------------------------------------------------------------------------
- * MODULE 2: COLOR & OPTICS TOOLKIT
- * ----------------------------------------------------------------------------
- */
-class OpticsEngine {
-    static hslToRgba(h, s, l, a = 1) {
-        h = h % 360;
-        if (h < 0) h += 360;
-        s = Math.max(0, Math.min(100, s)) / 100;
-        l = Math.max(0, Math.min(100, l)) / 100;
 
-        let c = (1 - Math.abs(2 * l - 1)) * s;
-        let x = c * (1 - Math.abs((h / 60) % 2 - 1));
-        let m = l - c / 2;
-        let r = 0, g = 0, b = 0;
 
-        if (0 <= h && h < 60) { r = c; g = x; b = 0; }
-        else if (60 <= h && h < 120) { r = x; g = c; b = 0; }
-        else if (120 <= h && h < 180) { r = 0; g = c; b = x; }
-        else if (180 <= h && h < 240) { r = 0; g = x; b = c; }
-        else if (240 <= h && h < 300) { r = x; g = 0; b = c; }
-        else if (300 <= h && h < 360) { r = c; g = 0; b = x; }
-
-        r = Math.round((r + m) * 255);
-        g = Math.round((g + m) * 255);
-        b = Math.round((b + m) * 255);
-
-        return `rgba(${r}, ${g}, ${b}, ${a})`;
-    }
-
-    static createGlassHighlight(ctx, cx, cy, radius) {
-        const grad = ctx.createRadialGradient(
-            cx - radius * 0.3, cy - radius * 0.3, radius * 0.05,
-            cx, cy, radius * 0.9
-        );
-        grad.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
-        grad.addColorStop(0.2, 'rgba(255, 255, 255, 0.3)');
-        grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
-        return grad;
-    }
-
-    static createGlassShadow(ctx, cx, cy, radius) {
-        const grad = ctx.createRadialGradient(
-            cx + radius * 0.2, cy + radius * 0.2, radius * 0.4,
-            cx, cy, radius
-        );
-        grad.addColorStop(0, 'rgba(0, 0, 0, 0)');
-        grad.addColorStop(0.8, 'rgba(0, 0, 0, 0.4)');
-        grad.addColorStop(1, 'rgba(0, 255, 204, 0.8)');
-        return grad;
-    }
-}
-
-/**
- * ----------------------------------------------------------------------------
- * MODULE 3: THE ZERO-LATENCY CURSOR RENDERER
- * ----------------------------------------------------------------------------
- */
-class InstantRainbowGlassCursor {
-    constructor() {
-        // Create an isolated, small canvas to guarantee 0 layout thrashing
-        this.size = 80; // Total canvas size
-        this.radius = 22; // Actual liquid drop size
-        
-        this.canvas = document.createElement('canvas');
-        this.canvas.width = this.size;
-        this.canvas.height = this.size;
-        this.ctx = this.canvas.getContext('2d', { alpha: true });
-        
-        this.canvas.style.position = 'fixed';
-        this.canvas.style.top = `-${this.size / 2}px`;
-        this.canvas.style.left = `-${this.size / 2}px`;
-        this.canvas.style.pointerEvents = 'none';
-        this.canvas.style.zIndex = '9999999';
-        this.canvas.style.transform = `translate3d(-1000px, -1000px, 0)`;
-        this.canvas.style.willChange = 'transform';
-        this.canvas.style.mixBlendMode = 'hard-light';
-        
-        document.body.appendChild(this.canvas);
-        
-        // Physics & Render State
-        this.noise = new FastSimplexNoise();
-        this.time = 0;
-        this.hue = 0;
-        this.isClicking = false;
-        
-        // Event Listeners for absolute 1:1 Instant Tracking
-        this.bindEvents();
-        
-        // Start Render Loop
-        this.render();
-    }
-    
-    bindEvents() {
-        // Direct transform update bypassing the render loop for absolute zero lag
-        window.addEventListener('mousemove', (e) => {
-            this.canvas.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
-        }, { passive: true });
-        
-        window.addEventListener('mousedown', () => {
-            this.isClicking = true;
-        });
-        
-        window.addEventListener('mouseup', () => {
-            this.isClicking = false;
-        });
-    }
-    
-    drawLiquidShape(cx, cy, baseRadius, timeOffset, depthMultiplier = 1) {
-        this.ctx.beginPath();
-        const segments = 60;
-        
-        for (let i = 0; i <= segments; i++) {
-            const angle = (i / segments) * Math.PI * 2;
-            
-            // Generate organic wobbly edge using simplex noise
-            const nx = Math.cos(angle) * 1.5;
-            const ny = Math.sin(angle) * 1.5;
-            const nVal = this.noise.noise2D(nx + timeOffset, ny + timeOffset);
-            
-            // Squeeze radius slightly on click
-            const clickSquish = this.isClicking ? 0.85 : 1.0;
-            const r = baseRadius * clickSquish + (nVal * 4 * depthMultiplier);
-            
-            const px = cx + Math.cos(angle) * r;
-            const py = cy + Math.sin(angle) * r;
-            
-            if (i === 0) {
-                this.ctx.moveTo(px, py);
-            } else {
-                this.ctx.lineTo(px, py);
-            }
-        }
-        this.ctx.closePath();
-    }
-    
-    render() {
-        // Advance time for color shift and liquid wobble
-        this.time += 0.03;
-        this.hue = (this.hue + 2) % 360;
-        
-        // Clear the mini-canvas
-        this.ctx.clearRect(0, 0, this.size, this.size);
-        
-        const cx = this.size / 2;
-        const cy = this.size / 2;
-        
-        // ==========================================
-        // PASS 1: AMBIENT DROP SHADOW
-        // ==========================================
-        this.ctx.save();
-        this.ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
-        this.ctx.shadowBlur = 15;
-        this.ctx.shadowOffsetX = 0;
-        this.ctx.shadowOffsetY = 8;
-        this.drawLiquidShape(cx, cy, this.radius, this.time, 1);
-        this.ctx.fillStyle = 'rgba(10, 10, 15, 0.4)';
-        this.ctx.fill();
-        this.ctx.restore();
-
-        // ==========================================
-        // PASS 2: ROTATING RAINBOW PLASMA BASE
-        // ==========================================
-        this.ctx.save();
-        this.drawLiquidShape(cx, cy, this.radius, this.time, 1);
-        this.ctx.clip();
-        
-        const plasmaGrad = this.ctx.createLinearGradient(
-            cx + Math.cos(this.time) * this.radius, 
-            cy + Math.sin(this.time) * this.radius,
-            cx - Math.cos(this.time) * this.radius, 
-            cy - Math.sin(this.time) * this.radius
-        );
-        
-        plasmaGrad.addColorStop(0, OpticsEngine.hslToRgba(this.hue, 100, 60, 0.9));
-        plasmaGrad.addColorStop(0.33, OpticsEngine.hslToRgba(this.hue + 60, 100, 50, 0.9));
-        plasmaGrad.addColorStop(0.66, OpticsEngine.hslToRgba(this.hue + 120, 100, 60, 0.9));
-        plasmaGrad.addColorStop(1, OpticsEngine.hslToRgba(this.hue + 180, 100, 50, 0.9));
-        
-        this.ctx.fillStyle = plasmaGrad;
-        this.ctx.fill();
-        this.ctx.restore();
-
-        // ==========================================
-        // PASS 3: INNER GLASS REFRACTION SHADOW
-        // ==========================================
-        this.ctx.save();
-        this.ctx.globalCompositeOperation = 'multiply';
-        this.drawLiquidShape(cx, cy, this.radius, this.time, 1);
-        this.ctx.fillStyle = OpticsEngine.createGlassShadow(this.ctx, cx, cy, this.radius);
-        this.ctx.fill();
-        this.ctx.restore();
-
-        // ==========================================
-        // PASS 4: HIGH-GLOSS SPECULAR FLARE
-        // ==========================================
-        this.ctx.save();
-        this.ctx.globalCompositeOperation = 'screen';
-        this.drawLiquidShape(cx, cy, this.radius * 0.95, this.time, 0.9);
-        this.ctx.fillStyle = OpticsEngine.createGlassHighlight(this.ctx, cx, cy, this.radius);
-        this.ctx.fill();
-        this.ctx.restore();
-
-        // ==========================================
-        // PASS 5: CRISP FRESNEL RIM EDGE
-        // ==========================================
-        this.ctx.save();
-        this.drawLiquidShape(cx, cy, this.radius, this.time, 1);
-        this.ctx.lineWidth = 1.5;
-        this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
-        this.ctx.stroke();
-        
-        // Inner refractive line
-        this.drawLiquidShape(cx, cy, this.radius - 2, this.time, 0.95);
-        this.ctx.lineWidth = 1;
-        this.ctx.strokeStyle = OpticsEngine.hslToRgba(this.hue + 180, 100, 70, 0.5);
-        this.ctx.stroke();
-        this.ctx.restore();
-        
-        // Loop internally
-        requestAnimationFrame(() => this.render());
-    }
-}
-
-/**
- * ----------------------------------------------------------------------------
- * BOOT SEQUENCE
- * ----------------------------------------------------------------------------
- */
-window.addEventListener('DOMContentLoaded', () => {
-    // Purge any old cursors to prevent collision
-    const garbage1 = document.getElementById('l-cursor');
-    const garbage2 = document.getElementById('liquid-glass-cursor');
-    if (garbage1) garbage1.remove();
-    if (garbage2) garbage2.remove();
-    
-    // Inject the new zero-latency engine
-    new InstantRainbowGlassCursor();
-});
 
 
    
-   window.onclick = () => {
-    const s = document.createElement('div');
-    s.style = `position:fixed;inset:0;z-index:99999;pointer-events:none;background:repeating-linear-gradient(90deg,transparent,transparent 2px,rgba(0,255,204,0.1) 2px,rgba(0,255,204,0.1) 4px);opacity:0.8;`;
-    document.body.appendChild(s);
-    setTimeout(() => s.remove(), 100);
-    document.body.style.filter = `hue-rotate(${Math.random()*360}deg) contrast(2)`;
-    setTimeout(() => document.body.style.filter = '', 150);
-};
+  
 </script>
 </body>
 </html>
