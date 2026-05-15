@@ -362,19 +362,10 @@ html, body {
 }
 
 .glass-card {
-    /* Clean Apple Glass Base */
-    background: rgba(255, 255, 255, 0.4); 
-    backdrop-filter: blur(45px) saturate(180%);
-    -webkit-backdrop-filter: blur(45px) saturate(180%);
-    border-radius: 44px;
-    
-    /* Ultra-crisp thin border & soft depth shadow */
-    border: 1px solid rgba(255, 255, 255, 0.7);
-    box-shadow: 
-        0 20px 40px -10px rgba(0, 0, 0, 0.1),
-        inset 0 1px 1px rgba(255, 255, 255, 0.9);
-        
-    /* Layout & Mechanics */
+    background: #000000;
+    border-radius: 49px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.3);
     padding: 40px;
     height: 380px;
     display: flex;
@@ -382,27 +373,34 @@ html, body {
     justify-content: space-between;
     text-decoration: none;
     transform-style: preserve-3d;
-    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1); /* Apple's springy physics */
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
     position: relative;
     overflow: hidden;
 }
 
-/* Force text readability inside the glass */
-.glass-card * {
-    color: #1d1d1f !important;
-    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.4); /* White halo to pop off the background */
+.glass-card .card-meta, 
+.glass-card .card-action {
+    color: #ffffff !important;
 }
 
-/* Hover Mechanics - Lift and slight brightness increase */
+.card-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    /* This makes the text see-through so the rainbow shows */
+    color: transparent !important;
+    -webkit-text-fill-color: transparent; 
+    -webkit-background-clip: text;
+    background-clip: text;
+    transform: translateZ(40px);
+    display: inline-block;
+}
+
 .glass-card:hover {
     transform: translateY(-8px) scale(1.02);
-    background: rgba(255, 255, 255, 0.5);
-    box-shadow: 
-        0 30px 50px -12px rgba(0, 0, 0, 0.15),
-        inset 0 1px 1px rgba(255, 255, 255, 1);
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.5);
 }
 
-/* Clean Diagonal Glint on Hover */
 .glass-card::after {
     content: '';
     position: absolute;
@@ -416,13 +414,6 @@ html, body {
 
 .glass-card:hover::after {
     left: 200%;
-}
-
-.card-title {
-    font-size: 2.5rem;
-    font-weight: 800;
-    color: var(--sys-color-text-primary);
-    transform: translateZ(40px);
 }
 
 .card-meta {
