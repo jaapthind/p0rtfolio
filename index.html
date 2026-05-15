@@ -346,11 +346,19 @@ html, body {
 }
 
 .glass-card {
-    background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.01));
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-    border-radius: 50px;
-    border: 1px solid rgba(255,255,255,0.1);
+    /* Thick Liquid Glass Base */
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.02) 100%);
+    backdrop-filter: blur(45px) saturate(200%);
+    -webkit-backdrop-filter: blur(45px) saturate(200%);
+    border-radius: 46px;
+    
+    /* 3D Edge Lighting */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-top: 1.5px solid rgba(255, 255, 255, 0.6);
+    border-left: 1.5px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), inset 0 5px 20px rgba(255, 255, 255, 0.15);
+    
+    /* Layout & Mechanics */
     padding: 40px;
     height: 380px;
     display: flex;
@@ -358,9 +366,26 @@ html, body {
     justify-content: space-between;
     text-decoration: none;
     transform-style: preserve-3d;
-    transition: transform 0.5s ease, box-shadow 0.5s ease, border-color 0.5s ease;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
     position: relative;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+    overflow: hidden;
+}
+
+/* The Liquid Shimmer Sweep Effect */
+.glass-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -150%;
+    width: 60%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+    transform: skewX(-25deg);
+    transition: left 0.7s ease-in-out;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.glass-card:hover::after {
+    left: 200%;
 }
 
 .glass-card:hover {
@@ -678,7 +703,7 @@ const SYS_CONFIG = {
     VERSION: "9.9.4-PROD",
     DEBUG_LOGGING: false,
     TIMING: {
-        FLASH_INTERVAL_MS: 400,
+        FLASH_INTERVAL_MS: 275,
         STROBE_DURATION_MS: 500,
         BOOT_DURATION_MS: 2000,
         TOTAL_MIN_INTRO_MS: 4000
@@ -689,7 +714,7 @@ const SYS_CONFIG = {
     },
     PHYSICS: {
         GRAVITY: 9.81,
-        DRAG: 0.99,
+        DRAG: 0.95,
         TIMESTEP: 1 / 60
     }
 };
@@ -1021,16 +1046,13 @@ class SimplexNoise {
  * PART 4: GRAPHICS & RENDERING ENGINES
  * ----------------------------------------------------------------------------
  */
-
 class LiquidGlassRenderer {
     constructor(canvasId) {
         this.canvas = document.getElementById(canvasId);
         this.ctx = this.canvas.getContext('2d', { alpha: false });
         this.width = 0;
         this.height = 0;
-        this.noise = new SimplexNoise();
-        this.zOff = 0;
-        this.particles = [];
+        this.hue = 0;
         this.isRunning = false;
         this.resize();
         window.addEventListener('resize', () => this.resize());
@@ -1041,19 +1063,7 @@ class LiquidGlassRenderer {
         this.height = this.canvas.height = window.innerHeight;
     }
 
-    initParticles() {
-        this.particles = [];
-        for (let i = 0; i < SYS_CONFIG.RENDER.LIQUID_PARTICLE_COUNT; i++) {
-            const mass = MathUtils.random(1, 5);
-            const p = new PhysicsBody(MathUtils.random(0, this.width), MathUtils.random(0, this.height), mass);
-            p.radius = MathUtils.random(100, 300);
-            p.colorIndex = Math.random();
-            this.particles.push(p);
-        }
-    }
-
     start() {
-        this.initParticles();
         this.isRunning = true;
         this.render();
     }
@@ -1061,50 +1071,26 @@ class LiquidGlassRenderer {
     render() {
         if (!this.isRunning) return;
 
-        // Dark base
-        this.ctx.fillStyle = '#030305';
+        // Advance the HSL color math
+        this.hue += 0.15; // Adjust this number to make the rainbow flow faster or slower
+
+        // Create a smooth, diagonal screen-spanning gradient
+        const grad = this.ctx.createLinearGradient(0, 0, this.width, this.height);
+        
+        // Soft, elegant rainbow that fits your dark theme (Light saturation, low lightness)
+        grad.addColorStop(0, `hsl(${this.hue % 360}, 60%, 18%)`);
+        grad.addColorStop(0.5, `hsl(${(this.hue + 60) % 360}, 50%, 12%)`);
+        grad.addColorStop(1, `hsl(${(this.hue + 120) % 360}, 60%, 8%)`);
+
+        // Paint the background
+        this.ctx.fillStyle = grad;
         this.ctx.fillRect(0, 0, this.width, this.height);
 
-        this.ctx.globalCompositeOperation = 'screen';
-        this.zOff += 0.003;
-
-        for (let i = 0; i < this.particles.length; i++) {
-            const p = this.particles[i];
-            
-            // Flow field interaction
-            const angle = this.noise.noise3D(p.position.x * 0.002, p.position.y * 0.002, this.zOff) * Math.PI * 4;
-            const force = new Vector2(Math.cos(angle), Math.sin(angle)).mult(20);
-            p.applyForce(force);
-            p.update(SYS_CONFIG.PHYSICS.TIMESTEP);
-
-            // Bounds wrapping
-            if (p.position.x > this.width + p.radius) p.position.x = -p.radius;
-            if (p.position.x < -p.radius) p.position.x = this.width + p.radius;
-            if (p.position.y > this.height + p.radius) p.position.y = -p.radius;
-            if (p.position.y < -p.radius) p.position.y = this.height + p.radius;
-
-            // Draw Blob
-            const grad = this.ctx.createRadialGradient(p.position.x, p.position.y, 0, p.position.x, p.position.y, p.radius);
-            
-            if (p.colorIndex < 0.33) {
-                grad.addColorStop(0, 'rgba(0, 255, 204, 0.5)'); // Ice Blue
-            } else if (p.colorIndex < 0.66) {
-                grad.addColorStop(0, 'rgba(0, 100, 255, 0.5)'); // Deep Blue
-            } else {
-                grad.addColorStop(0, 'rgba(255, 0, 255, 0.4)'); // Fruit Pink
-            }
-            grad.addColorStop(1, 'rgba(0,0,0,0)');
-
-            this.ctx.beginPath();
-            this.ctx.arc(p.position.x, p.position.y, p.radius, 0, Math.PI * 2);
-            this.ctx.fillStyle = grad;
-            this.ctx.fill();
-        }
-
-        this.ctx.globalCompositeOperation = 'source-over';
+        // Loop the animation
         requestAnimationFrame(() => this.render());
     }
 }
+
 
 class MatrixStreamRenderer {
     constructor(canvasId) {
