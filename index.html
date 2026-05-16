@@ -210,6 +210,8 @@ html, body {
 #title-17 { -webkit-text-stroke: 2px var(--sys-color-accent-ice); text-shadow: 0 0 50px var(--sys-color-accent-ice); }
 #title-18 { -webkit-text-stroke: 2px var(--sys-color-accent-ice); text-shadow: 0 0 50px var(--sys-color-accent-ice); }
 #title-19 { -webkit-text-stroke: 2px var(--sys-color-accent-ice); text-shadow: 0 0 50px var(--sys-color-accent-ice); }
+#title-20 { -webkit-text-stroke: 2px var(--sys-color-accent-ice); text-shadow: 0 0 50px var(--sys-color-accent-ice); }
+
 
 
 
@@ -679,6 +681,8 @@ html, body {
    <div id="title-17" class="flash-title">JMESSAGE</div>
    <div id="title-18" class="flash-title">RESISTANCE</div>
  <div id="title-19" class="flash-title">WILLARD MAPS</div>
+   <div id="title-20" class="flash-title">MOOD MESSAGE</div>
+
 
 </div>
 <div id="terminal-hud"></div>
@@ -720,9 +724,9 @@ const SYS_CONFIG = {
     VERSION: "9.9.4-PROD",
     DEBUG_LOGGING: false,
     TIMING: {
-        FLASH_INTERVAL_MS: 275,
-        STROBE_DURATION_MS: 500,
-        BOOT_DURATION_MS: 2000,
+        FLASH_INTERVAL_MS: 200,
+        STROBE_DURATION_MS: 100,
+        BOOT_DURATION_MS: 1600,
         TOTAL_MIN_INTRO_MS: 4000
     },
     RENDER: {
@@ -865,19 +869,21 @@ const INVENTORY_DB = [
     new PortfolioNode("JAAP-05", "FRUIT SMASHER", "https://jaapthind.github.io/fruit/", "var(--sys-color-accent-fruit)", false, "React/Fiber", 33.9),
     new PortfolioNode("JAAP-06", "JAAPER DROPPER", "https://jaapthind.github.io/JaaperDropper/", "var(--sys-color-accent-drop)", false, "Matter.js/Physics", 55.0),
     new PortfolioNode("JAAP-07", "ANDRES RACER (work in progress)", "https://jaapthind.github.io/AndresRacer/", "var(--sys-color-accent-drop)", false, "VanillaJS/GitHub", 28.4),
-    new PortfolioNode("JAAP-09", "SOREN SOAR", "https://jaapthind.github.io/SorenSoar/", "var(--sys-color-accent-ice)", false, "VanillaJS/Canvas", 19.4),
-    new PortfolioNode("JAAP-10", "WASTE SORT", "https://jaapthind.github.io/Waste_Sort/", "var(--sys-color-accent-felix)", false, "HTML5/Logic", 12.8),
-    new PortfolioNode("JAAP-11", "WAR", "https://jaapthind.github.io/WAR/", "var(--sys-color-accent-mars)", false, "fun game", 31.2),
-    new PortfolioNode("JAAP-12", "DUMB TEST", "https://jaapthind.github.io/dumbtest/", "var(--sys-color-accent-japa)", false, "Neural/Logic", 5.7),
-    new PortfolioNode("JAAP-13", "SK", "https://jaapthind.github.io/SK/", "var(--sys-color-accent-ice)", false, "Kernel/Low-Level", 44.9),
-    new PortfolioNode("JAAP-14", "EMULATION ERIC", "https://jaapthind.github.io/EmulationEric/", "var(--sys-color-accent-ice)", false, "drawing/Canvas", 62.9),
-    new PortfolioNode("JAAP-15", "WAR2", "https://jaapthind.github.io/war2/", "var(--sys-color-accent-ice)", false, "Kernel/Low-Level", 31.6),
-    new PortfolioNode("JAAP-16", "MULTIPLAYER WARS", "https://jaapthind.github.io/2PLAYERhub/", "var(--sys-color-accent-ice)", false, "Kernel/Low-Level", 12.6),
-    new PortfolioNode("JAAP-17", "ESCAPE", "https://jaapthind.github.io/ESCAPE/", "var(--sys-color-accent-ice)", false, "Jail", 8.6),
-    new PortfolioNode("JAAP-18", "LIQUID GLASS", "https://jaapthind.github.io/liquidGLASS/", "var(--sys-color-accent-ice)", false, "Satisfying Simulation", 21.6),
+    new PortfolioNode("JAAP-08", "SOREN SOAR", "https://jaapthind.github.io/SorenSoar/", "var(--sys-color-accent-ice)", false, "VanillaJS/Canvas", 19.4),
+    new PortfolioNode("JAAP-09", "WASTE SORT", "https://jaapthind.github.io/Waste_Sort/", "var(--sys-color-accent-felix)", false, "HTML5/Logic", 12.8),
+    new PortfolioNode("JAAP-10", "WAR", "https://jaapthind.github.io/WAR/", "var(--sys-color-accent-mars)", false, "fun game", 31.2),
+    new PortfolioNode("JAAP-11", "DUMB TEST", "https://jaapthind.github.io/dumbtest/", "var(--sys-color-accent-japa)", false, "Neural/Logic", 5.7),
+    new PortfolioNode("JAAP-12", "SK", "https://jaapthind.github.io/SK/", "var(--sys-color-accent-ice)", false, "Kernel/Low-Level", 44.9),
+    new PortfolioNode("JAAP-13", "EMULATION ERIC", "https://jaapthind.github.io/EmulationEric/", "var(--sys-color-accent-ice)", false, "drawing/Canvas", 62.9),
+    new PortfolioNode("JAAP-14", "WAR2", "https://jaapthind.github.io/war2/", "var(--sys-color-accent-ice)", false, "Kernel/Low-Level", 31.6),
+    new PortfolioNode("JAAP-15", "MULTIPLAYER WARS", "https://jaapthind.github.io/2PLAYERhub/", "var(--sys-color-accent-ice)", false, "Kernel/Low-Level", 12.6),
+    new PortfolioNode("JAAP-16", "ESCAPE", "https://jaapthind.github.io/ESCAPE/", "var(--sys-color-accent-ice)", false, "Jail", 8.6),
+    new PortfolioNode("JAAP-17", "LIQUID GLASS", "https://jaapthind.github.io/liquidGLASS/", "var(--sys-color-accent-ice)", false, "Satisfying Simulation", 21.6),
     new PortfolioNode("JAAP-18", "JMESSAGE", "https://jaapthind.github.io/chat/", "var(--sys-color-accent-ice)", false, "In-browser messages", 6.7),
-   new PortfolioNode("JAAP-18", "RESISTANCE", "https://jaapthind.github.io/Resistance/", "var(--sys-color-accent-ice)", false, "History Project", 6.7),
-   new PortfolioNode("JAAP-18", "WILLARD MAPS", "https://jaapthind.github.io/WillardMaps/", "var(--sys-color-accent-ice)", false, "Built for 6th graders", 6.7)
+   new PortfolioNode("JAAP-19", "RESISTANCE", "https://jaapthind.github.io/Resistance/", "var(--sys-color-accent-ice)", false, "History Project", 88.9),
+   new PortfolioNode("JAAP-20", "WILLARD MAPS", "https://jaapthind.github.io/WillardMaps/", "var(--sys-color-accent-ice)", false, "Built for 6th graders", 23.6),
+    new PortfolioNode("JAAP-21", "MOOD MESSAGE", "https://jaapthind.github.io/MoodMessage/", "var(--sys-color-accent-ice)", false, "Send Anonymous Roast Messages", 43.9)
+
 
 
 
