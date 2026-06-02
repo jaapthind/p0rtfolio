@@ -750,14 +750,14 @@ const SYS_CONFIG = {
     VERSION: "9.9.4-PROD",
     DEBUG_LOGGING: false,
     TIMING: {
-        FLASH_INTERVAL_MS: 167,
+        FLASH_INTERVAL_MS: 150,
         STROBE_DURATION_MS: 1,
-        BOOT_DURATION_MS: 800,
-        TOTAL_MIN_INTRO_MS: 2000
+        BOOT_DURATION_MS: 600,
+        TOTAL_MIN_INTRO_MS: 1600
     },
     RENDER: {
         MATRIX_FONT_SIZE: 14,
-        LIQUID_PARTICLE_COUNT: 30
+        LIQUID_PARTICLE_COUNT: 15
     },
     PHYSICS: {
         GRAVITY: 9.81,
@@ -1439,7 +1439,7 @@ class ApplicationCore {
                         chars[r] = ["█", "▓", "▒", "░", "▖", "▗", "▘", "▙", "▚", "▛", "▜", "▝", "▞", "▟", "┼", "╬", "═", "║", "┌", "┐", "└", "┘", "┤", "├", "┬", "┴", "Δ", "Ω", "Σ", "Π", "Φ", "Ψ", "λ", "μ", "θ", "ξ", "δ", "∅", "∞", "√", "≈", "≠", "≤", "≥", "҂", "֎", "۞", "۝", "ꙮ", "§"][Math.floor(Math.random() * 50)];                      }
                       h.innerText = chars.join('');
                       setTimeout(() => h.innerText = orig, 200); // Snap back slightly faster
-                  }, 500);      // Initialize Graphics Pipelines
+                  }, 99999999);      // Initialize Graphics Pipelines
         this.matrixRenderer = new MatrixStreamRenderer('canvas-matrix');
         
         // Build State Topology
