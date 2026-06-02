@@ -696,6 +696,23 @@ html, body {
     <header class="ui-header">
         <h1 class="header-title">JAAP'S PortFOLIO</h1>
         <div class="header-subtitle">[ STATUS ] SYSTEM_LIVE</div>
+       <!-- SEARCH ENGINE MODULE -->
+<input type="text" id="game-search" placeholder="SEARCH MODULES..." onkeyup="filterGames()" 
+    style="margin-top: 30px; width: 100%; max-width: 400px; padding: 15px 25px; 
+    background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); 
+    backdrop-filter: blur(10px); border-radius: 50px; color: white; font-family: var(--sys-font-console); 
+    outline: none; transition: 0.3s; text-align: center;">
+
+<script>
+function filterGames() {
+    const query = document.getElementById('game-search').value.toLowerCase();
+    const cards = document.querySelectorAll('.glass-card');
+    cards.forEach(card => {
+        const title = card.querySelector('.card-title').innerText.toLowerCase();
+        card.parentElement.style.display = title.includes(query) ? 'block' : 'none';
+    });
+}
+</script>
     </header>
     <main class="game-grid" id="grid-container"></main>
 </div>
