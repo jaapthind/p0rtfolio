@@ -695,7 +695,7 @@ html, body {
 <div id="main-ui-wrapper">
     <header class="ui-header">
         <h1 class="header-title">JAAP'S PortFOLIO</h1>
-        <div class="header-subtitle">[ STATUS ] SYSTEM_LIVE // KERNEL_UPLINK: ▣▣▣▣ // BYPASS: 100% // ENTROPY: 0.042</div>
+        <div class="header-subtitle">[ STATUS ] SYSTEM_LIVE</div>
     </header>
     <main class="game-grid" id="grid-container"></main>
 </div>
@@ -729,14 +729,14 @@ const SYS_CONFIG = {
     VERSION: "9.9.4-PROD",
     DEBUG_LOGGING: false,
     TIMING: {
-        FLASH_INTERVAL_MS: 200,
-        STROBE_DURATION_MS: 100,
-        BOOT_DURATION_MS: 1600,
-        TOTAL_MIN_INTRO_MS: 4000
+        FLASH_INTERVAL_MS: 167,
+        STROBE_DURATION_MS: 1,
+        BOOT_DURATION_MS: 800,
+        TOTAL_MIN_INTRO_MS: 2000
     },
     RENDER: {
         MATRIX_FONT_SIZE: 14,
-        LIQUID_PARTICLE_COUNT: 60
+        LIQUID_PARTICLE_COUNT: 30
     },
     PHYSICS: {
         GRAVITY: 9.81,
@@ -869,7 +869,7 @@ class PortfolioNode {
 const INVENTORY_DB = [
     new PortfolioNode("JAAP-01", "ICE AGE", "https://jaapthind.github.io/IceAge/", "var(--sys-color-accent-ice)", false, "VanillaJS/Canvas2D", 14.2),
     new PortfolioNode("JAAP-02", "MILES MARS", "https://jaapthind.github.io/MilesMars/", "var(--sys-color-accent-mars)", false, "WebGL/Three.js", 85.6),
-    new PortfolioNode("JAAP-03", "JAPA JUMP", "https://jaapthind.github.io/JapaJump/", "var(--sys-color-accent-japa)", true, "Phaser/ES6", 42.1),
+    new PortfolioNode("JAAP-03", "JAPA JUMP", "https://japa-jump-343930770141.us-west1.run.app/", "var(--sys-color-accent-japa)", true, "Phaser/ES6", 42.1),
     new PortfolioNode("JAAP-04", "FELIX FART", "https://jaapthind.github.io/FelixFart/", "var(--sys-color-accent-felix)", false, "HTML5/DOM", 8.4),
     new PortfolioNode("JAAP-05", "FRUIT SMASHER", "https://jaapthind.github.io/fruit/", "var(--sys-color-accent-fruit)", false, "React/Fiber", 33.9),
     new PortfolioNode("JAAP-06", "JAAPER DROPPER", "https://jaapthind.github.io/JaaperDropper/", "var(--sys-color-accent-drop)", false, "Matter.js/Physics", 55.0),
@@ -886,7 +886,7 @@ const INVENTORY_DB = [
     new PortfolioNode("JAAP-17", "LIQUID GLASS", "https://jaapthind.github.io/liquidGLASS/", "var(--sys-color-accent-ice)", false, "Satisfying Simulation", 21.6),
     new PortfolioNode("JAAP-18", "JMESSAGE", "https://jaapthind.github.io/chat/", "var(--sys-color-accent-ice)", false, "In-browser messages", 6.7),
    new PortfolioNode("JAAP-19", "RESISTANCE", "https://jaapthind.github.io/Resistance/", "var(--sys-color-accent-ice)", false, "History Project", 88.9),
-   new PortfolioNode("JAAP-20", "WILLARD MAPS", "https://jaapthind.github.io/WillardMaps/", "var(--sys-color-accent-ice)", false, "Built for 6th graders", 23.6),
+   new PortfolioNode("JAAP-20", "WILLARD MAPS", "https://jaapthind.github.io/WillardMaps/", "var(--sys-color-accent-ice)", true, "Built for 6th graders", 23.6),
     new PortfolioNode("JAAP-21", "MOOD MESSAGE", "https://jaapthind.github.io/MoodMessage/", "var(--sys-color-accent-ice)", false, "Send Anonymous Roast Messages", 43.9),
   new PortfolioNode("JAAP-22", "SPELLING BEE", "https://p2p-multiplayer-typing-race-343930770141.us-west1.run.app/", "var(--sys-color-accent-ice)", false, "3 Different Spelling Modes", 26.7)
 
