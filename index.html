@@ -143,7 +143,7 @@ html, body {
     pointer-events: none;
 }
 
-#canvas-liquid-glass { z-index: var(--sys-z-bg); filter: blur(4px) contrast(1.2); }
+#canvas-liquid-glass { display: none; }
 #canvas-matrix { z-index: var(--sys-z-canvas); mix-blend-mode: multiply; opacity: 0.4; }   
 /* --------------------------------------------------------------------------
    INTRO SEQUENCE
@@ -1569,7 +1569,7 @@ window.addEventListener('DOMContentLoaded', () => {
 /* JAAP_OS PINWHEEL FAVICON - RAINBOW LOADING CORE */
 /* JAAP_OS CYBERNETIC EYE - MOUSE TRACKER KERNEL */
 /* JAAP_OS TESSERACT KERNEL - 4D PERSPECTIVE PROJECTION */
-const fv=document.createElement('canvas'),fx=fv.getContext('2d'),fl=document.createElement('link');fv.width=fv.height=32;fl.rel='icon';document.head.appendChild(fl);let ag=0;const fr=()=>{ag+=0.05;fx.clearRect(0,0,32,32);const gradient=fx.createRadialGradient(16,16,2,16,16,14+Math.sin(ag)*2);gradient.addColorStop(0,`hsla(${(ag*60)%360},100%,70%,1)`);gradient.addColorStop(0.5,`hsla(${(ag*60+60)%360},100%,50%,0.8)`);gradient.addColorStop(1,'transparent');fx.fillStyle=gradient;fx.beginPath();fx.arc(16,16,16,0,Math.PI*2);fx.fill();fx.strokeStyle=`hsla(${(ag*60+120)%360},100%,70%,0.5)`;fx.lineWidth=2;fx.strokeRect(4,4,24,24);fx.lineWidth=1;fx.strokeRect(0,0,32,32);fl.href=fv.toDataURL();requestAnimationFrame(fr)};fr();
+const fv=document.createElement('canvas'),fx=fv.getContext('2d'),fl=document.createElement('link');fv.width=fv.height=32;fl.rel='icon';document.head.appendChild(fl);let ag=0;const fr=()=>{ag+=0.05;fx.clearRect(0,0,32,32);const gradient=fx.createRadialGradient(16,16,2,16,16,14+Math.sin(ag)*2);gradient.addColorStop(0,`hsla(${(ag*60)%360},100%,70%,1)`);gradient.addColorStop(0.5,`hsla(${(ag*60+60)%360},100%,50%,0.8)`);gradient.addColorStop(1,'transparent');fx.fillStyle=gradient;fx.beginPath();fx.arc(16,16,16,0,Math.PI*2);fx.fill();fx.strokeStyle=`hsla(${(ag*60+120)%360},100%,70%,0.5)`;fx.lineWidth=2;fx.strokeRect(4,4,24,24);fx.lineWidth=1;fx.strokeRect(0,0,32,32);fl.href=fv.toDataURL();};fr();
 let audioCtx, analyser, dataArray, source;
 let isInitialized = false;
 let peaks = []; // Stores the positions of the Liquid Glass gravity peaks
